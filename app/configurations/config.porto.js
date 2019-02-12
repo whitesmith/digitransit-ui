@@ -42,8 +42,22 @@ export default configMerger(defaultConfig, {
     PELIAS_REVERSE_GEOCODER: `${process.env.GEOCODING_BASE_URL ||
       GEOCODING_BASE_URL}/reverse`,
   },
-
   userAuthentication: true,
+  FIREBASE: {
+    apiKey:
+      process.env.REACT_APP_API_KEY ||
+      'AIzaSyCk7YLoXpzxhuIqhJyuzIFmmZFSiucZq6g',
+    authDomain:
+      process.env.REACT_APP_AUTH_DOMAIN || 'test-auth-digi.firebaseapp.com',
+    databaseURL:
+      process.env.REACT_APP_DATABASE_URL ||
+      'https://test-auth-digi.firebaseio.com',
+    projectId: process.env.REACT_APP_PROJECT_ID || 'test-auth-digi',
+    storageBucket:
+      process.env.REACT_APP_STORAGE_BUCKET || 'test-auth-digi.appspot.com',
+    messagingSenderId:
+      process.env.REACT_APP_MESSAGING_SENDER_ID || '751311140902',
+  },
 
   APP_PATH: `${APP_PATH}`,
   title: 'Reittihaku',
@@ -469,14 +483,14 @@ export default configMerger(defaultConfig, {
   defaultEndpoint: {
     address: 'Porto So Bento',
     lat: 41.1452254,
-    lon: -8.613206
+    lon: -8.613206,
   },
   defaultOrigins: [
     {
       icon: 'icon-icon_airplane',
       label: 'Aeroporto Francisco Sá Carneiro',
       lat: 41.2421186,
-      lon: -8.6807401
+      lon: -8.6807401,
     },
   ],
 
@@ -741,7 +755,7 @@ export default configMerger(defaultConfig, {
           'If you have any questions about this Privacy Policy, please contact us:',
           'By email: info@portodigital.pt',
         ],
-      }, 
+      },
     ],
   },
 
