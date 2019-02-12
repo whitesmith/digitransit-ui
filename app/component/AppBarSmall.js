@@ -7,6 +7,7 @@ import MainMenuContainer from './MainMenuContainer';
 import ComponentUsageExample from './ComponentUsageExample';
 import MessageBar from './MessageBar';
 import LogoSmall from './LogoSmall';
+import AuthButton from './AuthButton';
 
 const AppBarSmall = ({ disableBackButton, showLogo, title, homeUrl, logo }) => (
   <React.Fragment>
@@ -16,6 +17,7 @@ const AppBarSmall = ({ disableBackButton, showLogo, title, homeUrl, logo }) => (
       <section className="title">
         <LogoSmall showLogo={showLogo} logo={logo} title={title} />
       </section>
+      <AuthButton />
       <MainMenuContainer homeUrl={homeUrl} />
     </nav>
     <MessageBar />
