@@ -33,6 +33,7 @@ import oldParamParser from './util/oldParamParser';
 import { ClientProvider as ClientBreakpointProvider } from './util/withBreakpoint';
 import meta from './meta';
 import { isIOSApp } from './util/browser';
+import Firebase, { FirebaseContext } from './component/firebase';
 
 const plugContext = f => () => ({
   plugComponentContext: f,
@@ -192,36 +193,38 @@ const callback = () =>
               }
 
               const content = (
-                <ClientBreakpointProvider
-                  serverGuessedBreakpoint={initialBreakpoint}
-                >
-                  <ContextProvider
-                    translations={translations}
-                    context={context.getComponentContext()}
+                <FirebaseContext.Provider value={new Firebase(config.FIREBASE)}>
+                  <ClientBreakpointProvider
+                    serverGuessedBreakpoint={initialBreakpoint}
                   >
-                    <ErrorBoundary>
-                      <MuiThemeProvider
-                        muiTheme={getMuiTheme(MUITheme(config), {
-                          userAgent: navigator.userAgent,
-                        })}
-                      >
-                        <React.Fragment>
-                          <Helmet
-                            {...meta(
-                              context
-                                .getStore('PreferencesStore')
-                                .getLanguage(),
-                              window.location.host,
-                              window.location.href,
-                              config,
-                            )}
-                          />
-                          <Router {...props} onUpdate={track} />
-                        </React.Fragment>
-                      </MuiThemeProvider>
-                    </ErrorBoundary>
-                  </ContextProvider>
-                </ClientBreakpointProvider>
+                    <ContextProvider
+                      translations={translations}
+                      context={context.getComponentContext()}
+                    >
+                      <ErrorBoundary>
+                        <MuiThemeProvider
+                          muiTheme={getMuiTheme(MUITheme(config), {
+                            userAgent: navigator.userAgent,
+                          })}
+                        >
+                          <React.Fragment>
+                            <Helmet
+                              {...meta(
+                                context
+                                  .getStore('PreferencesStore')
+                                  .getLanguage(),
+                                window.location.host,
+                                window.location.href,
+                                config,
+                              )}
+                            />
+                            <Router {...props} onUpdate={track} />
+                          </React.Fragment>
+                        </MuiThemeProvider>
+                      </ErrorBoundary>
+                    </ContextProvider>
+                  </ClientBreakpointProvider>
+                </FirebaseContext.Provider>
               );
 
               ReactDOM.hydrate(content, root, () => {
