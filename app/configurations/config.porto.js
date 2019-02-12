@@ -43,6 +43,8 @@ export default configMerger(defaultConfig, {
       GEOCODING_BASE_URL}/reverse`,
   },
 
+  userAuthentication: true,
+
   APP_PATH: `${APP_PATH}`,
   title: 'Reittihaku',
 
