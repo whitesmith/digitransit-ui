@@ -128,6 +128,19 @@ $content-background-color: $background-color;
   }
 }
 
+.navi-button {
+  @include font-medium;
+  font-size: $font-size-small;
+  display: inline-block;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 2px 8px;
+  margin: 0px 2px;
+  border-radius: 3px;
+  color: white;
+  background-color: rgba($white, 0.15);
+}
+
 .right-border {
   border-right: 1px solid rgba(0, 0, 0, 0.15);
 }
