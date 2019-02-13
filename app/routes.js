@@ -192,6 +192,17 @@ export default config => {
           }}
         />
       )}
+      <Route
+        path="/profile"
+        getComponents={(location, cb) => {
+          Promise.all([
+            Promise.resolve(Title),
+            import(/* webpackChunkName: "profile" */ './component/ProfilePage').then(
+              getDefault,
+            ),
+          ]).then(([title, content]) => cb(null, { title, content }));
+        }}
+      />
       <Route path="/js/:name" component={Error404} />
       <Route path="/css/:name" component={Error404} />
       <Route
