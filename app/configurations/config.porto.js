@@ -44,19 +44,12 @@ export default configMerger(defaultConfig, {
   },
   userAuthentication: true,
   FIREBASE: {
-    apiKey:
-      process.env.REACT_APP_API_KEY ||
-      'AIzaSyCk7YLoXpzxhuIqhJyuzIFmmZFSiucZq6g',
-    authDomain:
-      process.env.REACT_APP_AUTH_DOMAIN || 'test-auth-digi.firebaseapp.com',
-    databaseURL:
-      process.env.REACT_APP_DATABASE_URL ||
-      'https://test-auth-digi.firebaseio.com',
-    projectId: process.env.REACT_APP_PROJECT_ID || 'test-auth-digi',
-    storageBucket:
-      process.env.REACT_APP_STORAGE_BUCKET || 'test-auth-digi.appspot.com',
-    messagingSenderId:
-      process.env.REACT_APP_MESSAGING_SENDER_ID || '751311140902',
+    apiKey: process.env.REACT_APP_API_KEY || '',
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN || '',
+    databaseURL: process.env.REACT_APP_DATABASE_URL || '',
+    projectId: process.env.REACT_APP_PROJECT_ID || '',
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET || '',
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID || '',
   },
 
   APP_PATH: `${APP_PATH}`,
