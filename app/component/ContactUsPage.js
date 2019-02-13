@@ -5,13 +5,15 @@ import { FormattedMessage } from 'react-intl';
 
 const ContactUsPage = ({}, context) => {
   return (
-    <div className="page-frame fullscreen momentum-scroll">
-      <form action="" className="contact-form" target="_blank">
-        <div className="row padding-vertical-small">
-          <div className="small-12 large-8 large-centered columns">
-            <h1>
-              <FormattedMessage id="contact-us" defaultMessage="Contact us" />
-            </h1>
+    <div className="page-frame fullscreen momentum-scroll contact-form">
+      <form action="" target="_blank">
+        <div className="contact-form__banner">
+          <div className="row padding-vertical-small">
+            <div className="small-12 large-8 large-centered columns">
+              <h1>
+                <FormattedMessage id="contact-us" defaultMessage="Contact us" />
+              </h1>
+            </div>
           </div>
         </div>
         <div className="row padding-vertical-small">
