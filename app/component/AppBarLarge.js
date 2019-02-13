@@ -9,6 +9,7 @@ import ComponentUsageExample from './ComponentUsageExample';
 import LangSelect from './LangSelect';
 import MessageBar from './MessageBar';
 import LogoSmall from './LogoSmall';
+import AuthButton from './AuthButton';
 
 const AppBarLarge = (
   { titleClicked, logo },
@@ -43,7 +44,10 @@ const AppBarLarge = (
           {logoElement}
         </button>
         <div className="empty-space flex-grow" />
-        <div className="navi-languages right-border navi-margin">
+        <div className="navi-margin padding-horizontal-large">
+          <AuthButton />
+        </div>
+        <div className="navi-languages navi-margin">
           <LangSelect />
         </div>
         <div className="navi-icons navi-margin padding-horizontal-large">

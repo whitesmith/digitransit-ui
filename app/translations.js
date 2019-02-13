@@ -942,6 +942,8 @@ const translations = {
     'show-departures': 'Show departures',
     'show-more': 'Show more',
     'show-routes': 'Choose routes',
+    'sign-in': 'Sign in',
+    'sign-out': 'Sign out',
     'skip-positioning': 'Skip',
     'skip-to-content': 'Skip to content',
     slow: 'Slow',

@@ -95,6 +95,9 @@
   float: none;
   clear: both;
 }
+.shy-left {
+  margin-left: auto !important;
+}
 // parent DOM-element requires overflow:hidden; height: x;
 .scrollable {
   overflow: auto;
