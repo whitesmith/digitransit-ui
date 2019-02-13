@@ -1,39 +1,35 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-
-const currentUser = false;
+import { withAuthentication } from './session';
 
 const navAuthButton = (id, textId, defaultMessage, executeAction) => (
-  <button
-    id={id}
-    className={`navi-button shy-left`}
-    onClick={executeAction}
-  >
+  <button id={id} className={`navi-button shy-left`} onClick={executeAction}>
     <FormattedMessage id={textId} defaultMessage={defaultMessage} />
   </button>
 );
 
-const AuthButton = ({}, { config }) => {
-  if(!config.userAuthentication) return null;
+class AuthButtonBase extends Component {
+  render() {
+    const { firebase, authUser } = this.props;
+    if (authUser) {
+      return navAuthButton('signout', 'sign-out', 'Sign out', () => {
+        firebase.signOut();
+      });
+    }
 
-  if (currentUser) {
-    return navAuthButton("signout", "sign-out", "Sign out", () => {
-      console.log("firebase.auth().signOut") 
-    });
-  } else {
-    return navAuthButton("signin", "sign-in", "Sign in", () => {
-      console.log("firebase.auth().signInWithRedirect") 
+    return navAuthButton('signin', 'sign-in', 'Sign in', () => {
+      firebase.signInWithGoogle();
     });
   }
+}
+
+AuthButtonBase.displayName = 'AuthButton';
+
+AuthButtonBase.propTypes = {
+  authUser: PropTypes.object,
 };
 
-AuthButton.displayName = 'AuthButton';
-
-AuthButton.propTypes = { };
-
-AuthButton.contextTypes = {
-  config: PropTypes.object.isRequired,
-};
+const AuthButton = withAuthentication(AuthButtonBase);
 
 export default AuthButton;

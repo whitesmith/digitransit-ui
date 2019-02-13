@@ -192,40 +192,48 @@ const callback = () =>
                 root.innerHTML = '';
               }
 
-              const content = (
-                <FirebaseContext.Provider value={new Firebase(config.FIREBASE)}>
-                  <ClientBreakpointProvider
-                    serverGuessedBreakpoint={initialBreakpoint}
+              let content = (
+                <ClientBreakpointProvider
+                  serverGuessedBreakpoint={initialBreakpoint}
+                >
+                  <ContextProvider
+                    translations={translations}
+                    context={context.getComponentContext()}
                   >
-                    <ContextProvider
-                      translations={translations}
-                      context={context.getComponentContext()}
-                    >
-                      <ErrorBoundary>
-                        <MuiThemeProvider
-                          muiTheme={getMuiTheme(MUITheme(config), {
-                            userAgent: navigator.userAgent,
-                          })}
-                        >
-                          <React.Fragment>
-                            <Helmet
-                              {...meta(
-                                context
-                                  .getStore('PreferencesStore')
-                                  .getLanguage(),
-                                window.location.host,
-                                window.location.href,
-                                config,
-                              )}
-                            />
-                            <Router {...props} onUpdate={track} />
-                          </React.Fragment>
-                        </MuiThemeProvider>
-                      </ErrorBoundary>
-                    </ContextProvider>
-                  </ClientBreakpointProvider>
-                </FirebaseContext.Provider>
+                    <ErrorBoundary>
+                      <MuiThemeProvider
+                        muiTheme={getMuiTheme(MUITheme(config), {
+                          userAgent: navigator.userAgent,
+                        })}
+                      >
+                        <React.Fragment>
+                          <Helmet
+                            {...meta(
+                              context
+                                .getStore('PreferencesStore')
+                                .getLanguage(),
+                              window.location.host,
+                              window.location.href,
+                              config,
+                            )}
+                          />
+                          <Router {...props} onUpdate={track} />
+                        </React.Fragment>
+                      </MuiThemeProvider>
+                    </ErrorBoundary>
+                  </ContextProvider>
+                </ClientBreakpointProvider>
               );
+
+              if (config.FIREBASE) {
+                content = (
+                  <FirebaseContext.Provider
+                    value={new Firebase(config.FIREBASE)}
+                  >
+                    {content}
+                  </FirebaseContext.Provider>
+                );
+              }
 
               ReactDOM.hydrate(content, root, () => {
                 // Run only in production mode and when built in a docker container
