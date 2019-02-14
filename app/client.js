@@ -27,7 +27,6 @@ import appCreator from './app';
 import translations from './translations';
 import historyCreator from './history';
 import { BUILD_TIME } from './buildInfo';
-import createPiwik from './util/piwik';
 import ErrorBoundary from './component/ErrorBoundary';
 import oldParamParser from './util/oldParamParser';
 import { ClientProvider as ClientBreakpointProvider } from './util/withBreakpoint';
@@ -46,19 +45,7 @@ window.debug = debug; // Allow _debug.enable('*') in browser console
 // TODO: this is an ugly hack, but required due to cyclical processing in app
 const { config } = window.state.context.plugins['extra-context-plugin'];
 const app = appCreator(config);
-
 const raven = Raven(config.SENTRY_DSN);
-const piwik = createPiwik(config, raven);
-
-const addPiwik = c => {
-  c.piwik = piwik; // eslint-disable-line no-param-reassign
-};
-
-const piwikPlugin = {
-  name: 'PiwikPlugin',
-  plugContext: plugContext(addPiwik),
-};
-
 const addRaven = c => {
   c.raven = raven; // eslint-disable-line no-param-reassign
 };
@@ -70,7 +57,6 @@ const ravenPlugin = {
 
 // Add plugins
 app.plug(ravenPlugin);
-app.plug(piwikPlugin);
 
 const getParams = query => {
   if (!query) {
@@ -96,6 +82,8 @@ const callback = () =>
     }
 
     window.context = context;
+    // For Google Tag Manager
+    window.dataLayer = window.dataLayer || [];
 
     if (process.env.NODE_ENV === 'development') {
       try {
@@ -122,7 +110,6 @@ const callback = () =>
         next => req => {
           // eslint-disable-next-line no-param-reassign
           req.headers.OTPTimeout = config.OTPTimeout;
-          req.headers.id = piwik.getVisitorId();
           return next(req);
         },
       ]),
@@ -161,13 +148,13 @@ const callback = () =>
     }
 
     function track() {
-      this.href = this.props.router.createHref(this.state.location);
-      piwik.setCustomUrl(this.href);
-      piwik.trackPageView();
+      window.dataLayer.push({
+        event: 'Pageview',
+        url: this.href,
+      });
     }
 
     const ContextProvider = provideContext(StoreListeningIntlProvider, {
-      piwik: PropTypes.object,
       raven: PropTypes.object,
       config: PropTypes.object,
       headers: PropTypes.object,
@@ -254,12 +241,22 @@ const callback = () =>
 
     // Listen for Web App Install Banner events
     window.addEventListener('beforeinstallprompt', e => {
-      piwik.trackEvent('installprompt', 'fired');
+      window.dataLayer.push({
+        event: 'sendMatomoEvent',
+        category: 'installprompt',
+        action: 'fired',
+        name: 'fired',
+      });
 
       // e.userChoice will return a Promise. (Only in chrome, not IE)
       if (e.userChoice) {
         e.userChoice.then(choiceResult =>
-          piwik.trackEvent('installprompt', 'result', choiceResult.outcome),
+          window.dataLayer.push({
+            event: 'sendMatomoEvent',
+            category: 'installprompt',
+            action: 'result',
+            name: choiceResult.outcome,
+          }),
         );
       }
     });
