@@ -31,7 +31,7 @@ const withAuthentication = Component => {
   }
 
   WithAuthentication.propTypes = {
-    firebase: PropTypes.object.isRequired,
+    firebase: PropTypes.object,
   };
 
   return withFirebase(WithAuthentication);

@@ -28,6 +28,7 @@ AuthButtonBase.displayName = 'AuthButton';
 
 AuthButtonBase.propTypes = {
   authUser: PropTypes.object,
+  firebase: PropTypes.object,
 };
 
 const AuthButton = withAuthentication(AuthButtonBase);
