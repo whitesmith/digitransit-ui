@@ -9,6 +9,7 @@ import ComponentUsageExample from './ComponentUsageExample';
 import { displayDistance } from '../util/geo-utils';
 import { durationToString } from '../util/timeUtils';
 import ItineraryCircleLine from './ItineraryCircleLine';
+import WalkCalories from './WalkCalories';
 
 function WalkLeg(props, context) {
   const distance = displayDistance(
@@ -55,6 +56,7 @@ function WalkLeg(props, context) {
             values={{ distance, duration }}
             defaultMessage="Walk {distance} ({duration})"
           />
+          <WalkCalories walkCalories={props.leg.calories || null} />
         </div>
       </div>
     </div>

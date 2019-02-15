@@ -13,6 +13,7 @@ import IntermediateLeg from './IntermediateLeg';
 import PlatformNumber from './PlatformNumber';
 import ItineraryCircleLine from './ItineraryCircleLine';
 import { PREFIX_ROUTES } from '../util/path';
+import TransitCost from './TransitCost';
 
 class TransitLeg extends React.Component {
   constructor(props) {
@@ -152,6 +153,7 @@ class TransitLeg extends React.Component {
           <span className="intermediate-stops-duration">
             ({durationToString(leg.duration * 1000)})
           </span>
+          <TransitCost transitCost={leg.cost || null} />
         </div>
       );
     };
