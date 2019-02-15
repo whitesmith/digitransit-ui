@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import forEach from 'lodash/forEach';
+import values from 'lodash/values';
 
 function filterLegStops(leg, filter) {
   if (leg.from.stop && leg.to.stop && leg.trip) {
@@ -52,6 +53,13 @@ export const LegMode = {
   BicycleWalk: 'BICYCLE_WALK',
   CityBike: 'CITYBIKE',
   Walk: 'WALK',
+  Bus: 'BUS',
+  Tram: 'TRAM',
+  Ferry: 'FERRY',
+  Rail: 'RAIL',
+  Subway: 'SUBWAY',
+  Airplane: 'AIRPLANE',
+  Car: 'CAR'
 };
 
 /**
@@ -65,18 +73,10 @@ export const getLegMode = legOrMode => {
     typeof legOrMode === 'string' || legOrMode instanceof String
       ? legOrMode
       : legOrMode && legOrMode.mode;
-  switch ((mode || '').toUpperCase()) {
-    case LegMode.Bicycle:
-      return LegMode.Bicycle;
-    case LegMode.BicycleWalk:
-      return LegMode.BicycleWalk;
-    case LegMode.CityBike:
-      return LegMode.CityBike;
-    case LegMode.Walk:
-      return LegMode.Walk;
-    default:
-      return undefined;
-  }
+  
+  const _legMode = (mode || '').toUpperCase();
+
+  return values(LegMode).find(m => m === _legMode)
 };
 
 /**
@@ -164,6 +164,12 @@ const isWalkingLeg = leg =>
   [LegMode.BicycleWalk, LegMode.Walk].includes(getLegMode(leg));
 const isBikingLeg = leg =>
   [LegMode.Bicycle, LegMode.CityBike].includes(getLegMode(leg));
+const isCarLeg = leg =>
+  LegMode.Car === getLegMode(leg);
+const isBusLeg = leg =>
+  LegMode.Bus === getLegMode(leg);
+const isSubwayLeg = leg =>
+  LegMode.Subway === getLegMode(leg);
 
 /**
  * Checks if the itinerary consists of a single biking leg.
@@ -262,4 +268,63 @@ export const getZones = legs => {
     zones.B = true;
   }
   return Object.keys(zones).sort();
+};
+
+/*
+  Extra calculation for itineraries
+    - Calories for walkLegs
+    - CO2 for carLegs
+    - Price for busLegs and subwayLegs
+*/
+
+export const co2ToString = co2 => {
+  if (!co2) return false;
+
+  return `${parseInt(co2, 10)} kgCO2`;
+};
+
+export const getTotalWalkingCalories = (itinerary) => {
+  let walkingLegs = itinerary.legs.filter(isWalkingLeg);
+  let totalWalkingCalories = walkingLegs.map(l => l.calories).reduce((x, y) => (x || 0) + (y || 0), 0)
+  
+  return totalWalkingCalories;
+}
+
+export const getTotalCO2Emissions = (itinerary) => {
+  let carLegs = itinerary.legs.filter(isCarLeg);
+  let totalCO2Emissions = carLegs.map(l => l.co2).reduce((x, y) => (x || 0) + (y || 0), 0)
+  
+  return totalCO2Emissions;
+}
+  
+
+export const addExtraCalcsToLeg = leg => {
+  if(isWalkingLeg(leg)) {
+    // calories
+    if(!leg.distance) return;
+    leg.calories = leg.distance * 0.068;
+  }
+  if(isCarLeg(leg)) {
+    // kgCO2
+    if(!leg.distance) return;
+    leg.co2 = leg.distance * 0.1;
+  }
+  if(isBusLeg(leg) || isSubwayLeg(leg)) {
+    // trip cost
+    if(!leg.distance) return;
+    leg.cost = (leg.distance/1000) * 1.2;
+  }
+};
+
+export const addExtraCalcsToItinerary = itinerary => {
+  //itinerary.calories = getTotalWalkingDistance(itinerary) * 0.068;
+  itinerary.legs.forEach( leg => {
+    leg = addExtraCalcsToLeg(leg);
+  });
+};
+
+export const addExtraCalcsToItineraries = itineraries => {
+  itineraries.forEach( itinerary => {
+    itinerary = addExtraCalcsToItinerary(itinerary);
+  });
 };
