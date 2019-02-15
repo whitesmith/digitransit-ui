@@ -248,6 +248,9 @@ export default configMerger(defaultConfig, {
   // Ticket information feature toggle
   showTicketInformation: false,
   showRouteInformation: false,
+  
+  //CO2, Calories, Cost
+  showExtraCalculations: true,
 
   modeToOTP: {
     bus: 'BUS',
