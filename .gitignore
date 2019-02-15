@@ -20,3 +20,4 @@ gemini-report
 tags
 .nyc_output
 coverage
+log/capistrano.log
