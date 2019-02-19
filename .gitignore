@@ -21,3 +21,4 @@ tags
 .nyc_output
 coverage
 log/capistrano.log
+.env

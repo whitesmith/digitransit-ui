@@ -446,9 +446,9 @@ export default configMerger(defaultConfig, {
       { label: `© HSL, Liikennevirasto ${YEAR}` },
       {},
       {
-        name: 'footer-feedback',
-        nameEn: 'Submit feedback',
-        href: 'https://github.com/HSLdevcom/digitransit-ui/issues',
+        name: 'contact-us',
+        nameEn: 'Contact us',
+        route: '/contact-us',
         icon: 'icon-icon_speech-bubble',
       },
       {
@@ -467,7 +467,7 @@ export default configMerger(defaultConfig, {
         name: 'privacy-policy',
         nameEn: 'Privacy Policy',
         route: '/privacy-policy',
-        icon: 'icon-icon_info',
+        icon: 'icon-icon_user',
       },
     ],
   },

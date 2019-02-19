@@ -1,0 +1,47 @@
+$form-input-height:3em;
+
+.contact-form {
+  padding: 0;
+}
+
+.contact-form__banner {
+  background-color: rgba($white, .8);
+  min-height: 6.5rem;
+  box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 1em;
+  display: flex;
+  align-items: flex-end;
+
+  @media #{$large-up} { 
+    min-height: 8rem;
+  }
+}
+
+.contact-form__label {
+  @include font-medium;
+  font-size: $font-size-normal;
+  margin-bottom: 0.5rem;
+}
+.contact-form__input,
+input.contact-form__input {
+  background-color: $white;
+  @include font-medium;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  height: $form-input-height;
+  padding: 10px;
+  outline: 0;
+  appearance: none;
+  box-shadow: none;
+}
+.contact-form__submit {
+  @include font-medium;
+  font-size: $font-size-medium-large;
+  height: $form-input-height;
+  width: 100%;
+  background-color: $hilight-color;
+  color: $primary-font-color;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0.5rem 0;
+}
