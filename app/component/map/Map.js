@@ -152,6 +152,7 @@ export default class Map extends React.Component {
                 ? '@2x'
                 : ''
             }
+            detectRetina={true}
             minZoom={config.map.minZoom}
             maxZoom={config.map.maxZoom}
           />
