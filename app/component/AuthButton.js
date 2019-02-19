@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { withAuthentication } from './session';
 import { routerShape } from 'react-router';
@@ -10,25 +10,21 @@ const navAuthButton = (id, textId, defaultMessage, executeAction) => (
   </button>
 );
 
-class AuthButtonBase extends Component {
+class AuthButton extends React.Component {
   render() {
     const { firebase, authUser } = this.props;
     const { router } = this.context;
     if (authUser) {
       return (
         <>
-          {
-            navAuthButton('profile', 'profile', 'Profile', () => {
-              router.push('/profile')
-            })
-          }
-          {
-            navAuthButton('signout', 'sign-out', 'Sign out', () => {
-              firebase.signOut();
-            })
-          }
+          {navAuthButton('profile', 'profile', 'Profile', () => {
+            router.push('/profile');
+          })}
+          {navAuthButton('signout', 'sign-out', 'Sign out', () => {
+            firebase.signOut().then(() => router.push('/'));
+          })}
         </>
-      )
+      );
     }
 
     return navAuthButton('signin', 'sign-in', 'Sign in', () => {
@@ -37,18 +33,16 @@ class AuthButtonBase extends Component {
   }
 }
 
-AuthButtonBase.displayName = 'AuthButton';
+AuthButton.displayName = 'AuthButton';
 
-AuthButtonBase.propTypes = {
+AuthButton.propTypes = {
   authUser: PropTypes.object,
   firebase: PropTypes.object,
 };
 
-AuthButtonBase.contextTypes = {
+AuthButton.contextTypes = {
   config: PropTypes.object.isRequired,
   router: routerShape.isRequired,
 };
 
-const AuthButton = withAuthentication(AuthButtonBase);
-
-export default AuthButton;
+export default withAuthentication(AuthButton);
