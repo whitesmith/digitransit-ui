@@ -54,6 +54,8 @@ export default configMerger(defaultConfig, {
   APP_PATH: `${APP_PATH}`,
   title: 'UrbanPlatform',
 
+  favicon: './app/configurations/images/porto/favicon.png',
+
   // Navbar logo
   logo: 'porto/logo.svg',
 
