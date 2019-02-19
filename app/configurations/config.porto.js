@@ -27,15 +27,14 @@ export default configMerger(defaultConfig, {
     MAP_URL,
     OTP: process.env.OTP_URL || `${API_URL}/routing/v1/routers/finland/`,
     MAP: {
-      default: `${MAP_URL}`,
-      sv: `${MAP_URL}/map/v1/hsl-map-sv/`,
+      default: `${MAP_URL}`
     },
     STOP_MAP: `https://digitransit-dev-cdn-origin.azureedge.net/map/v1/finland-stop-map/`,
     CITYBIKE_MAP: `${MAP_URL}/map/v1/hsl-citybike-map/`,
     MQTT: 'wss://mqtt.hsl.fi',
     ALERTS: process.env.ALERTS_URL || `${API_URL}/realtime/service-alerts/v1`,
     FONT:
-      'https://fonts.googleapis.com/css?family=Lato:300,400,900%7CPT+Sans+Narrow:400,700',
+      'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700%7CRoboto:300,400,700',
     REALTIME:
       process.env.VEHICLE_URL || `${API_URL}/realtime/vehicle-positions/v1`,
     PELIAS: `${process.env.GEOCODING_BASE_URL || GEOCODING_BASE_URL}/search`,
@@ -53,22 +52,20 @@ export default configMerger(defaultConfig, {
   },
 
   APP_PATH: `${APP_PATH}`,
-  title: 'Reittihaku',
+  title: 'UrbanPlatform',
 
   // Navbar logo
-  logo: 'default/digitransit-logo.png',
+  logo: 'porto/logo.svg',
 
-  spinner: 'default/default-spinner.png',
+  spinner: 'porto/spinner.png',
 
   contactName: {
-    sv: 'Digitransit',
-    fi: 'Digitransit',
-    default: "Digitransit's",
+    default: "Porto.",
   },
 
   // Default labels for manifest creation
-  name: 'Digitransit beta',
-  shortName: 'Digitransit',
+  name: 'Urban Platform',
+  shortName: 'UrbanPlatform',
 
   searchParams: {},
   feedIds: [],
@@ -218,7 +215,7 @@ export default configMerger(defaultConfig, {
   appBarLink: { name: 'Digitransit', href: 'https://www.digitransit.fi/' },
 
   colors: {
-    primary: '#00AFFF',
+    primary: '#0F2F7F',
   },
 
   sprites: 'svg-sprite.default.svg',
