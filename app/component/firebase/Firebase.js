@@ -21,6 +21,8 @@ class Firebase {
 
   updatePassword = password => this.auth.currentUser.updatePassword(password);
 
+  deleteCurrentUser = () => this.auth.currentUser.delete();
+
   // google login methods
   signInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
 }
