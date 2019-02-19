@@ -1,0 +1,59 @@
+/* Porto theme */
+
+/* Base theme */
+@import '../default/theme';
+
+/* General palette */
+$gray-blue: #78829C;
+$gray-blue-light: #B6BBC7;
+
+/* Application palette */
+$background-color: #F1F1F1;
+$background-color-darker: #E4E4E4;
+$background-color-lighter: #F5F5F5;
+$primary-color: rgb(15, 47, 127);
+$secondary-color: #5E7AC3;
+$hilight-color: $primary-color;
+$action-color: $primary-color;
+$current-location-color: $primary-color;
+$visited-link-color: $secondary-color;
+
+/* Component palette */
+$standalone-btn-color: $primary-color;
+$standalone-btn-hover-color: $gray-blue-light;
+$standalone-btn-active-color: $gray-blue-light;
+$viewpoint-marker-color: $primary-color;
+$link-color: $secondary-color;
+$from-color: #8DC448;
+$to-color: #FCC131;
+
+/* Vehicle palette */
+$airplane-color: #0046ad;
+$bus-color: #007ac9;
+$tram-color: #00985f;
+$metro-color: #ff6319;
+$rail-color: #8c4799;
+$ferry-color: #00b9e4;
+// $citybike-color: #F2B62D;
+// $citybike-off-color: #919191;
+// $walk-color: #6B90AF;
+// $wait-color: #8D92A1;
+// $bicycle-color: #64be14;
+// $car-color: #292F3D;
+
+/* Fonts */
+$font-family: "Roboto", Lato, Arial, Georgia, Serif;
+
+$font-family-narrow: "Roboto Condensed", Arial, Georgia, Serif;
+$font-size-medium-large: 1rem;
+$narrow-letter-spacing: -0.025em;
+
+/* Navbar logo dimensions */
+$nav-logo-width: 110px;
+$nav-logo-min-width: 70px;
+$nav-logo-height: 1.5em;
+$logo-min-height: 40px;
+$logo-min-width: 4.4em;
+
+/* Spinner */
+$spinner-image: url('spinner.png');
