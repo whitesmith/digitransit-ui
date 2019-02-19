@@ -9,6 +9,7 @@ import ComponentUsageExample from './ComponentUsageExample';
 import { displayDistance } from '../util/geo-utils';
 import { durationToString } from '../util/timeUtils';
 import ItineraryCircleLine from './ItineraryCircleLine';
+import CO2Emissions from './CO2Emissions';
 
 function CarLeg(props, context) {
   const distance = displayDistance(
@@ -46,6 +47,8 @@ function CarLeg(props, context) {
             values={{ distance, duration }}
             defaultMessage="Drive {distance} ({duration})}"
           />
+          &nbsp;
+          <CO2Emissions co2Emissions={props.leg.co2 || null} />
         </div>
       </div>
     </div>

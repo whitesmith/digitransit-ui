@@ -16,7 +16,7 @@ import LegAgencyInfo from './LegAgencyInfo';
 import CityBikeMarker from './map/non-tile-layer/CityBikeMarker';
 import SecondaryButton from './SecondaryButton';
 import { BreakpointConsumer } from '../util/withBreakpoint';
-import { getZones } from '../util/legUtils';
+import { getZones, addExtraCalcsToItinerary } from '../util/legUtils';
 
 class ItineraryTab extends React.Component {
   static propTypes = {
@@ -76,16 +76,20 @@ class ItineraryTab extends React.Component {
     const routeInformation = config.showRouteInformation && (
       <RouteInformation />
     );
+    let itinerary = this.props.itinerary;
+    if(config.showExtraCalculations) {
+      addExtraCalcsToItinerary(itinerary);
+    }
 
     return (
       <div className="itinerary-tab">
         <BreakpointConsumer>
           {breakpoint => [
             breakpoint !== 'large' ? (
-              <ItinerarySummary itinerary={this.props.itinerary} key="summary">
+              <ItinerarySummary itinerary={itinerary} key="summary">
                 <TimeFrame
-                  startTime={this.props.itinerary.startTime}
-                  endTime={this.props.itinerary.endTime}
+                  startTime={itinerary.startTime}
+                  endTime={itinerary.endTime}
                   refTime={this.props.searchTime}
                   className="timeframe--itinerary-summary"
                 />
@@ -93,7 +97,7 @@ class ItineraryTab extends React.Component {
             ) : (
               <div className="itinerary-timeframe" key="timeframe">
                 <DateWarning
-                  date={this.props.itinerary.startTime}
+                  date={itinerary.startTime}
                   refTime={this.props.searchTime}
                 />
               </div>
@@ -105,17 +109,17 @@ class ItineraryTab extends React.Component {
                 })}
               >
                 <ItineraryLegs
-                  itinerary={this.props.itinerary}
+                  itinerary={itinerary}
                   focusMap={this.handleFocus}
                 />
                 <ItineraryProfile
-                  itinerary={this.props.itinerary}
+                  itinerary={itinerary}
                   small={breakpoint !== 'large'}
                 />
                 {config.showTicketInformation && (
                   <TicketInformation
-                    fares={this.props.itinerary.fares}
-                    zones={getZones(this.props.itinerary.legs)}
+                    fares={itinerary.fares}
+                    zones={getZones(itinerary.legs)}
                   />
                 )}
                 {routeInformation}
