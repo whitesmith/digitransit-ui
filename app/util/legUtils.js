@@ -277,54 +277,40 @@ export const getZones = legs => {
     - Price for busLegs and subwayLegs
 */
 
-export const co2ToString = co2 => {
-  if (!co2) return false;
+export const getTotalWalkingCalories = (itinerary) =>
+  itinerary.legs.filter(isWalkingLeg).map(l => l.calories).reduce((x, y) => (x || 0) + (y || 0), 0);
 
-  return `${parseInt(co2, 10)} kgCO2`;
-};
-
-export const getTotalWalkingCalories = (itinerary) => {
-  let walkingLegs = itinerary.legs.filter(isWalkingLeg);
-  let totalWalkingCalories = walkingLegs.map(l => l.calories).reduce((x, y) => (x || 0) + (y || 0), 0)
-  
-  return totalWalkingCalories;
-}
-
-export const getTotalCO2Emissions = (itinerary) => {
-  let carLegs = itinerary.legs.filter(isCarLeg);
-  let totalCO2Emissions = carLegs.map(l => l.co2).reduce((x, y) => (x || 0) + (y || 0), 0)
-  
-  return totalCO2Emissions;
-}
-  
+export const getTotalCO2Emissions = (itinerary) =>
+  itinerary.legs.filter(isCarLeg).map(l => l.co2).reduce((x, y) => (x || 0) + (y || 0), 0);
 
 export const addExtraCalcsToLeg = leg => {
-  if(isWalkingLeg(leg)) {
+  if (isWalkingLeg(leg)) {
     // calories
-    if(!leg.distance) return;
+    if (!leg.distance) return;
     leg.calories = leg.distance * 0.068;
   }
-  if(isCarLeg(leg)) {
+  if (isCarLeg(leg)) {
     // kgCO2
-    if(!leg.distance) return;
+    if (!leg.distance) return;
     leg.co2 = leg.distance * 0.1;
   }
-  if(isBusLeg(leg) || isSubwayLeg(leg)) {
+  if (isBusLeg(leg) || isSubwayLeg(leg)) {
     // trip cost
-    if(!leg.distance) return;
-    leg.cost = (leg.distance/1000) * 1.2;
+    if (!leg.distance) return;
+    leg.cost = (leg.distance / 1000) * 1.2;
   }
 };
 
 export const addExtraCalcsToItinerary = itinerary => {
-  //itinerary.calories = getTotalWalkingDistance(itinerary) * 0.068;
-  itinerary.legs.forEach( leg => {
+  // If total calories per itinerary is required
+  // itinerary.calories = getTotalWalkingCalories(itinerary);
+  itinerary.legs.forEach(leg => {
     leg = addExtraCalcsToLeg(leg);
   });
 };
 
 export const addExtraCalcsToItineraries = itineraries => {
-  itineraries.forEach( itinerary => {
+  itineraries.forEach(itinerary => {
     itinerary = addExtraCalcsToItinerary(itinerary);
   });
 };
