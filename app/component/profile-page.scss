@@ -1,0 +1,29 @@
+.profile {
+  padding: 0;
+}
+
+.profile__banner {
+  background-color: rgba($white, .8);
+  min-height: 6.5rem;
+  box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 1em;
+  display: flex;
+  align-items: flex-end;
+  padding: .5em 0;
+
+  @media #{$large-up} { 
+    min-height: 8rem;
+  }
+}
+
+.profile__img {
+
+}
+
+.profile__name {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+.profile__email {
+  margin: 0;
+}
