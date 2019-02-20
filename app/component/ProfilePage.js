@@ -5,6 +5,7 @@ import { routerShape } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { withAuthentication } from './session';
 import Dialog from 'material-ui/Dialog';
+import { addMessage } from '../action/MessageActions';
 
 const userDetails = (name, email, avatar) => (
   <div className="media media--middle padding-vertical-normal">
@@ -36,6 +37,12 @@ class ProfilePage extends React.Component {
   deleteAccount = () =>
     this.props.firebase.deleteCurrentUser().then(() => {
       this.context.router.push('/');
+      this.context.executeAction(addMessage, {
+        persistence: 'repeat',
+        content: {
+          en: [ { type: "text", content: "Account deleted successfully." } ]
+        }
+      });
     });
 
   render() {
@@ -129,6 +136,7 @@ ProfilePage.propTypes = {
 };
 
 ProfilePage.contextTypes = {
+  executeAction: PropTypes.func.isRequired,
   config: PropTypes.object.isRequired,
   router: routerShape.isRequired,
 };
