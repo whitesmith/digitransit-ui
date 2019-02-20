@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { withAuthentication } from './session';
 import Dialog from 'material-ui/Dialog';
 import { addMessage } from '../action/MessageActions';
+import BasicDialog from './BasicDialog';
 
 const userDetails = (name, email, avatar) => (
   <div className="media media--middle padding-vertical-normal">
@@ -20,33 +21,50 @@ const userDetails = (name, email, avatar) => (
 );
 
 class ProfilePage extends React.Component {
-  state = {
-    deleteConfirmationIsOpen: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = { deleteConfirmationIsOpen: false, errorDialogIsOpen: false };
+  }
 
   openDeleteConfirmation = () => {
-    this.setState({deleteConfirmationIsOpen: true});
+    this.setState({ deleteConfirmationIsOpen: true });
   };
 
   closeDeleteConfirmation = () => {
-    this.setState({deleteConfirmationIsOpen: false});
+    this.setState({ deleteConfirmationIsOpen: false });
+  };
+
+  openErrorDialog = () => {
+    this.setState({ errorDialogIsOpen: true, deleteConfirmationIsOpen: false });
+  };
+
+  closeErrorDialog = () => {
+    this.setState({ errorDialogIsOpen: false });
   };
 
   downloadData = () => {};
 
   deleteAccount = () =>
-    this.props.firebase.deleteCurrentUser().then(() => {
-      this.context.router.push('/');
-      this.context.executeAction(addMessage, {
-        persistence: 'repeat',
-        content: {
-          en: [ { type: "text", content: "Account deleted successfully." } ]
+    this.props.firebase
+      .deleteCurrentUser()
+      .then(() => {
+        this.context.router.push('/');
+        this.context.executeAction(addMessage, {
+          persistence: 'repeat',
+          content: {
+            en: [{ type: 'text', content: 'Account deleted successfully.' }],
+          },
+        });
+      })
+      .catch(error => {
+        if (error.code === 'auth/requires-recent-login') {
+          this.openErrorDialog();
         }
       });
-    });
 
   render() {
     const { authUser } = this.props;
+    const { errorDialogIsOpen, deleteConfirmationIsOpen } = this.state;
 
     return (
       <div className="page-frame fullscreen momentum-scroll profile">
@@ -80,7 +98,7 @@ class ProfilePage extends React.Component {
                 </button>
               </div>
               <div className="small-12 large-6 columns">
-                <button 
+                <button
                   className="button secondary radius expand"
                   onClick={this.openDeleteConfirmation}
                 >
@@ -90,38 +108,45 @@ class ProfilePage extends React.Component {
                   />
                 </button>
               </div>
-              
-              <Dialog
-                actions={[
-                  <button 
-                  className="button secondary radius"
-                  onClick={this.closeDeleteConfirmation}
+
+              <BasicDialog
+                buttons={[
+                  <button
+                    className="button secondary radius"
+                    onClick={this.closeErrorDialog}
                   >
-                    <FormattedMessage
-                      id="cancel"
-                      defaultMessage="Cancel"
-                    />
+                    <FormattedMessage id="close" defaultMessage="Close" />
                   </button>,
-                  <span>&nbsp;</span>,
-                  <button 
-                  className="button alert radius"
-                  onClick={this.deleteAccount}
+                ]}
+                isOpen={errorDialogIsOpen}
+                messageId={'delete-account-error'}
+                defaultMessage={
+                  'This operation is sensitive and requires recent authentication. Log in again before retrying this request.'
+                }
+              />
+
+              <BasicDialog
+                buttons={[
+                  <button
+                    className="button secondary radius"
+                    onClick={this.closeDeleteConfirmation}
+                  >
+                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                  </button>,
+                  <button
+                    className="button alert radius"
+                    onClick={this.deleteAccount}
                   >
                     <FormattedMessage
                       id="delete-account"
                       defaultMessage="Delete account"
                     />
-                  </button>
+                  </button>,
                 ]}
-                modal={false}
-                open={this.state.deleteConfirmationIsOpen}
-                onRequestClose={this.closeDeleteConfirmation}
-              >
-                <FormattedMessage
-                  id="delete-account-confirmation"
-                  defaultMessage="Are you sure you want to delete your account?"
-                />
-              </Dialog>
+                isOpen={deleteConfirmationIsOpen}
+                messageId={'delete-account-confirmation'}
+                defaultMessage={'Are you sure you want to delete your account?'}
+              />
             </div>
           </div>
         </div>
