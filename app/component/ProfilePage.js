@@ -4,7 +4,6 @@ import React from 'react';
 import { routerShape } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { withAuthentication } from './session';
-import Dialog from 'material-ui/Dialog';
 import { addMessage } from '../action/MessageActions';
 import BasicDialog from './BasicDialog';
 
@@ -42,6 +41,7 @@ class ProfilePage extends React.Component {
       .then(() => {
         this.context.router.push('/');
         this.context.executeAction(addMessage, {
+          id: 'account',
           persistence: 'repeat',
           content: {
             en: [{ type: 'text', content: 'Account deleted successfully.' }],
@@ -52,6 +52,7 @@ class ProfilePage extends React.Component {
         if (error.code === 'auth/requires-recent-login') {
           this.closeDeleteConfirmation();
           this.context.executeAction(addMessage, {
+            id: 'account',
             persistence: 'repeat',
 
             content: {

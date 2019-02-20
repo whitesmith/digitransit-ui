@@ -7,6 +7,7 @@ import Avatar from 'material-ui/Avatar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import { markMessageAsRead } from '../action/MessageActions';
 
 const resetStyle = {color: '', background: 'unset', fontSize: ''};
 const initials = name => name.split(' ').reduce((r, w) => r += w.slice(0, 1), '');
@@ -44,7 +45,7 @@ const AvatarFallback = (url, name) => (
 class AuthButton extends React.Component {
   render() {
     const { firebase, authUser } = this.props;
-    const { router } = this.context;
+    const { router, executeAction } = this.context;
     if (authUser) {
       return (
         <IconMenu
@@ -57,14 +58,20 @@ class AuthButton extends React.Component {
             router.push('/profile');
           })}
           {navMenuButton('signout', 'sign-out', 'Sign out', () => {
-            firebase.signOut().then(() => router.push('/'));
+            firebase.signOut().then(() => {
+              router.push('/');
+              executeAction(markMessageAsRead, 'account');
+            });
           })}
         </IconMenu>
       );
     }
 
     return navAuthButton('signin', 'sign-in', 'Sign in', () => {
-      firebase.signInWithGoogle();
+      firebase.signInWithGoogle().then(() => {
+        executeAction(markMessageAsRead, 'account');
+      });
+      
     });
   }
 }
@@ -77,6 +84,7 @@ AuthButton.propTypes = {
 };
 
 AuthButton.contextTypes = {
+  executeAction: PropTypes.func.isRequired,
   config: PropTypes.object.isRequired,
   router: routerShape.isRequired,
 };
