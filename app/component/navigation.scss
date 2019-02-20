@@ -141,6 +141,35 @@ $content-background-color: $background-color;
   background-color: rgba($white, 0.15);
 }
 
+.navi-menu {
+  margin-right: .5em;
+}
+
+.navi-menu__avatar-container {
+  vertical-align: middle;
+  padding: 0 !important; // override material-ui inline styles
+}
+
+.navi-menu__avatar-container,
+.navi-menu__avatar {
+  @media #{$small-only}, #{$medium-only} {
+    max-height: 30px;
+    max-width: 30px;
+  }
+}
+.navi-menu__avatar {
+  @include font-medium;
+  font-size: $font-size-small !important; // override material-ui inline styles
+  background-color: rgba($white, 0.15) !important;
+}
+
+.navi-menu__item {
+  color: $black;
+  &:hover {
+    background: rgba($black, .15) !important;
+  }
+}
+
 .right-border {
   border-right: 1px solid rgba(0, 0, 0, 0.15);
 }
