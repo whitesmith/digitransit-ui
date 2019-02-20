@@ -70,7 +70,7 @@ class ProfilePage extends React.Component {
             <div className="row small-uncollapse padding-vertical-normal">
               <div className="small-12 large-6 columns">
                 <button
-                  className="button secondary expand"
+                  className="button radius expand"
                   onClick={this.downloadData}
                 >
                   <FormattedMessage
@@ -81,7 +81,7 @@ class ProfilePage extends React.Component {
               </div>
               <div className="small-12 large-6 columns">
                 <button 
-                  className="button info expand"
+                  className="button secondary radius expand"
                   onClick={this.openDeleteConfirmation}
                 >
                   <FormattedMessage
@@ -94,7 +94,7 @@ class ProfilePage extends React.Component {
               <Dialog
                 actions={[
                   <button 
-                  className="button secondary"
+                  className="button secondary radius"
                   onClick={this.closeDeleteConfirmation}
                   >
                     <FormattedMessage
@@ -104,7 +104,7 @@ class ProfilePage extends React.Component {
                   </button>,
                   <span>&nbsp;</span>,
                   <button 
-                  className="button alert"
+                  className="button alert radius"
                   onClick={this.deleteAccount}
                   >
                     <FormattedMessage
