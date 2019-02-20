@@ -4,7 +4,7 @@ import React from 'react';
 import { routerShape } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { withAuthentication } from './session';
-import PageFooter from './PageFooter';
+import Dialog from 'material-ui/Dialog';
 
 const userDetails = (name, email, avatar) => (
   <div className="media media--middle padding-vertical-normal">
@@ -19,6 +19,18 @@ const userDetails = (name, email, avatar) => (
 );
 
 class ProfilePage extends React.Component {
+  state = {
+    deleteConfirmationIsOpen: false,
+  };
+
+  openDeleteConfirmation = () => {
+    this.setState({deleteConfirmationIsOpen: true});
+  };
+
+  closeDeleteConfirmation = () => {
+    this.setState({deleteConfirmationIsOpen: false});
+  };
+
   downloadData = () => {};
 
   deleteAccount = () =>
@@ -60,17 +72,49 @@ class ProfilePage extends React.Component {
                   />
                 </button>
               </div>
-              <div
-                className="small-12 large-6 columns"
-                onClick={this.deleteAccount}
-              >
-                <button className="button info expand">
+              <div className="small-12 large-6 columns">
+                <button 
+                  className="button info expand"
+                  onClick={this.openDeleteConfirmation}
+                >
                   <FormattedMessage
                     id="delete-account"
                     defaultMessage="Delete account"
                   />
                 </button>
               </div>
+              
+              <Dialog
+                actions={[
+                  <button 
+                  className="button secondary"
+                  onClick={this.closeDeleteConfirmation}
+                  >
+                    <FormattedMessage
+                      id="cancel"
+                      defaultMessage="Cancel"
+                    />
+                  </button>,
+                  <span>&nbsp;</span>,
+                  <button 
+                  className="button alert"
+                  onClick={this.deleteAccount}
+                  >
+                    <FormattedMessage
+                      id="delete-account"
+                      defaultMessage="Delete account"
+                    />
+                  </button>
+                ]}
+                modal={false}
+                open={this.state.deleteConfirmationIsOpen}
+                onRequestClose={this.closeDeleteConfirmation}
+              >
+                <FormattedMessage
+                  id="delete-account-confirmation"
+                  defaultMessage="Are you sure you want to delete your account?"
+                />
+              </Dialog>
             </div>
           </div>
         </div>

@@ -704,6 +704,7 @@ const translations = {
     datasources: 'Data sources',
     date: 'Date',
     delete: 'Delete',
+    'delete-account-confirmation': 'Are you sure you want to delete your account?',
     'departure-is-canceled': '{modeInfo} {from}–{to} at {time} is cancelled',
     'departure-is-canceled-airplane': 'Flight {shortName}',
     'departure-is-canceled-bus': 'Bus {shortName}',
