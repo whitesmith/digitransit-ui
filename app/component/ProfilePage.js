@@ -23,7 +23,7 @@ const userDetails = (name, email, avatar) => (
 class ProfilePage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { deleteConfirmationIsOpen: false, errorDialogIsOpen: false };
+    this.state = { deleteConfirmationIsOpen: false };
   }
 
   openDeleteConfirmation = () => {
@@ -32,14 +32,6 @@ class ProfilePage extends React.Component {
 
   closeDeleteConfirmation = () => {
     this.setState({ deleteConfirmationIsOpen: false });
-  };
-
-  openErrorDialog = () => {
-    this.setState({ errorDialogIsOpen: true, deleteConfirmationIsOpen: false });
-  };
-
-  closeErrorDialog = () => {
-    this.setState({ errorDialogIsOpen: false });
   };
 
   downloadData = () => {};
@@ -58,13 +50,26 @@ class ProfilePage extends React.Component {
       })
       .catch(error => {
         if (error.code === 'auth/requires-recent-login') {
-          this.openErrorDialog();
+          this.closeDeleteConfirmation();
+          this.context.executeAction(addMessage, {
+            persistence: 'repeat',
+
+            content: {
+              en: [
+                {
+                  type: 'text',
+                  content:
+                    'This operation is sensitive and requires recent authentication. Log in again before retrying this request.',
+                },
+              ],
+            },
+          });
         }
       });
 
   render() {
     const { authUser } = this.props;
-    const { errorDialogIsOpen, deleteConfirmationIsOpen } = this.state;
+    const { deleteConfirmationIsOpen } = this.state;
 
     return (
       <div className="page-frame fullscreen momentum-scroll profile">
@@ -108,22 +113,6 @@ class ProfilePage extends React.Component {
                   />
                 </button>
               </div>
-
-              <BasicDialog
-                buttons={[
-                  <button
-                    className="button secondary radius"
-                    onClick={this.closeErrorDialog}
-                  >
-                    <FormattedMessage id="close" defaultMessage="Close" />
-                  </button>,
-                ]}
-                isOpen={errorDialogIsOpen}
-                messageId={'delete-account-error'}
-                defaultMessage={
-                  'This operation is sensitive and requires recent authentication. Log in again before retrying this request.'
-                }
-              />
 
               <BasicDialog
                 buttons={[
