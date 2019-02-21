@@ -1,0 +1,38 @@
+.recent-searches-table-container {
+  table th {
+    text-transform: capitalize;
+  }
+  .header-tr {
+    padding: 0 !important;
+
+    th:first-child{
+      padding-left: 1em;
+    }
+  }
+
+  .th-origin,
+  .th-destination {
+    flex: 1 0 4em !important;
+  }
+
+  .th-via {
+    flex-basis: 4em !important;
+  }
+  .th-duration,
+  .th-walk {
+    flex-basis: 4em !important;
+  }
+
+}
+
+.recent-search-row {
+  td:first-child {
+    padding-left: 1em;
+  }
+  .td-distance {
+    padding-left: 0 !important;
+  }
+  .td-route-number {
+    flex-basis: 4em !important;
+  }
+}
