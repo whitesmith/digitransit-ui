@@ -54,6 +54,9 @@ class AuthButton extends React.Component {
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}
           iconButtonElement={AvatarFallback(authUser.photoURL, authUser.displayName)}
         >
+          {navMenuButton('account-history', 'account-history', 'Account history', () => {
+            router.push('/account-history');
+          })}
           {navMenuButton('profile', 'profile', 'Profile', () => {
             router.push('/profile');
           })}
