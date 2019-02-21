@@ -19,6 +19,7 @@ import TransferOptionsSection from './customizesearch/TransferOptionsSection';
 import TransportModesSection from './customizesearch/TransportModesSection';
 import WalkingOptionsSection from './customizesearch/WalkingOptionsSection';
 import { resetCustomizedSettings } from '../store/localStorage';
+import { withAuthentication } from './session';
 import * as ModeUtils from '../util/modeUtils';
 import { getDefaultSettings, getCurrentSettings } from '../util/planParamUtil';
 import {
@@ -67,7 +68,12 @@ class CustomizeSearch extends React.Component {
   };
 
   resetParameters = () => {
-    resetCustomizedSettings();
+    const { firebase } = this.props;
+    if (firebase.auth.currentUser) {
+      firebase.setUserSettings(null);
+    } else {
+      resetCustomizedSettings();
+    }
     clearQueryParams(this.context.router, Object.keys(this.defaultSettings));
   };
 
@@ -81,7 +87,7 @@ class CustomizeSearch extends React.Component {
     const {
       config: { accessibilityOptions },
     } = this.context;
-    const { isOpen, onToggleClick } = this.props;
+    const { isOpen, onToggleClick, firebase } = this.props;
     const currentSettings = getCurrentSettings(config, query);
     const isUsingBicycle = currentSettings.modes.includes(StreetMode.Bicycle);
 
@@ -198,9 +204,11 @@ class CustomizeSearch extends React.Component {
             <div style={{ display: 'flex' }}>
               <SaveCustomizedSettingsButton
                 noSettingsFound={this.resetParameters}
+                firebase={firebase}
               />
               <LoadCustomizedSettingsButton
                 noSettingsFound={this.resetParameters}
+                firebase={firebase}
               />
             </div>
             <div>
@@ -213,4 +221,4 @@ class CustomizeSearch extends React.Component {
   }
 }
 
-export default CustomizeSearch;
+export default withAuthentication(CustomizeSearch);

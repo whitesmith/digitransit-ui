@@ -42,15 +42,27 @@ class LoadCustomizedSettingsButton extends React.Component {
 
     // const querySettings = getQuerySettings(this.context.location.query);
     const defaultSettings = getDefaultSettings(this.context.config);
-    const getSettings = getCustomizedSettings();
-    if (isEmpty(getSettings) || isEqual(getSettings, defaultSettings)) {
+    const { firebase } = this.props;
+    if (firebase.auth.currentUser) {
+      firebase.getUserSettings().then(snap => {
+        const settings = snap.val();
+        this.handleLoadedSettings(settings, defaultSettings);
+      });
+    } else {
+      const getSettings = getCustomizedSettings();
+      this.handleLoadedSettings(getSettings, defaultSettings);
+    }
+  };
+
+  handleLoadedSettings = (settings, defaultSettings) => {
+    if (isEmpty(settings) || isEqual(settings, defaultSettings)) {
       this.props.noSettingsFound();
     } else {
       // getCustomizedSettings(querySettings);
       this.context.router.replace({
         ...this.context.router.location,
         query: {
-          ...getSettings,
+          ...settings,
         },
       });
       this.setState({

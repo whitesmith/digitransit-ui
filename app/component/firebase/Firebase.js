@@ -1,11 +1,13 @@
 import app from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/database';
 
 class Firebase {
   constructor(config) {
     app.initializeApp(config);
     this.auth = app.auth();
     this.googleProvider = new app.auth.GoogleAuthProvider();
+    this.database = app.database();
   }
 
   // email methods
@@ -25,6 +27,21 @@ class Firebase {
 
   // google login methods
   signInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
+
+  // database methods
+  setUserSettings = settings => {
+    console.log('SAVING SETTINGS: ', settings);
+    return this.database
+      .ref('customizedSettings/' + this.auth.currentUser.uid)
+      .set(settings);
+  };
+
+  getUserSettings = () => {
+    console.log('LOADING SETTINGS...');
+    return this.database
+      .ref('customizedSettings/' + this.auth.currentUser.uid)
+      .once('value');
+  };
 }
 
 export default Firebase;
