@@ -42,6 +42,7 @@ class CustomizeSearch extends React.Component {
   static propTypes = {
     isOpen: PropTypes.bool,
     onToggleClick: PropTypes.func.isRequired,
+    firebase: PropTypes.object,
   };
 
   static defaultProps = {
