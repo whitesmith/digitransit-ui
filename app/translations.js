@@ -891,6 +891,7 @@ const translations = {
     'rail-with-route-number': 'Train {routeNumber} {headSign}',
     realtime: 'Real-time',
     'realtime-matching': 'Real-time integration',
+    'recent-searches': 'Recent searches',
     'rent-cycle-at': 'Rent a bike at {station} station',
     'required-ticket': 'Ticket required for the journey',
     'return-cycle-to': 'Return the bike to {station} station',
@@ -1000,6 +1001,7 @@ const translations = {
     'trip-page.title': 'Route {route_short_name}',
     'try-again': 'Try again',
     unpreferred: 'Avoid routes',
+    'usage-metrics': 'Usage metrics',
     'use-citybike': 'Start using',
     'use-national-service':
       'You can also try the national service available at',

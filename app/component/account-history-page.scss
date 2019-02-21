@@ -1,3 +1,32 @@
+.account-history-container {
+  display: flex;
+  flex-basis: 50%;
+  flex-grow: 1;
+  min-height: 320px;
+
+  @media #{$large-up} {
+    margin-left: 10%;
+    width: 50%;
+    position: absolute;
+  }
+}
+
+
+.account-heading {
+  font-weight: $font-weight-bold;
+  font-size: $font-size-normal;
+  text-transform: uppercase;
+  margin-bottom: 1.6em;
+  
+  @media #{$large-up} {
+    margin-bottom: 2em;
+  }
+}
+.icon--heading {
+  width: 20px;
+  height: 20px;
+}
+
 .stats-container {
   @include grid-row();
   display: flex;
