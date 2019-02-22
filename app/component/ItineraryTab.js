@@ -73,13 +73,13 @@ class ItineraryTab extends React.Component {
 
   render() {
     const { config } = this.context;
-    const routeInformation = config.showRouteInformation && (
-      <RouteInformation />
-    );
     let itinerary = this.props.itinerary;
     if(config.showExtraCalculations) {
       addExtraCalcsToItinerary(itinerary);
     }
+    const routeInformation = config.showRouteInformation && (
+      <RouteInformation itinerary={itinerary} />
+    );
 
     return (
       <div className="itinerary-tab">
