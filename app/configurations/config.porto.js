@@ -27,7 +27,7 @@ export default configMerger(defaultConfig, {
     MAP_URL,
     OTP: process.env.OTP_URL || `${API_URL}/routing/v1/routers/finland/`,
     MAP: {
-      default: `${MAP_URL}`
+      default: `${MAP_URL}`,
     },
     STOP_MAP: `https://digitransit-dev-cdn-origin.azureedge.net/map/v1/finland-stop-map/`,
     CITYBIKE_MAP: `${MAP_URL}/map/v1/hsl-citybike-map/`,
@@ -62,8 +62,10 @@ export default configMerger(defaultConfig, {
   spinner: 'porto/spinner.png',
 
   contactName: {
-    default: "Porto.",
+    default: 'Porto.',
   },
+
+  contactEmail: 'some.support.email@portofigital.pt',
 
   // Default labels for manifest creation
   name: 'Urban Platform',
@@ -254,7 +256,7 @@ export default configMerger(defaultConfig, {
   // Ticket information feature toggle
   showTicketInformation: false,
   showRouteInformation: false,
-  
+
   //CO2, Calories, Cost
   showExtraCalculations: true,
 

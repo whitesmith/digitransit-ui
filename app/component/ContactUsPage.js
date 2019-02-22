@@ -6,7 +6,10 @@ import { FormattedMessage } from 'react-intl';
 const ContactUsPage = ({}, context) => {
   return (
     <div className="page-frame fullscreen momentum-scroll contact-form">
-      <form action="" target="_blank">
+      <form
+        action={`https://formspree.io/${context.config.contactEmail}`}
+        method="POST"
+      >
         <div className="contact-form__banner">
           <div className="row padding-vertical-small">
             <div className="small-12 large-8 large-centered columns">
@@ -21,28 +24,52 @@ const ContactUsPage = ({}, context) => {
             <label htmlFor="name" className="contact-form__label">
               <FormattedMessage id="name" defaultMessage="Name" />
             </label>
-            <input type="text" id="name" name="name" required autoComplete="off" className="contact-form__input"/>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              autoComplete="off"
+              className="contact-form__input"
+            />
           </div>
         </div>
         <div className="row padding-vertical-small">
           <div className="small-12 large-8 large-centered columns">
             <label htmlFor="email" className="contact-form__label">
-              <FormattedMessage id="email-address" defaultMessage="Email address" />
+              <FormattedMessage
+                id="email-address"
+                defaultMessage="Email address"
+              />
             </label>
-            <input type="email" id="email" name="email" required autoComplete="off" className="contact-form__input"/>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autoComplete="off"
+              className="contact-form__input"
+            />
           </div>
         </div>
         <div className="row padding-vertical-small">
           <div className="small-12 large-8 large-centered columns">
             <label htmlFor="message" className="contact-form__label">
-            <FormattedMessage id="message" defaultMessage="Message" />
+              <FormattedMessage id="message" defaultMessage="Message" />
             </label>
-            <textarea id="message" name="message" className="contact-form__textarea" rows="6"></textarea>
+            <textarea
+              id="message"
+              name="message"
+              className="contact-form__textarea"
+              rows="6"
+            />
           </div>
         </div>
         <div className="row padding-vertical-small">
           <div className="small-12 large-8 large-centered columns">
-            <button type="submit" className="contact-form__submit">Submit</button>
+            <button type="submit" className="contact-form__submit">
+              Submit
+            </button>
           </div>
         </div>
       </form>
@@ -50,7 +77,7 @@ const ContactUsPage = ({}, context) => {
   );
 };
 
-ContactUsPage.propTypes = { };
+ContactUsPage.propTypes = {};
 
 ContactUsPage.contextTypes = {
   config: PropTypes.object.isRequired,
