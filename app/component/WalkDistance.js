@@ -5,7 +5,7 @@ import cx from 'classnames';
 import Icon from './Icon';
 
 function WalkDistance(props) {
-  const roundedWalkDistanceInM = Math.round(props.walkDistance / 100) * 100;
+  const roundedWalkDistanceInM = Math.round(props.walkDistance / 10) * 10;
   const roundedWalkDistanceInKm = (roundedWalkDistanceInM / 1000).toFixed(1);
 
   const walkDistance =

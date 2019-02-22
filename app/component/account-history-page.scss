@@ -1,0 +1,102 @@
+.account-history-container {
+  display: flex;
+  flex-basis: 50%;
+  flex-grow: 1;
+  min-height: 320px;
+
+  @media #{$large-up} {
+    margin-left: 10%;
+    width: 50%;
+    position: absolute;
+  }
+}
+
+
+.account-heading {
+  font-weight: $font-weight-bold;
+  font-size: $font-size-normal;
+  text-transform: uppercase;
+  margin-bottom: 1.6em;
+  
+  @media #{$large-up} {
+    margin-bottom: 2em;
+  }
+}
+.icon--heading {
+  width: 20px;
+  height: 20px;
+}
+
+.stats-container {
+  @include grid-row();
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.stat {
+  margin-bottom: 1.6em;
+
+  @include grid-column(
+    $columns: 6,
+    $center: true
+  );
+  padding: 0 6%;
+
+  @media #{$large-up} {
+    @include grid-column(
+      $columns: 3,
+      $center: true
+    );
+    text-align: center;
+  }
+}
+.stat__type {
+  color: $gray;
+  font-size: $font-size-xsmall;
+  font-family: $font-family-narrow;
+  margin: 0;
+  margin-bottom: .4em;
+
+  @media #{$large-up} {
+    text-align: center;
+    margin-bottom: .8em;
+  }
+}
+.stat__icon {
+  @media #{$large-up} {
+    width: 60px;
+    height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: .4em;
+  }
+}
+.stat__data {
+  @include font-bold;
+  margin: 0;
+  @media #{$large-up} {
+    margin-bottom: .2em;
+  }
+}
+.stat__value {
+  font-size: 1.9rem;
+  line-height: 1;
+}
+.stat__unit {
+  font-size: $font-size-medium-large;
+}
+.stat__average {
+  margin: 0;
+  font-size: $font-size-normal;
+  font-family: $font-family-narrow;
+
+  &--positive {
+    color: $slider-ok-color;
+  }
+  &--negative {
+    color: $slider-warning-color;
+  }
+}

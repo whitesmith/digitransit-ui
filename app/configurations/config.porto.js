@@ -280,8 +280,8 @@ export default configMerger(defaultConfig, {
     },
 
     tram: {
-      availableForSelection: false,
-      defaultValue: false,
+      availableForSelection: true,
+      defaultValue: true,
     },
 
     rail: {
@@ -291,11 +291,11 @@ export default configMerger(defaultConfig, {
 
     subway: {
       availableForSelection: true,
-      defaultValue: false,
+      defaultValue: true,
     },
 
     citybike: {
-      availableForSelection: true, // TODO: Turn off in autumn
+      availableForSelection: false, // TODO: Turn off in autumn
       defaultValue: false, // always false
     },
 

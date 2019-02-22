@@ -18,11 +18,11 @@ const navAuthButton = (id, textId, defaultMessage, executeAction) => (
   </button>
 );
 
-const navMenuButton = (id, textId, defaultMessage, executeAction) => (
+const navMenuButton = (id, textId, defaultMessage, active, executeAction) => (
   <MenuItem
     id={id}
     style={resetStyle}
-    className='navi-menu__item'
+    className={`navi-menu__item ${active ? 'active' : ''}`}
     onClick={executeAction}
   >
     <FormattedMessage id={textId} defaultMessage={defaultMessage} />
@@ -46,6 +46,7 @@ class AuthButton extends React.Component {
   render() {
     const { firebase, authUser } = this.props;
     const { router, executeAction } = this.context;
+    const path = router.location.pathname;
     if (authUser) {
       return (
         <IconMenu
@@ -54,10 +55,13 @@ class AuthButton extends React.Component {
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}
           iconButtonElement={AvatarFallback(authUser.photoURL, authUser.displayName)}
         >
-          {navMenuButton('profile', 'profile', 'Profile', () => {
+          {navMenuButton('account-history', 'account-history', 'Account history', path == '/account-history', () => {
+            router.push('/account-history');
+          })}
+          {navMenuButton('profile', 'profile', 'Profile', path == '/profile', () => {
             router.push('/profile');
           })}
-          {navMenuButton('signout', 'sign-out', 'Sign out', () => {
+          {navMenuButton('signout', 'sign-out', 'Sign out', false, () => {
             firebase.signOut().then(() => {
               router.push('/');
               executeAction(markMessageAsRead, 'account');
