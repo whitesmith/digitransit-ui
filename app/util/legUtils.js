@@ -343,11 +343,13 @@ export const addExtraCalcsToLeg = leg => {
 };
 
 export const addExtraCalcsToItinerary = itinerary => {
-  // If total calories per itinerary is required
-  // itinerary.calories = getTotalWalkingCalories(itinerary);
   itinerary.legs.forEach(leg => {
     leg = addExtraCalcsToLeg(leg);
   });
+  
+  itinerary.calories = getTotalWalkingCalories(itinerary);
+  itinerary.co2 = getTotalCO2Emissions(itinerary);
+  itinerary.cost = getTotalCost(itinerary);
 };
 
 export const addExtraCalcsToItineraries = itineraries => {
