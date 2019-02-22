@@ -255,8 +255,8 @@ export default configMerger(defaultConfig, {
   },
   // Ticket information feature toggle
   showTicketInformation: false,
-  showRouteInformation: false,
-
+  showRouteInformation: true,
+  
   //CO2, Calories, Cost
   showExtraCalculations: true,
 

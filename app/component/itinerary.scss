@@ -707,16 +707,22 @@ $itinerary-tab-switch-height: 48px;
   right: 2em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
+  margin-bottom: 1.4em;
   border-top: solid 1px $light-gray;
   border-bottom: solid 1px $light-gray;
   width: calc(100% - 2em);
-  div {
-    border-right: solid 1px $light-gray;
-
-    &.noborder {
-      border-right: none;
-    }
+  display: flex;
+  .columns {
+    flex-basis: 50%;
   }
+  .columns + .columns {
+    border-left: solid 1px $light-gray;
+  }
+}
+.itinerary-route-value {
+  margin: 0;
+  font-size: $font-size-medium-large;
+  line-height: $line-height-normal;
 }
 
 span.itinerary-stop-code {

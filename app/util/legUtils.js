@@ -170,6 +170,10 @@ const isBusLeg = leg =>
   LegMode.Bus === getLegMode(leg);
 const isSubwayLeg = leg =>
   LegMode.Subway === getLegMode(leg);
+const isTramLeg = leg =>
+  LegMode.Tram === getLegMode(leg);
+const isRailLeg = leg =>
+  LegMode.Rail === getLegMode(leg);
 
 /**
  * Checks if the itinerary consists of a single biking leg.
@@ -278,10 +282,45 @@ export const getZones = legs => {
 */
 
 export const getTotalWalkingCalories = (itinerary) =>
-  itinerary.legs.filter(isWalkingLeg).map(l => l.calories).reduce((x, y) => (x || 0) + (y || 0), 0);
+  itinerary.legs.filter(
+    isWalkingLeg
+  ).map(
+    l => l.calories
+  ).reduce(
+    (x, y) => (x || 0) + (y || 0), 0
+  );
 
 export const getTotalCO2Emissions = (itinerary) =>
-  itinerary.legs.filter(isCarLeg).map(l => l.co2).reduce((x, y) => (x || 0) + (y || 0), 0);
+  itinerary.legs.filter(
+    leg => (
+      isCarLeg(leg) || isBusLeg(leg) || isSubwayLeg(leg) || isTramLeg(leg) || isRailLeg(leg)
+    )
+  ).map(
+    l => l.co2
+  ).reduce(
+    (x, y) => (x || 0) + (y || 0), 0
+  );
+
+export const getTotalCost = (itinerary) =>
+  itinerary.legs.filter(
+    leg => (
+      isBusLeg(leg) || isSubwayLeg(leg)
+    )
+  ).map(
+    l => l.cost
+  ).reduce(
+    (x, y) => (x || 0) + (y || 0), 0
+  );
+
+
+// gCO2/m per transportation type
+const CO2EmissionByMode = {
+  [LegMode.Car]: 0.135,
+  [LegMode.Bus]: 0.07,
+  [LegMode.Subway]: 0.0305,
+  [LegMode.Tram]: 0.023,
+  [LegMode.Rail]: 0.028,
+};
 
 export const addExtraCalcsToLeg = leg => {
   if (isWalkingLeg(leg)) {
@@ -289,11 +328,13 @@ export const addExtraCalcsToLeg = leg => {
     if (!leg.distance) return;
     leg.calories = leg.distance * 0.068;
   }
-  if (isCarLeg(leg)) {
-    // kgCO2
+
+  if (isCarLeg(leg) || isBusLeg(leg) || isSubwayLeg(leg) || isTramLeg(leg) || isRailLeg(leg)) {
+    // gCO2
     if (!leg.distance) return;
-    leg.co2 = leg.distance * 0.1;
+    leg.co2 = leg.distance * CO2EmissionByMode[getLegMode(leg)];
   }
+
   if (isBusLeg(leg) || isSubwayLeg(leg)) {
     // trip cost
     if (!leg.distance) return;
@@ -302,11 +343,13 @@ export const addExtraCalcsToLeg = leg => {
 };
 
 export const addExtraCalcsToItinerary = itinerary => {
-  // If total calories per itinerary is required
-  // itinerary.calories = getTotalWalkingCalories(itinerary);
   itinerary.legs.forEach(leg => {
     leg = addExtraCalcsToLeg(leg);
   });
+  
+  itinerary.calories = getTotalWalkingCalories(itinerary);
+  itinerary.co2 = getTotalCO2Emissions(itinerary);
+  itinerary.cost = getTotalCost(itinerary);
 };
 
 export const addExtraCalcsToItineraries = itineraries => {
