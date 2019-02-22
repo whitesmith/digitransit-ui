@@ -52,7 +52,7 @@ namespace :deploy do
         execute "ps aux | grep /var/www/digitransit-ui/ |  awk '{print $2}' | xargs -r kill -9 "
         execute "systemctl stop server"
         execute "lsof -t -i :8080 | awk '{print $1}' | xargs -r kill -9"
-        execute "cd '#{release_path}'; yarn install; systemctl start server"
+        execute "cd '#{release_path}'; yarn install; env-cmd .env yarn run build; systemctl start server"
       end
     end
   end
