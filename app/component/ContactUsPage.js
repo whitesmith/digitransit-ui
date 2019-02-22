@@ -68,7 +68,7 @@ const ContactUsPage = ({}, context) => {
         <div className="row padding-vertical-small">
           <div className="small-12 large-8 large-centered columns">
             <button type="submit" className="contact-form__submit">
-              Submit
+              <FormattedMessage id="submit" defaultMessage="Submit" />
             </button>
           </div>
         </div>
