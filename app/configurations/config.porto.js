@@ -3,14 +3,12 @@ import configMerger from '../util/configMerger';
 const defaultConfig = require('./config.default').default;
 const CONFIG = 'porto';
 
-const API_URL = process.env.API_URL || 'https://dev-api.digitransit.fi';
-const GEOCODING_BASE_URL = `${API_URL}/geocoding/v1`;
-const MAP_URL =
-  process.env.MAP_URL || 'https://digitransit-dev-cdn-origin.azureedge.net';
+const API_URL = process.env.API_URL || '';
+const MAP_URL = process.env.MAP_URL || '';
 const APP_PATH = process.env.APP_CONTEXT || '';
 const { PIWIK_ADDRESS, PIWIK_ID, SENTRY_DSN } = process.env;
 const PORT = process.env.PORT || 8080;
-const APP_DESCRIPTION = 'Digitransit journey planning UI';
+const APP_DESCRIPTION = 'Multi Modal Transportation journey planning';
 const OTP_TIMEOUT = process.env.OTP_TIMEOUT || 10000; // 10k is the current server default
 const YEAR = 1900 + new Date().getYear();
 
@@ -25,21 +23,20 @@ export default configMerger(defaultConfig, {
     API_URL,
     ASSET_URL: process.env.ASSET_URL,
     MAP_URL,
-    OTP: process.env.OTP_URL || `${API_URL}/routing/v1/routers/finland/`,
+    OTP: process.env.OTP_URL || '',
     MAP: {
       default: `${MAP_URL}`,
     },
-    STOP_MAP: `https://digitransit-dev-cdn-origin.azureedge.net/map/v1/finland-stop-map/`,
-    CITYBIKE_MAP: `${MAP_URL}/map/v1/hsl-citybike-map/`,
-    MQTT: 'wss://mqtt.hsl.fi',
-    ALERTS: process.env.ALERTS_URL || `${API_URL}/realtime/service-alerts/v1`,
+    STOP_MAP: '',
+    CITYBIKE_MAP: '',
+    MQTT: '',
+    ALERTS: process.env.ALERTS_URL || '',
     FONT:
       'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700%7CRoboto:300,400,700',
     REALTIME:
       process.env.VEHICLE_URL || `${API_URL}/realtime/vehicle-positions/v1`,
-    PELIAS: `${process.env.GEOCODING_BASE_URL || GEOCODING_BASE_URL}/search`,
-    PELIAS_REVERSE_GEOCODER: `${process.env.GEOCODING_BASE_URL ||
-      GEOCODING_BASE_URL}/reverse`,
+    PELIAS: `${process.env.GEOCODING_BASE_URL || ''}/search`,
+    PELIAS_REVERSE_GEOCODER: `${process.env.GEOCODING_BASE_URL || ''}/reverse`,
   },
   userAuthentication: true,
   FIREBASE: {
@@ -68,8 +65,8 @@ export default configMerger(defaultConfig, {
   contactEmail: 'some.support.email@portofigital.pt',
 
   // Default labels for manifest creation
-  name: 'Urban Platform',
-  shortName: 'UrbanPlatform',
+  name: 'MMT',
+  shortName: 'MMT',
 
   searchParams: {},
   feedIds: [],
@@ -100,7 +97,7 @@ export default configMerger(defaultConfig, {
   maxWalkDistance: 10000,
   maxBikingDistance: 100000,
   itineraryFiltering: 1.5, // drops 66% worse routes
-  availableLanguages: ['en'], //, 'pt'],
+  availableLanguages: ['en', 'pt'],
   defaultLanguage: 'en',
   // This timezone data will expire on 31.12.2020
   timezoneData:
@@ -192,8 +189,6 @@ export default configMerger(defaultConfig, {
     showStationId: true,
 
     useUrl: {
-      fi: 'https://www.hsl.fi/kaupunkipyorat',
-      sv: 'https://www.hsl.fi/sv/stadscyklar',
       en: 'https://www.hsl.fi/en/citybikes',
     },
 
@@ -216,7 +211,7 @@ export default configMerger(defaultConfig, {
     default: 18,
   },
 
-  appBarLink: { name: 'Digitransit', href: 'https://www.digitransit.fi/' },
+  appBarLink: { name: 'MMT', href: 'http://mmt.portodigital.pt' },
 
   colors: {
     primary: '#0F2F7F',
@@ -233,9 +228,9 @@ export default configMerger(defaultConfig, {
   },
 
   socialMedia: {
-    title: 'Digitransit',
+    title: 'MMT',
     description: APP_DESCRIPTION,
-    locale: 'en_US',
+    locale: 'pt_PT',
 
     image: {
       url: '/img/default-social-share.png',
@@ -245,13 +240,13 @@ export default configMerger(defaultConfig, {
 
     twitter: {
       card: 'summary_large_image',
-      site: '@hsldevcom',
+      site: '@porto',
     },
   },
 
   meta: {
     description: APP_DESCRIPTION,
-    keywords: 'digitransit',
+    keywords: 'mmt',
   },
   // Ticket information feature toggle
   showTicketInformation: false,
@@ -340,7 +335,7 @@ export default configMerger(defaultConfig, {
 
   ticketOptions: [
     {
-      displayName: 'Ei lippuvyöhykerajoitusta',
+      displayName: 'No zone restrictions',
       value: '0',
     },
   ],
@@ -348,12 +343,12 @@ export default configMerger(defaultConfig, {
   accessibilityOptions: [
     {
       messageId: 'accessibility-nolimit',
-      displayName: 'Ei rajoitusta',
+      displayName: 'No limits',
       value: '0',
     },
     {
       messageId: 'accessibility-limited',
-      displayName: 'Liikun pyörätuolilla',
+      displayName: 'Wheelchair',
       value: '1',
     },
   ],
@@ -447,7 +442,7 @@ export default configMerger(defaultConfig, {
 
   footer: {
     content: [
-      { label: `© HSL, Liikennevirasto ${YEAR}` },
+      { label: `© MMT ${YEAR}` },
       {},
       {
         name: 'contact-us',
@@ -492,48 +487,6 @@ export default configMerger(defaultConfig, {
   ],
 
   aboutThisService: {
-    fi: [
-      {
-        header: 'Tietoja palvelusta',
-        paragraphs: [
-          'Palvelu kattaa joukkoliikenteen, kävelyn, pyöräilyn ja yksityisautoilun rajatuilta osin. Palvelu perustuu Digitransit palvelualustaan.',
-        ],
-      },
-      {
-        header: 'Digitransit palvelualusta',
-        paragraphs: [
-          'Digitransit-palvelualusta on HSL:n ja Liikenneviraston kehittämä avoimen lähdekoodin reititystuote.',
-        ],
-      },
-      {
-        header: 'Tietolähteet',
-        paragraphs: [
-          'Kartat, tiedot kaduista, rakennuksista, pysäkkien sijainnista ynnä muusta tarjoaa © OpenStreetMap contributors. Osoitetiedot tuodaan Väestörekisterikeskuksen rakennustietorekisteristä. Joukkoliikenteen reitit ja aikataulut ladataan Liikenneviraston valtakunnallisesta joukkoliikenteen tietokannasta.',
-        ],
-      },
-    ],
-
-    sv: [
-      {
-        header: 'Om tjänsten',
-        paragraphs: [
-          'Reseplaneraren täcker med vissa begränsningar kollektivtrafik, promenad, cykling samt privatbilism. Tjänsten baserar sig på Digitransit-plattformen.',
-        ],
-      },
-      {
-        header: 'Digitransit-plattformen',
-        paragraphs: [
-          'Digitransit-plattformen är en öppen programvara utvecklad av HRT och Trafikverket.',
-        ],
-      },
-      {
-        header: 'Datakällor',
-        paragraphs: [
-          'Kartor, gator, byggnader, hållplatser och dylik information erbjuds av © OpenStreetMap contributors. Addressinformation hämtas från BRC:s byggnadsinformationsregister. Kollektivtrafikens rutter och tidtabeller hämtas från Trafikverkets landsomfattande kollektivtrafiksdatabas.',
-        ],
-      },
-    ],
-
     en: [
       {
         header: 'About this service',
@@ -554,9 +507,27 @@ export default configMerger(defaultConfig, {
         ],
       },
     ],
-    nb: {},
-    fr: {},
-    de: {},
+    pt: [
+      {
+        header: 'Sobre este serviço',
+        paragraphs: [
+          'Este serviço cobre os transportes coletivos, percursos pedonais, ciclovias e transporte individual. Este serviço utiliza a plataforma Digitransit',
+        ],
+      },
+      {
+        header: 'Platforma Digitransit',
+        paragraphs: [
+          'A plataforma Digitransit é uma plataforma open source de itinerários desenvolvida por HSL e The Finnish Transport Agency.',
+        ],
+      },
+      {
+        header: 'Fontes de dados',
+        paragraphs: [
+          "Os mapas, ruas, edifícios etc. são obtidos a partir da comunidade © OpenStreetMap. A informação relativa aos serviços de transportes coletivos foi obtida junto da Área Metropolitana do Porto, Metro do Porto, S.A. e CP, EPE.",
+        ],
+      },
+    ],
+
   },
 
   termsAndConditions: {
@@ -612,6 +583,16 @@ export default configMerger(defaultConfig, {
         ],
       },
     ],
+    pt: [
+      {
+        header: 'Termos e Condições',
+        paragraphs: [
+          'Estes termos e condições descrevem as regras e regulamentos para o uso do site MMT PortoDigital.',
+          'Ao acessar este site, assumimos que você aceita estes termos e condições na íntegra. Não continue usando o site da MMT PortoDigital se você não aceitar todos os termos e condições indicados nesta página.',
+          'A seguinte terminologia aplica-se a estes Termos e Condições, Declaração de Privacidade e Aviso de Isenção e qualquer ou todos os Contratos: "Cliente", "Você" e "Seu" referem-se a você, a pessoa que acessa este site e aceita os termos e condições da Empresa. “A Companhia”, “Nós mesmos”, “Nós”, “Nosso” e “Nós”, referem-se à nossa Companhia. “Party”, “Parties” ou “Us” refere-se tanto ao Cliente quanto a nós mesmos, ou ao Cliente ou a nós mesmos. Todos os termos referem-se à oferta, aceitação e consideração do pagamento necessário para levar a cabo o processo de nossa assistência ao Cliente da maneira mais apropriada, seja por meio de reuniões formais de duração determinada ou por qualquer outro meio, com o propósito expresso de atender o cliente. As necessidades do cliente em relação ao fornecimento dos serviços / produtos declarados da Empresa, de acordo com e sujeitos à lei prevalecente de. Qualquer uso da terminologia acima ou de outras palavras no singular, plural, capitalização e / ou ele / ela ou eles, são tomados como intercambiáveis ​​e, portanto, como referentes aos mesmos.',
+        ],
+      }
+    ]
   },
 
   privacyPolicy: {
@@ -754,26 +735,23 @@ export default configMerger(defaultConfig, {
         ],
       },
     ],
+    pt: [
+      {
+        header: 'Política de Privacidade',
+        paragraphs: [
+          'Data de vigência: 12 de fevereiro de 2019',
+          'O Porto Digital ("nós", "nós" ou "nosso") opera o site http://mmt.portodigital.pt (o "Serviço").',
+          'Esta página informa sobre nossas políticas relativas à coleta, uso e divulgação de dados pessoais quando você usa nosso Serviço e as opções que você associou a esses dados.',
+          'Usamos seus dados para fornecer e melhorar o serviço. Ao usar o Serviço, você concorda com a coleta e uso de informações de acordo com esta política. Salvo disposição em contrário nesta Política de Privacidade, os termos utilizados nesta Política de Privacidade têm os mesmos significados que os nossos Termos e Condições, acessíveis em http://mmt.portodigital.pt',
+        ],
+      }
+    ]
   },
 
   staticMessages: [],
 
   themeMap: {
-    hsl: 'reittiopas',
-    turku: '(turku|foli)',
-    lappeenranta: 'lappeenranta',
-    joensuu: 'joensuu',
-    oulu: 'oulu',
-    hameenlinna: 'hameenlinna',
-    matka: 'matka',
-    rovaniemi: 'rovaniemi',
-    kouvola: 'kouvola',
-    tampere: 'tampere',
-    mikkeli: 'mikkeli',
-    kotka: 'kotka',
-    jyvaskyla: 'jyvaskyla',
-    lahti: 'lahti',
-    kuopio: 'kuopio',
+    porto: 'porto',
   },
 
   piwikMap: [
