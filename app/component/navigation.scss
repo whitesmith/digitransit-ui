@@ -168,6 +168,9 @@ $content-background-color: $background-color;
   &:hover {
     background: rgba($black, .15) !important;
   }
+  &.active {
+    color: rgba($black, .5);
+  }
 }
 
 .right-border {

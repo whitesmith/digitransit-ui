@@ -53,6 +53,8 @@ $body-font-weight: $font-weight-medium;
 @import '~zurb-foundation-5/scss/foundation/components/forms';
 @import '../app/component/contact-us-page';
 @import '../app/component/profile-page';
+@import '../app/component/account-history-page';
+@import '../app/component/recent-searches-table';
 
 /* Modal */
 @import '~foundation-apps/scss/helpers/breakpoints';
