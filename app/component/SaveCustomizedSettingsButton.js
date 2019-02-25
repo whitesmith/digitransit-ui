@@ -57,7 +57,7 @@ class SaveCustomizedSettingsButton extends React.Component {
       this.props.noSettingsFound();
     } else {
       const { firebase } = this.props;
-      if (firebase.auth.currentUser) {
+      if (firebase && firebase.auth.currentUser) {
         firebase.setUserSettings(querySettings);
       } else {
         setCustomizedSettings(querySettings);

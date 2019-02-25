@@ -28,7 +28,9 @@ describe('<ItinerarySummary />', () => {
     expect(wrapper.childAt(2).prop('className')).to.equal(
       'biking-distance--itinerary-summary',
     );
-    expect(wrapper.childAt(3).is(WalkDistance)).to.equal(true);
+    expect(wrapper.childAt(3).prop('className')).to.equal(
+      'walking-distance--itinerary-summary',
+    );
   });
 
   it('should show only biking distance for only biking itinerary', () => {

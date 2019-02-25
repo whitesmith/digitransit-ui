@@ -51,6 +51,9 @@ class AuthButton extends React.Component {
     const { firebase, authUser } = this.props;
     const { router, executeAction, config } = this.context;
     const path = router.location.pathname;
+
+    if(!config.FIREBASE) return null;
+
     if (authUser) {
       return (
         <IconMenu

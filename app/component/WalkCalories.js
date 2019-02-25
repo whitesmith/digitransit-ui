@@ -21,7 +21,7 @@ function WalkCalories(props) {
 }
 
 WalkCalories.propTypes = {
-  walkCalories: PropTypes.number.isRequired,
+  walkCalories: PropTypes.number,
   className: PropTypes.string,
 };
 
