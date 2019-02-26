@@ -658,6 +658,7 @@ const translations = {
     'airport-collect-luggage': 'Collect your luggage',
     'airport-security-check-go-to-gate':
       'Proceed to your gate through security check',
+    'above-average': 'above average',
     'all-routes': 'All routes',
     'all-routes-disabled': 'No routes',
     'approx-meters': '{approxDistance} m',
@@ -667,6 +668,7 @@ const translations = {
     'avoid-walking': 'Avoid walking',
     'back-button-title': 'Go back to previous page',
     'back-to-front-page': 'Back to the front page',
+    'below-average': 'below average',
     bicycle: 'bike',
     'bicycle-distance-duration': 'Bike {distance} ({duration})',
     'bike-availability': 'Bikes available at the station right now',
@@ -1006,6 +1008,7 @@ const translations = {
     'transfers-allowed': 'Transfers allowed',
     'transfers-margin': 'Transfer margin at least',
     'trip-co2-emissions': 'Emissions of the journey',
+    'trip-cost': 'Cost of the journey',
     'trip-information': 'Trip information',
     'trip-page.description': 'Route {route_short_name} - {route_long_name}',
     'trip-page.title': 'Route {route_short_name}',
@@ -2726,6 +2729,7 @@ const translations = {
     'airport-collect-luggage': 'Recolha a sua bagagem',
     'airport-security-check-go-to-gate':
       'Dirija-se ao seu portão através do ponto de segurança',  /**/
+    'above-average': 'acima da média',
     'all-routes': 'Todas as rotas',
     'all-routes-disabled': 'Sem rotas',
     'approx-meters': '{approxDistance} m',
@@ -2735,6 +2739,7 @@ const translations = {
     'avoid-walking': 'Evitar andar',
     'back-button-title': 'Voltar à página anterior',
     'back-to-front-page': 'Voltar à página inicial',
+    'below-average': 'abaixo da média',
     bicycle: 'bicicleta',
     'bicycle-distance-duration': 'Bicicleta {distance} ({duration})',
     'bike-availability': 'Bicicletas disponíveis na estação de momento',
@@ -3076,6 +3081,7 @@ const translations = {
     'transfers-allowed': 'Transbordos permitidos',
     'transfers-margin': 'Margem de transbordo',
     'trip-co2-emissions': 'Emissões de CO2 da viagem',
+    'trip-cost': 'Custo da viagem',
     'trip-information': 'Informação da viagem',
     'trip-page.description': 'Rota {route_short_name} - {route_long_name}',
     'trip-page.title': 'Rota {route_short_name}',
