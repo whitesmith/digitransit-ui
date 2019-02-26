@@ -39,8 +39,6 @@ class AccountHistoryPage extends React.Component {
           let search = s.val();
           const { legs } = search;
           if (legs && legs.length > 0) {
-            const legsLen = legs.length;
-
             const distanceComparator = (a, b) => b.distance - a.distance;
             // get transit legs ordered by distance
             const orderedTransitLegs = legs
@@ -51,14 +49,11 @@ class AccountHistoryPage extends React.Component {
               ...search,
               duration: legs.reduce((acc, leg) => acc + leg.duration, 0),
               from: legs[0].from.name,
-              to: legs[legsLen - 1].to.name,
+              to: legs[legs.length - 1].to.name,
               // use biggest transit leg route or a custom walk/bike route otherwise
               via:
                 orderedTransitLegs.length === 0
-                  ? {
-                      color: '187EC2',
-                      mode: legs.sort(distanceComparator)[0].mode,
-                    }
+                  ? legs.sort(distanceComparator)[0]
                   : orderedTransitLegs[0].route,
             });
           }

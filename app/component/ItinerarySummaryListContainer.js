@@ -233,6 +233,8 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
           }
           to {
             name
+            lat
+            lon
             stop {
               gtfsId
               zoneId

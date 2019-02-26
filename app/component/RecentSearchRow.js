@@ -1,13 +1,40 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { routerShape } from 'react-router';
 import RouteNumberContainer from './RouteNumberContainer';
 import WalkDistance from './WalkDistance';
 import Duration from './Duration';
+import { PREFIX_ITINERARY_SUMMARY, navigateTo } from '../util/path';
 
-const RecentSearchRow = ({ search }, context) => {
+const RecentSearchRow = ({ search }, { router }) => {
   return (
     <tr
       className="next-departure-row-tr recent-search-row"
-      onClick={() => console.log('go to search')}
+      onClick={() => {
+        const { legs } = search;
+        const firstLeg = legs[0];
+        const lastLeg = legs[legs.length - 1];
+        const origin = {
+          address: firstLeg.from.name,
+          lat: firstLeg.from.lat,
+          lon: firstLeg.from.lon,
+          ready: true,
+        };
+        const destination = {
+          address: lastLeg.to.name,
+          lat: lastLeg.to.lat,
+          lon: lastLeg.to.lon,
+          ready: true,
+        };
+
+        navigateTo({
+          origin,
+          destination,
+          context: '/',
+          router,
+          base: {},
+        });
+      }}
       style={{ cursor: 'pointer' }}
     >
       <td className="td-origin td-destination">
@@ -35,6 +62,14 @@ const RecentSearchRow = ({ search }, context) => {
       </td>
     </tr>
   );
+};
+
+RecentSearchRow.propTypes = {
+  search: PropTypes.object.isRequired,
+};
+
+RecentSearchRow.contextTypes = {
+  router: routerShape.isRequired,
 };
 
 export default RecentSearchRow;
