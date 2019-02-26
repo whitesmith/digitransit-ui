@@ -38,7 +38,6 @@ function ItinerarySummaryListContainer(
     }
 
     if (firebase) {
-      console.log('ITINERARY TO SAVE', itineraries[0]);
       firebase.addUserSearch(itineraries[0]);
     }
 
