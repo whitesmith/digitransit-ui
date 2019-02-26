@@ -418,7 +418,13 @@ class SummaryPlanContainer extends React.Component {
     const activeIndex = this.getActiveIndex();
     const { location } = this.context;
     const { from, to } = this.props.params;
-    const { currentTime, locationState, itineraries } = this.props;
+    const {
+      currentTime,
+      locationState,
+      itineraries,
+      firebase,
+      authUser,
+    } = this.props;
     const searchTime =
       this.props.plan.date ||
       (location.query &&
@@ -433,8 +439,10 @@ class SummaryPlanContainer extends React.Component {
     if (!disableButtons) {
       lastId = itineraries[0].__dataID__;
     }
-    if (this.lastFirstSearchId !== lastId) {
-      firebaseInstance = this.props.firebase;
+
+    // is the user is logged and this search id was not yet stored, push search to firebase
+    if (this.lastFirstSearchId !== lastId && authUser) {
+      firebaseInstance = firebase;
       this.lastFirstSearchId = lastId;
     }
 
