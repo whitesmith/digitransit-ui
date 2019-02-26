@@ -2,10 +2,19 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Icon from './Icon';
+import { intlShape } from 'react-intl';
 
-const Stat = props => {
+const Stat = (props, { config, intl }) => {
+  const labelAboveAverage = intl.formatMessage({
+    id: 'above-average',
+    defaultMessage: 'above average',
+  });
+  const labelBelowAverage = intl.formatMessage({
+    id: 'below-average',
+    defaultMessage: 'below average',
+  });
   const averageCompare = 
-    (props.percentage > 0) ? 'above' : 'below';
+    (props.percentage > 0) ? labelAboveAverage : labelBelowAverage;
   const averageClass = 
     (props.percentage > 0) ? 
       (props.inverted) ? 'negative' : 'positive'
@@ -30,7 +39,7 @@ const Stat = props => {
         <span className="stat__unit">{props.unit}</span>
       </p>
       <p className={`stat__average stat__average--${averageClass}`}>
-        {Math.abs(props.percentage)}% <small>{averageCompare} average</small>
+        {Math.abs(props.percentage)}% <small>{averageCompare}</small>
       </p>
     </>
   );
@@ -44,6 +53,11 @@ Stat.propTypes = {
   unit: PropTypes.any,
   percentage: PropTypes.number,
   inverted: PropTypes.bool
+};
+
+Stat.contextTypes = {
+  config: PropTypes.object.isRequired,
+  intl: intlShape.isRequired,
 };
 
 export default Stat
