@@ -5,7 +5,8 @@ import React from 'react';
 import { intlShape } from 'react-intl';
 
 import { displayDistance } from '../util/geo-utils';
-import { getTotalDistance, containsBiking } from '../util/legUtils';
+import { getTotalDistance, getTotalWalkingDistance, getTotalWalkingCalories, containsBiking } from '../util/legUtils';
+import WalkCalories from './WalkCalories';
 
 const ItineraryProfile = ({ itinerary, small }, { config, intl }) => {
   const { elevationGained, elevationLost } = itinerary;
@@ -50,6 +51,20 @@ const ItineraryProfile = ({ itinerary, small }, { config, intl }) => {
           {displayDistance(getTotalDistance(itinerary), config)}
         </div>
       </div>
+      {config.showExtraCalculations && !small && (
+        <div className="itinerary-profile-item padding-vertical-normal">
+          <div className="itinerary-profile-item-title">
+            {`${intl.formatMessage({
+              id: 'itinerary-walk.title',
+              defaultMessage: 'Total walking distance',
+            })}:`}
+          </div>
+          <div className="itinerary-profile-item-value">
+            {displayDistance(getTotalWalkingDistance(itinerary), config)}
+            <WalkCalories walkCalories={getTotalWalkingCalories(itinerary)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
