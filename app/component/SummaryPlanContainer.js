@@ -18,8 +18,11 @@ import {
 } from '../util/planParamUtil';
 import { getIntermediatePlaces, replaceQueryParams } from '../util/queryUtils';
 import withBreakpoint from '../util/withBreakpoint';
+import { withAuthentication } from './session';
 
 class SummaryPlanContainer extends React.Component {
+  lastFirstSearchId = null;
+
   static propTypes = {
     breakpoint: PropTypes.string.isRequired,
     children: PropTypes.node,
@@ -424,9 +427,21 @@ class SummaryPlanContainer extends React.Component {
       currentTime;
     const disableButtons = !itineraries || itineraries.length === 0;
 
+    let firebaseInstance = null;
+    let lastId = null;
+
+    if (!disableButtons) {
+      lastId = itineraries[0].__dataID__;
+    }
+    if (this.lastFirstSearchId !== lastId) {
+      firebaseInstance = this.props.firebase;
+      this.lastFirstSearchId = lastId;
+    }
+
     return (
       <div className="summary">
         <ItinerarySummaryListContainer
+          firebase={firebaseInstance}
           activeIndex={activeIndex}
           currentTime={currentTime}
           locationState={locationState}
@@ -458,7 +473,7 @@ class SummaryPlanContainer extends React.Component {
 
 const withConfig = getContext({
   config: PropTypes.object.isRequired,
-})(withBreakpoint(SummaryPlanContainer));
+})(withAuthentication(withBreakpoint(SummaryPlanContainer)));
 
 const withRelayContainer = Relay.createContainer(withConfig, {
   fragments: {
