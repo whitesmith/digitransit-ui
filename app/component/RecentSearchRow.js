@@ -48,7 +48,14 @@ const RecentSearchRow = ({ search }, { router }) => {
         </span>
       </td>
       <td className="td-route-number">
-        <RouteNumberContainer route={search.via} />
+        {
+          Array.isArray(search.via) ?
+            search.via.map( (v, i) => {
+              return <RouteNumberContainer route={v} key={i} />
+            })
+          :
+            <RouteNumberContainer route={search.via} />
+        }
       </td>
       <td className="td-duration">
         <Duration duration={search.duration} />
