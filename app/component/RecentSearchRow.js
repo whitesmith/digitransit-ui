@@ -10,31 +10,7 @@ const RecentSearchRow = ({ search }, { router }) => {
   return (
     <tr
       className="next-departure-row-tr recent-search-row"
-      onClick={() => {
-        const { legs } = search;
-        const firstLeg = legs[0];
-        const lastLeg = legs[legs.length - 1];
-        const origin = {
-          address: firstLeg.from.name,
-          lat: firstLeg.from.lat,
-          lon: firstLeg.from.lon,
-          ready: true,
-        };
-        const destination = {
-          address: lastLeg.to.name,
-          lat: lastLeg.to.lat,
-          lon: lastLeg.to.lon,
-          ready: true,
-        };
-
-        navigateTo({
-          origin,
-          destination,
-          context: '/',
-          router,
-          base: {},
-        });
-      }}
+      onClick={() => router.replace(search.routerLocation)}
       style={{ cursor: 'pointer' }}
     >
       <td className="td-origin td-destination">
