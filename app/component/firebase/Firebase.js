@@ -41,8 +41,7 @@ class Firebase {
 
   addUserSearch = newSearch =>
     this.database
-      .ref('search-history/' + this.auth.currentUser.uid)
-      .push()
+      .ref('search-history/' + this.auth.currentUser.uid + '/' + newSearch.searchId)
       .set(newSearch);
 
   getUserSearchHistory = () =>
