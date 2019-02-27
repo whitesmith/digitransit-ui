@@ -27,6 +27,7 @@ function RouteNumber(props, context) {
           className={`${mode} call`}
           img={`icon-icon_${mode}`}
           subIcon="icon-icon_call"
+          title={props.text}
         />
       );
     }
@@ -37,6 +38,7 @@ function RouteNumber(props, context) {
           color={color}
           className={mode}
           img={`icon-icon_${mode}`}
+          title={props.text}
         />
       );
     }
@@ -49,6 +51,7 @@ function RouteNumber(props, context) {
         className={mode}
         img={`icon-icon_${mode}`}
         subIcon=""
+        title={props.text}
       />
     );
   };
