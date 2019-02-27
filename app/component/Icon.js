@@ -56,7 +56,7 @@ IconBadge.asString = (badgeFill, badgeText) => {
 
 function Icon(props) {
   return (
-    <span aria-hidden className="icon-container">
+    <span aria-hidden className="icon-container" title={props.title}>
       <svg
         id={props.id}
         style={{
@@ -85,6 +85,7 @@ Icon.propTypes = {
   omitViewBox: PropTypes.bool,
   viewBox: PropTypes.string,
   width: PropTypes.number,
+  title: PropTypes.string,
 };
 
 Icon.defaultProps = {
@@ -97,6 +98,7 @@ Icon.defaultProps = {
   omitViewBox: false,
   viewBox: '0 0 40 40',
   width: undefined,
+  title: '',
 };
 
 Icon.asString = (

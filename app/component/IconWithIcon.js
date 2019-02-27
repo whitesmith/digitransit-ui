@@ -21,6 +21,7 @@ const IconWithIcon = (
     color,
     badgeFill,
     badgeText,
+    title,
   },
   { intl },
 ) => (
@@ -31,6 +32,7 @@ const IconWithIcon = (
         badgeText={badgeText}
         color={color}
         img={img}
+        title={title}
       />
     </span>
     {subIcon && (
@@ -89,6 +91,7 @@ IconWithIcon.propTypes = {
   color: PropTypes.string,
   badgeFill: PropTypes.string,
   badgeText: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  title: PropTypes.string,
 };
 
 IconWithIcon.contextTypes = {
@@ -103,6 +106,7 @@ IconWithIcon.defaultProps = {
   subIconClassName: '',
   badgeFill: undefined,
   badgeText: undefined,
+  title: ''
 };
 
 export default IconWithIcon;
