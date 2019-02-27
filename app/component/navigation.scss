@@ -148,6 +148,36 @@ $content-background-color: $background-color;
 .navi-menu__avatar-container {
   vertical-align: middle;
   padding: 0 !important; // override material-ui inline styles
+  position: relative;
+
+  .icon-container {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    height: 10px;
+    opacity: .8;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @media #{$large-up} {
+      right: 4px;
+      bottom: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 12px;
+    }
+  }
+  .icon {
+    color: $primary-color;
+    width: 60%;
+    height: 50%;
+    @media #{$large-up} {
+      width: 70%;
+    }
+  }
 }
 
 .navi-menu__avatar-container,

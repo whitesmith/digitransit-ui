@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import Avatar from 'material-ui/Avatar';
 import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
+import Icon from './Icon';
 import MenuItem from 'material-ui/MenuItem';
 import { markMessageAsRead } from '../action/MessageActions';
 import { getDefaultSettings } from '../util/planParamUtil';
@@ -43,6 +44,10 @@ const AvatarFallback = (url, name) => (
     >
       {url ? null : initials(name)}
     </Avatar>
+    <Icon
+      className="icon"
+      img="icon-icon_arrow-dropdown"
+    />
   </IconButton>
 );
 
