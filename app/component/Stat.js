@@ -24,10 +24,14 @@ const Stat = (props, { config, intl }) => {
   return (
     <>
       <p className="stat__type">
-        <Icon
-          className="prefix-icon stat__icon"
-          img={`icon-icon_${props.icon}`}
-        />
+        { typeof props.icon === 'string' ?
+            (<Icon
+              className="prefix-icon stat__icon"
+              img={`icon-icon_${props.icon}`}
+            />)
+          :
+            props.icon
+        }
         <FormattedMessage
           id={props.textId}
           defaultMessage={props.defaultMessage}
@@ -46,7 +50,7 @@ const Stat = (props, { config, intl }) => {
 }
 
 Stat.propTypes = {
-  icon: PropTypes.string,
+  icon: PropTypes.any,
   textId: PropTypes.string,
   defaultMessage: PropTypes.string,
   amount: PropTypes.number,

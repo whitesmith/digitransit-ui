@@ -7,6 +7,9 @@ import withBreakpoint from '../util/withBreakpoint';
 import DeparturesTable from './DeparturesTable';
 import Stat from './Stat';
 import RecentSearchRow from './RecentSearchRow';
+import CaloriesIcon from 'material-ui/svg-icons/social/whatshot';
+
+const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
 
 class AccountHistoryPage extends React.Component {
   static contextTypes = {
@@ -140,7 +143,11 @@ class AccountHistoryPage extends React.Component {
               </div>
               <div className="stat">
                 <Stat 
-                  icon="walk" 
+                  icon={(
+                    <span aria-hidden="true" className="icon-container">
+                      <CaloriesIcon className="icon prefix-icon stat__icon" style={resetIconStyle} />
+                    </span>
+                  )}
                   textId={"calories-walked"}
                   defaultMessage={"Calories walked"}
                   amount={11.7} 
