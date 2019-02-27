@@ -40,7 +40,6 @@ class AccountHistoryPage extends React.Component {
 
         snap.forEach(s => {
           const search = s.val();
-          console.log(search)
           const { legs } = search.itinerary;
           if (legs && legs.length > 0) {
             const distanceComparator = (a, b) => b.distance - a.distance;
@@ -57,20 +56,17 @@ class AccountHistoryPage extends React.Component {
               // use biggest transit leg route or a custom walk/bike route otherwise
               via:
                 orderedTransitLegs.length === 0
-                  ? legs.sort(distanceComparator)[0]
-                  : orderedTransitLegs[0].route,
+                  ? legs.sort(distanceComparator)
+                  : orderedTransitLegs.map(l => l.route),
             });
           }
         });
-
-        console.log(results)
         this.setState({ recentSearches: results, loading: false });
       });
     }
   }
 
   render() {
-    const { config, router } = this.context;
     const { breakpoint } = this.props;
     const { recentSearches, loading } = this.state;
     const desktop = breakpoint === 'large';
