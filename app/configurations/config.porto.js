@@ -132,7 +132,7 @@ export default configMerger(defaultConfig, {
     tileSize: 512,
     zoomOffset: -1,
     minZoom: 1,
-    maxZoom: 18,
+    maxZoom: 50,
     controls: {
       zoom: {
         // available controls positions: 'topleft', 'topright', 'bottomleft, 'bottomright'
