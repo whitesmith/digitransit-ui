@@ -62,7 +62,8 @@ export default configMerger(defaultConfig, {
     default: 'Porto.',
   },
 
-  contactEmail: 'some.support.email@portofigital.pt',
+  contactEmail: 'info@portodigital.pt',
+  contactSubject: 'MMT - Contact Form',
 
   // Default labels for manifest creation
   name: 'MMT',
