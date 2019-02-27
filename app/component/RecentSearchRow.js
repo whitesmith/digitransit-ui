@@ -4,7 +4,6 @@ import { routerShape } from 'react-router';
 import RouteNumberContainer from './RouteNumberContainer';
 import WalkDistance from './WalkDistance';
 import Duration from './Duration';
-import { PREFIX_ITINERARY_SUMMARY, navigateTo } from '../util/path';
 
 const RecentSearchRow = ({ search }, { router }) => {
   return (
@@ -37,8 +36,8 @@ const RecentSearchRow = ({ search }, { router }) => {
         <Duration duration={search.duration} />
       </td>
       <td className="td-distance">
-        {search.walkDistance ? (
-          <WalkDistance walkDistance={search.walkDistance} />
+        {search.itinerary.walkDistance ? (
+          <WalkDistance walkDistance={search.itinerary.walkDistance} />
         ) : (
           '-'
         )}
