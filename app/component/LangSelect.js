@@ -4,22 +4,27 @@ import connectToStores from 'fluxible-addons-react/connectToStores';
 import ComponentUsageExample from './ComponentUsageExample';
 import { setLanguage } from '../action/userPreferencesActions';
 import { isBrowser } from '../util/browser';
+import { withAuthentication } from './session';
 
-const selectLanguage = (executeAction, lang) => () =>
+const selectLanguage = (executeAction, lang, firebase) => () => {
   executeAction(setLanguage, lang);
+  if (firebase) {
+    firebase.setUserLanguage(lang);
+  }
+};
 
-const language = (lang, currentLanguage, highlight, executeAction) => (
+const language = (lang, currentLanguage, highlight, executeAction, firebase) => (
   <button
     id={`lang-${lang}`}
     key={lang}
     className={`${(highlight && 'selected') || ''} noborder lang`}
-    onClick={selectLanguage(executeAction, lang)}
+    onClick={selectLanguage(executeAction, lang, firebase)}
   >
     {lang}
   </button>
 );
 
-const LangSelect = ({ currentLanguage }, { executeAction, config }) => {
+const LangSelect = ({ currentLanguage, firebase, authUser }, { executeAction, config}) => {
   if (isBrowser) {
     return (
       <div key="lang-select" id="lang-select">
@@ -29,6 +34,7 @@ const LangSelect = ({ currentLanguage }, { executeAction, config }) => {
             currentLanguage,
             lang === currentLanguage,
             executeAction,
+            authUser != null ? firebase : null,
           ),
         )}
       </div>
@@ -52,6 +58,8 @@ LangSelect.description = () => (
 
 LangSelect.propTypes = {
   currentLanguage: PropTypes.string.isRequired,
+  firebase: PropTypes.object,
+  authUser: PropTypes.object,
 };
 
 LangSelect.contextTypes = {
@@ -59,12 +67,12 @@ LangSelect.contextTypes = {
   config: PropTypes.object.isRequired,
 };
 
-const connected = connectToStores(
+const connected = withAuthentication(connectToStores(
   LangSelect,
   ['PreferencesStore'],
   context => ({
     currentLanguage: context.getStore('PreferencesStore').getLanguage(),
   }),
-);
+));
 
 export { connected as default, LangSelect as Component };
