@@ -47,6 +47,7 @@ class Firebase {
   getUserSearchHistory = () =>
     this.database
       .ref('search-history/' + this.auth.currentUser.uid)
+      .orderByChild('timestamp')
       .limitToLast(20)
       .once('value');
 }
