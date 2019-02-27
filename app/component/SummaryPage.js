@@ -28,6 +28,8 @@ import { defaultRoutingSettings } from '../util/planParamUtil';
 import { getIntermediatePlaces } from '../util/queryUtils';
 import { validateServiceTimeRange } from '../util/timeUtils';
 import withBreakpoint from '../util/withBreakpoint';
+import { withAuthentication } from './session';
+import { addExtraCalcsToItinerary } from '../util/legUtils';
 
 export const ITINERARYFILTERING_DEFAULT = 1.5;
 
@@ -90,6 +92,8 @@ class SummaryPage extends React.Component {
     super(props, context);
     context.executeAction(storeOrigin, props.from);
   }
+
+  lastFirstSearchId = null;
 
   state = { center: null, loading: false };
 
@@ -227,6 +231,8 @@ class SummaryPage extends React.Component {
       },
     } = this.context;
 
+    const { firebase, authUser } = this.props;
+
     const hasItineraries =
       this.props.plan &&
       this.props.plan.plan &&
@@ -266,6 +272,39 @@ class SummaryPage extends React.Component {
     if (hasItineraries) {
       earliestStartTime = Math.min(...itineraries.map(i => i.startTime));
       latestArrivalTime = Math.max(...itineraries.map(i => i.endTime));
+
+      const itinerary = itineraries[0];
+      const searchId = itinerary.__dataID__;
+
+      // is the user is logged and this search id was not yet stored, push search to firebase
+      if (this.lastFirstSearchId !== searchId && authUser) {
+        this.lastFirstSearchId = searchId;
+
+        addExtraCalcsToItinerary(itinerary);
+
+        let routerLocation = null;
+        const { from, to, router } = this.props;
+        if (router.location) {
+          const { pathname, search } = router.location;
+          routerLocation = {
+            pathname,
+            search,
+          };
+        }
+
+        const searchToSave = {
+          searchId,
+          itinerary,
+          from,
+          to,
+          routerLocation,
+        };
+
+        console.log('WILL NOW SAVE:', searchToSave);
+
+        firebase.addUserSearch(searchToSave);
+      }
+
     }
 
     const serviceTimeRange = validateServiceTimeRange(
@@ -384,7 +423,7 @@ class SummaryPage extends React.Component {
   }
 }
 
-export default Relay.createContainer(withBreakpoint(SummaryPage), {
+export default Relay.createContainer(withAuthentication(withBreakpoint(SummaryPage)), {
   fragments: {
     plan: () => Relay.QL`
       fragment on QueryType {
@@ -431,14 +470,23 @@ export default Relay.createContainer(withBreakpoint(SummaryPage), {
           itineraries {
             startTime
             endTime
+            walkDistance
             ${ItineraryTab.getFragment('itinerary')}
             ${PrintableItinerary.getFragment('itinerary')}
             ${SummaryPlanContainer.getFragment('itineraries')}
             legs {
               ${ItineraryLine.getFragment('legs')}
               transitLeg
+              mode
+              distance
+              duration
               legGeometry {
                 points
+              }
+              route {
+                mode
+                shortName
+                color
               }
             }
           }
