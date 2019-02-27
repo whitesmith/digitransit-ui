@@ -9,7 +9,6 @@ import FavouriteLocationsContainer from './FavouriteLocationsContainer';
 import NextDeparturesListHeader from './NextDeparturesListHeader';
 import NoFavouritesPanel from './NoFavouritesPanel';
 import Loading from './Loading';
-import PanelOrSelectLocation from './PanelOrSelectLocation';
 import { dtLocationShape } from '../util/shapes';
 import { TAB_FAVOURITES } from '../util/path';
 import withBreakpoint from '../util/withBreakpoint';
@@ -110,10 +109,7 @@ const FilteredFavouritesPanel = shouldUpdate(
 
 export default connectToStores(
   ctx => (
-    <PanelOrSelectLocation
-      panel={FilteredFavouritesPanel}
-      panelctx={{ ...ctx, tab: TAB_FAVOURITES }}
-    />
+    React.createElement(FilteredFavouritesPanel, { ...ctx, tab: TAB_FAVOURITES })
   ),
   [
     'FavouriteRoutesStore',
