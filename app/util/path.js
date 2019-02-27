@@ -139,7 +139,7 @@ export const navigateTo = ({
   tab = TAB_NEARBY,
   resetIndex = false,
 }) => {
-  let push;
+  let push, tabOnly = false;
   switch (context) {
     case PREFIX_STOPS:
     case PREFIX_ROUTES:
@@ -147,6 +147,10 @@ export const navigateTo = ({
       break;
     case PREFIX_ITINERARY_SUMMARY:
       push = false;
+      break;
+    case TAB_FAVOURITES:
+      push = false;
+      tabOnly = true;
       break;
     default:
       if (origin.ready && destination.ready) {
@@ -159,8 +163,13 @@ export const navigateTo = ({
 
   let url;
 
-  // Reset selected itinerary index if required
-  if (resetIndex && base.state && base.state.summaryPageSelected) {
+  if(tabOnly) {
+    url = {
+      ...base,
+      pathname: `/-/-/${tab}`,
+    };
+  } else if (resetIndex && base.state && base.state.summaryPageSelected) {
+    // Reset selected itinerary index if required
     url = {
       ...base,
       state: {
