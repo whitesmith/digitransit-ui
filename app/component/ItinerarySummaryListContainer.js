@@ -15,7 +15,6 @@ import { getZones, addExtraCalcsToItineraries } from '../util/legUtils';
 
 function ItinerarySummaryListContainer(
   {
-    firebase,
     activeIndex,
     children,
     currentTime,
@@ -33,12 +32,9 @@ function ItinerarySummaryListContainer(
   { config },
 ) {
   if (!error && itineraries && itineraries.length > 0) {
-    if (config.showExtraCalculations) {
-      addExtraCalcsToItineraries(itineraries);
-    }
 
-    if (firebase) {
-      firebase.addUserSearch(itineraries[0]);
+    if(config.showExtraCalculations) {
+      addExtraCalcsToItineraries(itineraries);
     }
 
     const openedIndex = open && Number(open);
@@ -147,7 +143,6 @@ const locationShape = PropTypes.shape({
 });
 
 ItinerarySummaryListContainer.propTypes = {
-  firebase: PropTypes.object,
   activeIndex: PropTypes.number.isRequired,
   currentTime: PropTypes.number.isRequired,
   children: PropTypes.node,
@@ -231,9 +226,6 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
             }
           }
           to {
-            name
-            lat
-            lon
             stop {
               gtfsId
               zoneId
