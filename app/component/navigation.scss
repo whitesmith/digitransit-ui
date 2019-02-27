@@ -427,6 +427,10 @@ section.content {
 
     .message-bar-info {
       width: 60%;
+      z-index: 2;
+      div {
+        overflow: visible !important;
+      }
     }
   }
 
@@ -451,6 +455,19 @@ section.content {
     @include font-medium;
     padding: 0 4px;
   }
+
+  .close-button {
+    margin-left: 80px;
+  }
+
+  .floating-button {
+    position: absolute;
+    right: -115px;
+    top: 10px;
+    margin: 0;
+    font-size: 0.8125rem;
+    padding: 0.64rem 1.75rem;
+  }
 }
 
 #close-message-bar {
@@ -461,6 +478,7 @@ section.content {
 }
 .message-bar-fade {
   mask-image: linear-gradient(rgba(0, 0, 0, 1) 80px, rgba(0, 0, 0, 0));
+  overflow: visible !important;
 }
 // Need more specific selector to override
 .message-bar .icon {
