@@ -34,5 +34,19 @@
   }
   .td-route-number {
     flex-basis: 4em !important;
+    white-space: nowrap;
+    overflow-x: hidden;
+  
+    // When there is more than one mode
+    .route-number:not(:only-child) {
+      min-width: 0px;
+      .vehicle-number {
+        max-width: 0px;
+        padding: 0px;
+      }
+    }
+    .route-number + .route-number {
+      margin-left: 5px;
+    }
   }
 }
