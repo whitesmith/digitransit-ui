@@ -150,7 +150,7 @@ class IndexPage extends React.Component {
     navigateTo({
       origin: this.props.origin,
       destination: this.props.destination,
-      context: '/',
+      context: this.props.origin.set ? '/' : TAB_FAVOURITES,
       router: this.context.router,
       base: {},
       tab,
