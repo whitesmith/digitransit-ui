@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import isFunction from 'lodash/isFunction';
 
 import { withFirebase } from '../firebase';
 
@@ -23,7 +24,9 @@ const withAuthentication = Component => {
     }
 
     componentWillUnmount() {
-      this.listener();
+      if (isFunction(isFunction)) {
+        this.listener();
+      }
     }
 
     render() {
