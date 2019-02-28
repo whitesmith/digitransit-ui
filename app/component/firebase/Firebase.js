@@ -50,6 +50,16 @@ class Firebase {
       .orderByChild('timestamp')
       .limitToLast(20)
       .once('value');
+
+  setUserLanguage = language =>
+    this.database
+      .ref('language/' + this.auth.currentUser.uid)
+      .set(language);
+
+  getUserLanguage = () =>
+    this.database
+      .ref('language/' + this.auth.currentUser.uid)
+      .once('value');
 }
 
 export default Firebase;

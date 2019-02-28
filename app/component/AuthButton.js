@@ -9,6 +9,7 @@ import IconMenu from 'material-ui/IconMenu';
 import Icon from './Icon';
 import MenuItem from 'material-ui/MenuItem';
 import { markMessageAsRead } from '../action/MessageActions';
+import { setLanguage } from '../action/userPreferencesActions';
 import { getDefaultSettings } from '../util/planParamUtil';
 import { clearQueryParams } from '../util/queryUtils';
 import { withAuthentication } from './session';
@@ -102,6 +103,12 @@ class AuthButton extends React.Component {
     return navAuthButton('signin', 'sign-in', 'Sign in', () => {
       firebase.signInWithGoogle().then(() => {
         executeAction(markMessageAsRead, 'account');
+        firebase.getUserLanguage().then(snap => {
+          const language = snap.val();
+          if (language) {
+            executeAction(setLanguage, language);
+          }
+        });
         firebase.getUserSettings().then(snap => {
           const settings = snap.val();
           if (!isEmpty(settings)) {
