@@ -9,7 +9,7 @@ const RecentSearchRow = ({ search }, { router }) => {
   return (
     <tr
       className="next-departure-row-tr recent-search-row"
-      onClick={() => router.replace(search.routerLocation)}
+      onClick={() => router.push(search.routerLocation)}
       style={{ cursor: 'pointer' }}
     >
       <td className="td-origin td-destination">
