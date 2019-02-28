@@ -477,7 +477,8 @@ section.content {
   }
 }
 .message-bar-fade {
-  mask-image: linear-gradient(rgba(0, 0, 0, 1) 80px, rgba(0, 0, 0, 0));
+  // Added comment because consent button was masked out
+  //mask-image: linear-gradient(rgba(0, 0, 0, 1) 80px, rgba(0, 0, 0, 0));
   overflow: visible !important;
 }
 // Need more specific selector to override
