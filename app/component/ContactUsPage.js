@@ -10,6 +10,11 @@ const ContactUsPage = ({}, context) => {
         action={`https://formspree.io/${context.config.contactEmail}`}
         method="POST"
       >
+        {
+          context.config.contactSubject && (
+            <input type="hidden" name="_subject" value={context.config.contactSubject} />
+          )
+        }
         <div className="contact-form__banner">
           <div className="row padding-vertical-small">
             <div className="small-12 large-8 large-centered columns">

@@ -13,7 +13,7 @@ const OriginSelectorRow = ({ icon, label, onClick }) => (
 
 OriginSelectorRow.propTypes = {
   icon: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   onClick: PropTypes.func.isRequired,
 };
 

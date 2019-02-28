@@ -645,6 +645,7 @@ const translations = {
     accessibility: 'Accessibility',
     'accessibility-limited': 'Wheelchair',
     'accessibility-nolimit': 'No limits',
+    accept: 'Accept',
     'account-history': 'Account history',
     'add-itinerary-via-point': 'Add via point for itinerary',
     'add-location': 'Add location',
@@ -2716,6 +2717,7 @@ const translations = {
     accessibility: 'Acessibilidade',
     'accessibility-limited': 'Cadeira de rodas',
     'accessibility-nolimit': 'Sem limitações',
+    accept: 'Aceitar',
     'account-history': 'Histórico da conta',
     'add-itinerary-via-point': 'Adicionar ponto intermédio ao itinerário', /*Add via point for itinerary*/
     'add-location': 'Adicionar localização',

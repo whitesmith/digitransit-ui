@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
+import { markMessageAsRead } from '../action/MessageActions';
 
 const heading = (e, key) => {
   if (e.type === 'heading') {
@@ -35,17 +37,39 @@ const renderContent = content =>
 /*
  * Renders message
  */
-const MessageBarMessage = ({ content, onMaximize }) => (
+const MessageBarMessage = ({ content, onMaximize, id }, {executeAction}) => (
   // TOOD: find out how this should be accessible
   // eslint-disable-next-line jsx-a11y/click-events-have-key-events
   <div tabIndex={0} role="button" onClick={onMaximize}>
     {renderContent(content)}
+    {
+      id === 'consent' && (
+        <button 
+          className="button floating-button"
+          onClick={
+            () => {
+              console.log("mark message with id 'consent' as read and accept terms")
+              executeAction(markMessageAsRead, 'consent');
+            }
+          }
+        >
+          <FormattedMessage
+            id="accept"
+            defaultMessage="Accept"
+          />
+        </button>
+      )
+    }
   </div>
 );
 
 MessageBarMessage.propTypes = {
   content: PropTypes.array,
   onMaximize: PropTypes.func.isRequired,
+};
+
+MessageBarMessage.contextTypes = {
+  executeAction: PropTypes.func.isRequired,
 };
 
 export default MessageBarMessage;

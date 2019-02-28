@@ -62,7 +62,8 @@ export default configMerger(defaultConfig, {
     default: 'Porto.',
   },
 
-  contactEmail: 'some.support.email@portofigital.pt',
+  contactEmail: 'info@portodigital.pt',
+  contactSubject: 'MMT - Contact Form',
 
   // Default labels for manifest creation
   name: 'MMT',
@@ -132,7 +133,7 @@ export default configMerger(defaultConfig, {
     tileSize: 512,
     zoomOffset: -1,
     minZoom: 1,
-    maxZoom: 18,
+    maxZoom: 50,
     controls: {
       zoom: {
         // available controls positions: 'topleft', 'topright', 'bottomleft, 'bottomright'
@@ -748,7 +749,48 @@ export default configMerger(defaultConfig, {
     ]
   },
 
-  staticMessages: [],
+  staticMessages: [
+    {
+      id: 'consent',
+      priority: -1,
+      content: {
+        en: [
+          {
+            type: 'text',
+            content:
+              'We use cookies to improve our services. Please confirm you agree to its terms and conditions. Read more:',
+          },
+          {
+            type: 'a',
+            content: 'Terms of use',
+            href: '/terms-and-conditions',
+          },
+          {
+            type: 'a',
+            content: 'Privacy Statement',
+            href: '/privacy-policy',
+          }
+        ],
+        pt: [
+          {
+            type: 'text',
+            content:
+              'Este website utiliza cookies para melhorar a sua experiência. Por favor, confirme que concorda com os termos e condições do mesmo. Ler mais:',
+          },
+          {
+            type: 'a',
+            content: 'Termos e Condições',
+            href: '/terms-and-conditions',
+          },
+          {
+            type: 'a',
+            content: 'Política de Privacidade',
+            href: '/privacy-policy',
+          },
+        ],
+      },
+    },
+  ],
 
   themeMap: {
     porto: 'porto',
