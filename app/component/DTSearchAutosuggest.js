@@ -9,6 +9,7 @@ import SuggestionItem from './SuggestionItem';
 import { getLabel } from '../util/suggestionUtils';
 import { dtLocationShape } from '../util/shapes';
 import Icon from './Icon';
+import { withAuthentication } from './session';
 
 class DTAutosuggest extends React.Component {
   static contextTypes = {
@@ -30,6 +31,8 @@ class DTAutosuggest extends React.Component {
     searchType: PropTypes.oneOf(['all', 'endpoint', 'search']).isRequired,
     selectedFunction: PropTypes.func.isRequired,
     value: PropTypes.string,
+    authUser: PropTypes.object,
+    firebase: PropTypes.object
   };
 
   static defaultProps = {
@@ -153,7 +156,35 @@ class DTAutosuggest extends React.Component {
     );
   };
 
-  fetchFunction = ({ value }) =>
+  translateCurrentLocation = suggestion => {
+    if (suggestion == null) {
+      return null;
+    }
+
+    const translated = { ...suggestion };
+    translated.properties.labelId = this.context.intl.formatMessage({
+      id: suggestion.properties.labelId,
+      defaultMessage: 'Own Location',
+    });
+    return translated;
+  };
+
+  handleSuggestionResults = (value, suggestions) => {
+    if (
+      value === this.state.value ||
+      value === this.state.pendingSelection
+    ) {
+      this.setState(
+        {
+          valid: true,
+          suggestions,
+        },
+        () => this.checkPendingSelection(),
+      );
+    }
+  };
+
+  fetchFunction = ({ value }) => 
     this.setState({ valid: false }, () => {
       this.props.executeSearch(
         this.context.getStore,
@@ -168,30 +199,35 @@ class DTAutosuggest extends React.Component {
           if (searchResult == null) {
             return;
           }
-          // XXX translates current location
-          const suggestions = (searchResult.results || []).map(suggestion => {
-            if (suggestion.type === 'CurrentLocation') {
-              const translated = { ...suggestion };
-              translated.properties.labelId = this.context.intl.formatMessage({
-                id: suggestion.properties.labelId,
-                defaultMessage: 'Own Location',
-              });
-              return translated;
-            }
-            return suggestion;
-          });
 
-          if (
-            value === this.state.value ||
-            value === this.state.pendingSelection
-          ) {
-            this.setState(
-              {
-                valid: true,
-                suggestions,
-              },
-              () => this.checkPendingSelection(),
-            );
+          const { authUser, firebase } = this.props;
+          // if the user is logged and there's no search input, let's fetch locations from firebase
+          if (authUser && (typeof value !== 'string' || value.length === 0)) {
+            // get current location
+            const currentLocation = this.translateCurrentLocation(searchResult.results.find(
+              suggestion => suggestion.type === 'CurrentLocation'
+            ));
+            // fetch suggestions and append to the list
+            firebase.getUserLocations().then(snap => {
+              const results = [];
+              snap.forEach(s => {
+                results.unshift(s.val());
+              });
+
+              if (currentLocation != null) {
+                results.unshift(currentLocation);
+              }
+              this.handleSuggestionResults(value, results);
+            });
+          } else {
+            // XXX translates current location
+            const suggestions = (searchResult.results || []).map(suggestion => {
+              if (suggestion.type === 'CurrentLocation') {
+                return this.translateCurrentLocation(suggestion);
+              }
+              return suggestion;
+            });
+            this.handleSuggestionResults(value, suggestions);
           }
         },
       );
@@ -291,4 +327,4 @@ class DTAutosuggest extends React.Component {
   }
 }
 
-export default DTAutosuggest;
+export default withAuthentication(DTAutosuggest);
