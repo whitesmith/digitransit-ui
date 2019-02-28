@@ -1,6 +1,8 @@
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
+import moment from 'moment';
+
 
 class Firebase {
   constructor(config) {
@@ -42,7 +44,7 @@ class Firebase {
   addUserSearch = newSearch =>
     this.database
       .ref('search-history/' + this.auth.currentUser.uid + '/' + newSearch.searchId)
-      .set(newSearch);
+      .set({ ...newSearch, timestamp: moment().unix() });
 
   getUserSearchHistory = () =>
     this.database
@@ -60,6 +62,19 @@ class Firebase {
     this.database
       .ref('language/' + this.auth.currentUser.uid)
       .once('value');
+
+  addUserLocation = location =>
+    this.database
+      .ref('locations/' + this.auth.currentUser.uid + '/' + location.properties.id)
+      .set({ ...location, timestamp: moment().unix() });
+
+  getUserLocations = () =>
+    this.database
+      .ref('locations/' + this.auth.currentUser.uid)
+      .orderByChild('timestamp')
+      .limitToLast(10)
+      .once('value');
+
 }
 
 export default Firebase;

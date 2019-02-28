@@ -298,10 +298,7 @@ class SummaryPage extends React.Component {
           from,
           to,
           routerLocation,
-          timestamp: moment().unix(),
         };
-
-        console.log('WILL NOW SAVE:', searchToSave);
 
         firebase.addUserSearch(searchToSave);
       }
