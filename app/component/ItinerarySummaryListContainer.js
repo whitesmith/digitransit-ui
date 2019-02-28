@@ -11,7 +11,7 @@ import Icon from './Icon';
 import SummaryRow from './SummaryRow';
 import { isBrowser } from '../util/browser';
 import { distance } from '../util/geo-utils';
-import { getZones, addExtraCalcsToItineraries } from '../util/legUtils';
+import { getZones } from '../util/legUtils';
 
 function ItinerarySummaryListContainer(
   {
@@ -32,11 +32,6 @@ function ItinerarySummaryListContainer(
   { config },
 ) {
   if (!error && itineraries && itineraries.length > 0) {
-
-    if(config.showExtraCalculations) {
-      addExtraCalcsToItineraries(itineraries);
-    }
-    // TODO: Send itineraries[0] to firebase
 
     const openedIndex = open && Number(open);
     const summaries = itineraries.map((itinerary, i) => (

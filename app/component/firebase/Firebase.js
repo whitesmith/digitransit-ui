@@ -29,19 +29,27 @@ class Firebase {
   signInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
 
   // database methods
-  setUserSettings = settings => {
-    console.log('SAVING SETTINGS: ', settings);
-    return this.database
-      .ref('customizedSettings/' + this.auth.currentUser.uid)
+  setUserSettings = settings =>
+    this.database
+      .ref('customized-settings/' + this.auth.currentUser.uid)
       .set(settings);
-  };
 
-  getUserSettings = () => {
-    console.log('LOADING SETTINGS...');
-    return this.database
-      .ref('customizedSettings/' + this.auth.currentUser.uid)
+  getUserSettings = () =>
+    this.database
+      .ref('customized-settings/' + this.auth.currentUser.uid)
       .once('value');
-  };
+
+  addUserSearch = newSearch =>
+    this.database
+      .ref('search-history/' + this.auth.currentUser.uid + '/' + newSearch.searchId)
+      .set(newSearch);
+
+  getUserSearchHistory = () =>
+    this.database
+      .ref('search-history/' + this.auth.currentUser.uid)
+      .orderByChild('timestamp')
+      .limitToLast(20)
+      .once('value');
 }
 
 export default Firebase;
