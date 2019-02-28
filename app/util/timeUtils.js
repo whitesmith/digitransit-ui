@@ -18,7 +18,7 @@ export function durationToString(inDuration) {
 
   if (duration.asHours() >= 1) {
     return `${duration.hours() +
-      duration.days() * 24} h ${duration.minutes()} min`;
+      duration.days() * 24}h${duration.minutes()}`;
   }
 
   return `${duration.minutes()} min`;
