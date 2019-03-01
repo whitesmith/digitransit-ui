@@ -13,6 +13,7 @@ import { dtLocationShape } from '../util/shapes';
 import { TAB_FAVOURITES } from '../util/path';
 import withBreakpoint from '../util/withBreakpoint';
 import { isBrowser } from '../util/browser';
+import { withAuthentication } from './session';
 
 class FavouriteRouteListContainerRoute extends Relay.Route {
   static queries = {
@@ -51,40 +52,93 @@ FavouriteRoutes.propTypes = {
   origin: dtLocationShape.isRequired,
 };
 
-const FavouritesPanel = ({
-  origin,
-  routes,
-  currentTime,
-  favouriteLocations,
-  favouriteStops,
-  breakpoint,
-}) =>
-  isBrowser && (
-    <div className="frontpage-panel">
-      <FavouriteLocationsContainer
-        origin={origin}
-        currentTime={currentTime}
-        favourites={[...favouriteLocations, ...favouriteStops]}
-      />
-      <div
-        className={`nearby-table-container ${breakpoint !== 'large' &&
-          `mobile`}`}
-      >
-        {routes.length > 0 ? (
-          <table className="nearby-departures-table">
-            <thead>
-              <NextDeparturesListHeader />
-            </thead>
-            <tbody>
-              <FavouriteRoutes routes={routes} origin={origin} />
-            </tbody>
-          </table>
-        ) : (
-          <NoFavouritesPanel />
-        )}
-      </div>
-    </div>
-  );
+class FavouritesPanel extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      favoriteStops: [],
+      favoriteLocations: [],
+      favoriteRoutes: [],
+      loading: false,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { firebase, authUser } = this.props;
+    if (authUser !== prevProps.authUser && authUser) {
+      this.setState({ loading: true });
+      console.log('OK LET ME FETCH THE FAVS');
+      firebase.getUserFavorites().then(snap => {
+        const results = [];
+        snap.forEach(s => {
+          const fav = s.val();
+          console.log(fav);
+          results.unshift(fav);
+        });
+        this.setState({
+          favoriteStops: results.filter(f => f.type === 'stop'),
+          favoriteLocations: results.filter(f => f.type === 'location'),
+          favoriteRoutes: results.filter(f => f.type === 'route'),
+          loading: false
+        });
+      });
+    }
+  }
+
+  render() {
+    const { favoriteLocations, favoriteRoutes, loading } = this.state;
+
+    const {
+      authUser,
+      origin,
+      routes,
+      currentTime,
+      favouriteLocations,
+      favouriteStops,
+      breakpoint
+    } = this.props;
+    if (isBrowser) {
+      let locationsToShow = [];
+      let routesToShow = [];
+      if (authUser) {
+        locationsToShow = favoriteLocations;
+        routesToShow = favoriteRoutes;
+      } else {
+        locationsToShow = [...favouriteLocations, ...favouriteStops];
+        routesToShow = routes;
+      }
+
+      return (
+        <div className="frontpage-panel">
+          <FavouriteLocationsContainer
+            origin={origin}
+            currentTime={currentTime}
+            favourites={locationsToShow}
+          />
+          <div
+            className={`nearby-table-container ${breakpoint !== 'large' &&
+              `mobile`}`}
+          >
+            {routesToShow.length > 0 ? (
+              <table className="nearby-departures-table">
+                <thead>
+                  <NextDeparturesListHeader />
+                </thead>
+                <tbody>
+                  <FavouriteRoutes routes={routesToShow} origin={origin} />
+                </tbody>
+              </table>
+            ) : (
+                <NoFavouritesPanel />
+              )}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
+}
 
 FavouritesPanel.propTypes = {
   routes: PropTypes.array.isRequired,
@@ -93,6 +147,8 @@ FavouritesPanel.propTypes = {
   favouriteLocations: PropTypes.array,
   favouriteStops: PropTypes.array,
   breakpoint: PropTypes.string.isRequired,
+  firebase: PropTypes.object,
+  authUser: PropTypes.object,
 };
 
 const FilteredFavouritesPanel = shouldUpdate(
@@ -105,7 +161,7 @@ const FilteredFavouritesPanel = shouldUpdate(
     (!nextProps.origin.gps &&
       (nextProps.origin.lat !== props.origin.lat ||
         nextProps.origin.lon !== props.origin.lon)),
-)(withBreakpoint(FavouritesPanel));
+)(withAuthentication(withBreakpoint(FavouritesPanel)));
 
 export default connectToStores(
   ctx => (
