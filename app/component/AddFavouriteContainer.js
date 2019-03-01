@@ -338,8 +338,8 @@ class AddFavouriteContainer extends React.Component {
   }
 }
 
-const AddFavouriteContainerWithFavourite = withAuthentication(connectToStores(
-  AddFavouriteContainer,
+const AddFavouriteContainerWithFavourite = connectToStores(
+  withAuthentication(AddFavouriteContainer),
   ['FavouriteLocationStore', 'FavouriteStopsStore'],
   (context, props) => ({
     favourite: props.location.pathname.includes('pysakki')
@@ -350,7 +350,7 @@ const AddFavouriteContainerWithFavourite = withAuthentication(connectToStores(
           .getStore('FavouriteLocationStore')
           .getById(parseInt(props.params.id, 10)),
   }),
-));
+);
 
 export {
   AddFavouriteContainerWithFavourite as default,

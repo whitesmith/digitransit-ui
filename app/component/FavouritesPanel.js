@@ -68,18 +68,15 @@ class FavouritesPanel extends React.Component {
     const { firebase, authUser } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
       this.setState({ loading: true });
-      console.log('OK LET ME FETCH THE FAVS');
       firebase.getUserFavorites().then(snap => {
         const results = [];
         snap.forEach(s => {
-          const fav = s.val();
-          console.log(fav);
-          results.unshift(fav);
+          results.unshift(s.val());
         });
         this.setState({
           favoriteStops: results.filter(f => f.type === 'stop'),
           favoriteLocations: results.filter(f => f.type === 'location'),
-          favoriteRoutes: results.filter(f => f.type === 'route'),
+          favoriteRoutes: results.filter(f => f.type === 'route').map(f => f.id),
           loading: false
         });
       });
@@ -108,7 +105,6 @@ class FavouritesPanel extends React.Component {
         locationsToShow = [...favouriteLocations, ...favouriteStops];
         routesToShow = routes;
       }
-
       return (
         <div className="frontpage-panel">
           <FavouriteLocationsContainer
