@@ -17,6 +17,11 @@ export const getNextDepartures = (routes, lat, lon) => {
 
     route.patterns.forEach(pattern => {
       const closest = getDistanceToNearestStop(lat, lon, pattern.stops);
+      // If origin has not been selected yet, choose first stop
+      if(!closest.stop) {
+        closest.stop = pattern.stops[0];
+        closest.distance = null;
+      }
       closest.stop.stoptimes
         .filter(stoptime => {
           const seenKey = `${stoptime.pattern.route.gtfsId}:${

@@ -28,7 +28,7 @@ const Distance = (props, context) => {
     distance = '';
   }
 
-  return <span className="distance">{distance}</span>;
+  return <span className="distance">{distance || '—'}</span>;
 };
 
 Distance.description = () => (
