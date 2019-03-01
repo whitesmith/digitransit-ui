@@ -4,6 +4,7 @@ import { routerShape } from 'react-router';
 import DTSearchAutosuggest from './DTSearchAutosuggest';
 import { saveSearch } from '../action/SearchActions';
 import { dtLocationShape } from '../util/shapes';
+import { withAuthentication } from './session';
 
 class DTOldSearchSavingAutosuggest extends React.Component {
   static contextTypes = {
@@ -52,6 +53,19 @@ class DTOldSearchSavingAutosuggest extends React.Component {
     if (item.type.indexOf('Favourite') === -1) {
       this.context.executeAction(saveSearch, { item, type });
     }
+
+    const { authUser, firebase } = this.props;
+
+    if (authUser && item.type === 'Feature') {
+      const { geometry, properties } = item;
+      firebase.addUserLocation({
+        geometry,
+        properties,
+        type: 'OldSearch',
+        timetableClicked: false,
+      });
+    }
+
     this.props.onSelect(item, type);
   };
 
@@ -86,4 +100,4 @@ class DTOldSearchSavingAutosuggest extends React.Component {
   };
 }
 
-export default DTOldSearchSavingAutosuggest;
+export default withAuthentication(DTOldSearchSavingAutosuggest);
