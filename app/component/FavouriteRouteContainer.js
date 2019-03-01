@@ -45,12 +45,12 @@ class FavouriteRouteContainerBase extends React.Component {
   }
 
   render() {
-    const { authUser } = this.props;
+    const { authUser, favourite, addFavourite } = this.props;
     return (
       <Favourite
         { ...this.props}
-        addFavourite={ authUser != null ? this.manageFavourite : this.props.addFavourite }
-        favourite={this.state.favourite}
+        addFavourite={ authUser != null ? this.manageFavourite : addFavourite }
+        favourite={ authUser != null ? this.state.favourite : favourite}
       />
     );
   }
