@@ -27,7 +27,7 @@ class FavouriteRouteContainerBase extends React.Component {
       });
     }
   }
-  
+
   manageFavourite = () => {
     const { firebase, gtfsId } = this.props;
     if (this.state.favourite) {
@@ -38,7 +38,7 @@ class FavouriteRouteContainerBase extends React.Component {
       firebase.setUserFavorite({
         type: 'route',
         id: gtfsId
-      }).then( 
+      }).then(
         () => this.setState({ favourite: true })
       );
     }

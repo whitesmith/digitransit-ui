@@ -121,43 +121,75 @@ class AddFavouriteContainer extends React.Component {
         delete this.state.favourite.id;
       }
 
+      const { authUser, firebase } = this.props;
+      let favouriteToSaveOnFirebase = null;
+
       if (
         (isStop(this.state.favourite) || isTerminal(this.state.favourite)) &&
         this.state.favourite.gtfsId
       ) {
-        this.context.executeAction(addFavouriteStop, this.state.favourite);
-      } else {
-        const { authUser, firebase } = this.props;
         if (authUser) {
-          firebase.setUserFavorite({
+          favouriteToSaveOnFirebase = {
+            ...this.state.favourite,
+            type: 'stop',
+            code: null,
+            gtfsId: null,
+          };
+        } else {
+          this.context.executeAction(addFavouriteStop, this.state.favourite);
+        }
+      } else {
+        if (authUser) {
+          favouriteToSaveOnFirebase = {
             ...this.state.favourite,
             type: 'location',
             code: null,
             gtfsId: null,
-          });
+          };
         } else {
           this.context.executeAction(addFavouriteLocation, this.state.favourite);
         }
       }
-      this.quit();
+
+      if (favouriteToSaveOnFirebase == null) {
+        this.quit();
+      } else {
+        firebase.setUserFavorite(favouriteToSaveOnFirebase).then(
+          () => this.quit()
+        );
+      }
     }
   };
 
   delete = () => {
+    const { authUser, firebase } = this.props;
+    let favouriteIdToDeleteOnFirebase = null;
+
+    console.log(this.state)
     if (
       (isStop(this.state.favourite) || isTerminal(this.state.favourite)) &&
       this.state.favourite.gtfsId
     ) {
-      this.context.executeAction(deleteFavouriteStop, this.state.favourite);
-    } else {
-      const { authUser, firebase } = this.props;
       if (authUser) {
-        firebase.deleteUserFavorite(this.state.favourite.id);
+        favouriteIdToDeleteOnFirebase = this.state.favourite.id;
+      } else {
+        this.context.executeAction(deleteFavouriteStop, this.state.favourite);
+      }
+    } else {
+      if (authUser) {
+        favouriteIdToDeleteOnFirebase = this.state.favourite.id;
       } else {
         this.context.executeAction(deleteFavouriteLocation, this.state.favourite);
       }
     }
-    this.quit();
+
+    if (favouriteIdToDeleteOnFirebase == null) {
+      this.quit();
+    } else {
+      firebase.deleteUserFavorite(favouriteIdToDeleteOnFirebase).then(
+        () => this.quit()
+      );
+    }
   };
 
   quit = () => {
