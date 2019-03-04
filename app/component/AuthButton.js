@@ -13,6 +13,7 @@ import { setLanguage } from '../action/userPreferencesActions';
 import { getDefaultSettings } from '../util/planParamUtil';
 import { clearQueryParams } from '../util/queryUtils';
 import { withAuthentication } from './session';
+import { getReadMessageIds } from '../store/localStorage';
 
 const resetStyle = { color: '', background: 'unset', fontSize: '' };
 const initials = name =>
@@ -60,7 +61,7 @@ class AuthButton extends React.Component {
 
     if(!config.FIREBASE) return null;
 
-    if (authUser) {
+    if (authUser && !authUser.isAnonymous) {
       return (
         <IconMenu
           className="navi-menu shy-left"

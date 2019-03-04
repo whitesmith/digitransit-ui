@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { markMessageAsRead } from '../action/MessageActions';
+import { withAuthentication } from './session';
 
 const heading = (e, key) => {
   if (e.type === 'heading') {
@@ -37,7 +38,7 @@ const renderContent = content =>
 /*
  * Renders message
  */
-const MessageBarMessage = ({ content, onMaximize, id }, {executeAction}) => (
+const MessageBarMessage = ({ content, onMaximize, id, authUser, firebase }, {executeAction}) => (
   // TOOD: find out how this should be accessible
   // eslint-disable-next-line jsx-a11y/click-events-have-key-events
   <div tabIndex={0} role="button" onClick={onMaximize}>
@@ -48,8 +49,10 @@ const MessageBarMessage = ({ content, onMaximize, id }, {executeAction}) => (
           className="button floating-button"
           onClick={
             () => {
-              console.log("mark message with id 'consent' as read and accept terms")
               executeAction(markMessageAsRead, 'consent');
+              if(authUser == null) {
+                firebase.signInAnonymously().then( () => console.log('ligou anonimo'));
+              }
             }
           }
         >
@@ -66,10 +69,12 @@ const MessageBarMessage = ({ content, onMaximize, id }, {executeAction}) => (
 MessageBarMessage.propTypes = {
   content: PropTypes.array,
   onMaximize: PropTypes.func.isRequired,
+  authUser: PropTypes.object,
+  firebase: PropTypes.object,
 };
 
 MessageBarMessage.contextTypes = {
   executeAction: PropTypes.func.isRequired,
 };
 
-export default MessageBarMessage;
+export default withAuthentication(MessageBarMessage);
