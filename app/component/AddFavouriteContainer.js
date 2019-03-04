@@ -17,6 +17,7 @@ import {
 } from '../action/FavouriteActions';
 import { isStop, isTerminal } from '../util/suggestionUtils';
 import DTEndpointAutosuggest from './DTEndpointAutosuggest';
+import { withAuthentication } from './session';
 
 class AddFavouriteContainer extends React.Component {
   static FavouriteIconIds = [
@@ -69,6 +70,7 @@ class AddFavouriteContainer extends React.Component {
   };
 
   state = {
+    originalFavourite: { ...this.props.favourite},
     favourite: { ...this.props.favourite },
   };
 
@@ -88,7 +90,7 @@ class AddFavouriteContainer extends React.Component {
   };
 
   isEdit = () =>
-    this.props.favourite !== undefined && this.props.favourite.id !== undefined;
+    this.state.originalFavourite !== undefined && this.state.originalFavourite.id !== undefined;
 
   canSave = () =>
     !isEmpty(this.state.favourite.selectedIconId) &&
@@ -100,8 +102,8 @@ class AddFavouriteContainer extends React.Component {
     if (this.canSave()) {
       // Old favourite needs to be removed if location type changes
       if (
-        this.props.favourite &&
-        this.props.favourite.gtfsId &&
+        this.state.originalFavourite &&
+        this.state.originalFavourite.gtfsId &&
         !this.state.favourite.gtfsId
       ) {
         this.context.executeAction(deleteFavouriteStop, {
@@ -109,8 +111,8 @@ class AddFavouriteContainer extends React.Component {
         });
         delete this.state.favourite.id;
       } else if (
-        this.props.favourite &&
-        !this.props.favourite.gtfsId &&
+        this.state.originalFavourite &&
+        !this.state.originalFavourite.gtfsId &&
         this.state.favourite.gtfsId
       ) {
         this.context.executeAction(deleteFavouriteLocation, {
@@ -119,28 +121,75 @@ class AddFavouriteContainer extends React.Component {
         delete this.state.favourite.id;
       }
 
+      const { authUser, firebase } = this.props;
+      let favouriteToSaveOnFirebase = null;
+
       if (
         (isStop(this.state.favourite) || isTerminal(this.state.favourite)) &&
         this.state.favourite.gtfsId
       ) {
-        this.context.executeAction(addFavouriteStop, this.state.favourite);
+        if (authUser) {
+          favouriteToSaveOnFirebase = {
+            ...this.state.favourite,
+            type: 'stop',
+            code: null,
+            gtfsId: null,
+          };
+        } else {
+          this.context.executeAction(addFavouriteStop, this.state.favourite);
+        }
       } else {
-        this.context.executeAction(addFavouriteLocation, this.state.favourite);
+        if (authUser) {
+          favouriteToSaveOnFirebase = {
+            ...this.state.favourite,
+            type: 'location',
+            code: null,
+            gtfsId: null,
+          };
+        } else {
+          this.context.executeAction(addFavouriteLocation, this.state.favourite);
+        }
       }
-      this.quit();
+
+      if (favouriteToSaveOnFirebase == null) {
+        this.quit();
+      } else {
+        firebase.setUserFavorite(favouriteToSaveOnFirebase).then(
+          () => this.quit()
+        );
+      }
     }
   };
 
   delete = () => {
+    const { authUser, firebase } = this.props;
+    let favouriteIdToDeleteOnFirebase = null;
+
+    console.log(this.state)
     if (
       (isStop(this.state.favourite) || isTerminal(this.state.favourite)) &&
       this.state.favourite.gtfsId
     ) {
-      this.context.executeAction(deleteFavouriteStop, this.state.favourite);
+      if (authUser) {
+        favouriteIdToDeleteOnFirebase = this.state.favourite.id;
+      } else {
+        this.context.executeAction(deleteFavouriteStop, this.state.favourite);
+      }
     } else {
-      this.context.executeAction(deleteFavouriteLocation, this.state.favourite);
+      if (authUser) {
+        favouriteIdToDeleteOnFirebase = this.state.favourite.id;
+      } else {
+        this.context.executeAction(deleteFavouriteLocation, this.state.favourite);
+      }
     }
-    this.quit();
+
+    if (favouriteIdToDeleteOnFirebase == null) {
+      this.quit();
+    } else {
+      firebase.deleteUserFavorite(favouriteIdToDeleteOnFirebase).then(
+        () => this.quit()
+      );
+    }
   };
 
   quit = () => {
@@ -175,6 +224,21 @@ class AddFavouriteContainer extends React.Component {
       return { favourite };
     });
   };
+
+  componentDidUpdate(prevProps) {
+    const { firebase, authUser, params } = this.props;
+    if (authUser !== prevProps.authUser && authUser) {
+      firebase.getUserFavorite(params.id).then(snap => {
+        const fav = snap.val();
+        if (!isEmpty(fav)) {
+          this.setState({
+            originalFavourite: fav,
+            favourite: fav
+          });
+        }
+      });
+    }
+  }
 
   render() {
     const { favourite } = this.state;
@@ -307,7 +371,7 @@ class AddFavouriteContainer extends React.Component {
 }
 
 const AddFavouriteContainerWithFavourite = connectToStores(
-  AddFavouriteContainer,
+  withAuthentication(AddFavouriteContainer),
   ['FavouriteLocationStore', 'FavouriteStopsStore'],
   (context, props) => ({
     favourite: props.location.pathname.includes('pysakki')

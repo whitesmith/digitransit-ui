@@ -3,7 +3,6 @@ import 'firebase/auth';
 import 'firebase/database';
 import moment from 'moment';
 
-
 class Firebase {
   constructor(config) {
     app.initializeApp(config);
@@ -75,6 +74,31 @@ class Firebase {
       .limitToLast(10)
       .once('value');
 
+  setUserFavorite = favorite => {
+    const timestamp = moment().unix();
+    if (favorite.id == null) {
+      favorite.id = `${timestamp}${favorite.lat}${favorite.lon}`.split('.').join('');
+    }
+    return this.database
+      .ref('favorites/' + this.auth.currentUser.uid + '/' + favorite.id)
+      .set({ ...favorite, timestamp });
+  };
+
+  getUserFavorites = () =>
+    this.database
+      .ref('favorites/' + this.auth.currentUser.uid)
+      .orderByChild('timestamp')
+      .once('value');
+
+  getUserFavorite = favoriteId =>
+    this.database
+      .ref('favorites/' + this.auth.currentUser.uid + '/' + favoriteId)
+      .once('value');
+
+  deleteUserFavorite = favoriteId =>
+    this.database
+      .ref('favorites/' + this.auth.currentUser.uid + '/' + favoriteId)
+      .remove();
 }
 
 export default Firebase;
