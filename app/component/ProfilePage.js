@@ -33,7 +33,25 @@ class ProfilePage extends React.Component {
     this.setState({ deleteConfirmationIsOpen: false });
   };
 
-  downloadData = () => {};
+  downloadData = () => {
+    this.props.firebase
+      .downloadUserData()
+      .then(result => {
+        const convertedData = JSON.stringify({
+          search_history: result[0].val(),
+          locations: result[1].val(),
+          favorites: result[2].val()
+        });
+
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(convertedData));
+        element.setAttribute('download', 'user_data');
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      });
+  };
 
   deleteAccount = () =>
     this.props.firebase
