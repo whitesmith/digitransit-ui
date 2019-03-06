@@ -13,6 +13,10 @@ import { setLanguage } from '../action/userPreferencesActions';
 import { getDefaultSettings } from '../util/planParamUtil';
 import { clearQueryParams } from '../util/queryUtils';
 import { withAuthentication } from './session';
+import { getReadMessageIds } from '../store/localStorage';
+import BasicDialog from './BasicDialog';
+import MessageBarMessage from './MessageBarMessage';
+import Dialog from 'material-ui/Dialog';
 
 const resetStyle = { color: '', background: 'unset', fontSize: '' };
 const initials = name =>
@@ -53,6 +57,45 @@ const AvatarFallback = (url, name) => (
 );
 
 class AuthButton extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { consentAlertIsOpen: false };
+  }
+
+  onCancelConsentDialog() {
+    this.setState({ consentAlertIsOpen: false });
+  }
+
+  onAcceptConsentDialog() {
+    this.context.executeAction(markMessageAsRead, 'consent');
+    this.setState({ consentAlertIsOpen: false });
+    this.loginWithFirebase();
+  }
+
+  loginWithFirebase() {
+    const { firebase } = this.props;
+    const { router, executeAction } = this.context;
+    firebase.signInWithGoogle().then(() => {
+      executeAction(markMessageAsRead, 'account');
+      firebase.getUserLanguage().then(snap => {
+        const language = snap.val();
+        if (language) {
+          executeAction(setLanguage, language);
+        }
+      });
+      firebase.getUserSettings().then(snap => {
+        const settings = snap.val();
+        if (!isEmpty(settings)) {
+          router.replace({
+            ...router.location,
+            query: { ...settings },
+          });
+        }
+      });
+    });
+  }
+
   render() {
     const { firebase, authUser } = this.props;
     const { router, executeAction, config } = this.context;
@@ -100,26 +143,52 @@ class AuthButton extends React.Component {
       );
     }
 
-    return navAuthButton('signin', 'sign-in', 'Sign in', () => {
-      firebase.signInWithGoogle().then(() => {
-        executeAction(markMessageAsRead, 'account');
-        firebase.getUserLanguage().then(snap => {
-          const language = snap.val();
-          if (language) {
-            executeAction(setLanguage, language);
-          }
-        });
-        firebase.getUserSettings().then(snap => {
-          const settings = snap.val();
-          if (!isEmpty(settings)) {
-            router.replace({
-              ...router.location,
-              query: { ...settings },
-            });
-          }
-        });
-      });
-    });
+    const consentMessage = config.staticMessages.find(m => m.id === 'consent');
+
+    return (
+      <div>
+        {navAuthButton('signin', 'sign-in', 'Sign in', () => {
+          if (!getReadMessageIds().includes('consent') && consentMessage != null) {
+              this.setState({ consentAlertIsOpen: true });
+            } else {
+              this.loginWithFirebase();
+            }
+        })}
+        {consentMessage != null && (
+          <Dialog
+            actions={[
+              <button
+                key={'cancel'}
+                className="button secondary radius"
+                onClick={this.onCancelConsentDialog.bind(this)}
+              >
+                <FormattedMessage id="cancel" defaultMessage="Cancel" />
+              </button>,
+              <span>&nbsp;</span>,
+              <button
+                key={'accept'}
+                className="button secondary radius"
+                onClick={this.onAcceptConsentDialog.bind(this)}
+              >
+                <FormattedMessage id="accept" defaultMessage="Accept" />
+              </button>,
+            ]}
+            modal={false}
+            open={this.state.consentAlertIsOpen}
+          >
+            <MessageBarMessage
+              key={'consent_dialog'}
+              onMaximize={ () => {} }
+              content={
+                config.staticMessages.find(m => m.id === 'consent')
+                  .content[context.getStore('PreferencesStore').getLanguage()]
+              }
+              id={'consent_dialog'}
+            />
+          </Dialog>
+        )}
+      </div>
+    );
   }
 }
 
