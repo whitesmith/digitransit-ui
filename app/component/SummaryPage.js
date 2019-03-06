@@ -269,7 +269,7 @@ class SummaryPage extends React.Component {
     let earliestStartTime;
     let latestArrivalTime;
 
-    if (hasItineraries) {
+    if (hasItineraries && hasItineraries.length > 0) {
       earliestStartTime = Math.min(...itineraries.map(i => i.startTime));
       latestArrivalTime = Math.max(...itineraries.map(i => i.endTime));
 
