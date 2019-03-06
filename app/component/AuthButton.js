@@ -60,7 +60,7 @@ class AuthButton extends React.Component {
 
     if(!config.FIREBASE) return null;
 
-    if (authUser) {
+    if (authUser && !authUser.isAnonymous) {
       return (
         <IconMenu
           className="navi-menu shy-left"

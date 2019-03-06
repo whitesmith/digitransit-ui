@@ -29,6 +29,9 @@ class Firebase {
   // google login methods
   signInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
 
+  // anonymous login methods
+  signInAnonymously = () => this.auth.signInAnonymously();
+
   // database methods
   setUserSettings = settings =>
     this.database

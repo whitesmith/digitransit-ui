@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { withFirebase } from '../firebase';
+import { getReadMessageIds } from '../../store/localStorage';
+
 
 const withAuthentication = Component => {
   class WithAuthentication extends React.Component {
@@ -13,12 +15,18 @@ const withAuthentication = Component => {
     }
 
     componentDidMount() {
-      if(!this.props.firebase) return;
+      const { firebase } = this.props;
+
+      if (!firebase) return;
       
-      this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
-        authUser
-          ? this.setState({ authUser })
-          : this.setState({ authUser: null });
+      this.listener = firebase.auth.onAuthStateChanged(authUser => {
+        if (authUser == null) {
+          if (getReadMessageIds().includes('consent')) {
+            firebase.signInAnonymously();
+          }
+        }
+  
+        this.setState({ authUser });
       });
     }
 

@@ -48,7 +48,6 @@ const MessageBarMessage = ({ content, onMaximize, id }, {executeAction}) => (
           className="button floating-button"
           onClick={
             () => {
-              console.log("mark message with id 'consent' as read and accept terms")
               executeAction(markMessageAsRead, 'consent');
             }
           }
