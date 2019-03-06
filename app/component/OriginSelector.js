@@ -9,6 +9,14 @@ import OriginSelectorRow from './OriginSelectorRow';
 import { suggestionToLocation, getIcon } from '../util/suggestionUtils';
 import GeopositionSelector from './GeopositionSelector';
 
+export const filterFavouriteHelper = (item, favourite) =>
+  item.geometry &&
+  item.geometry.coordinates &&
+  Math.abs(favourite.lat - item.geometry.coordinates[1]) < 1e-4 &&
+  Math.abs(favourite.lon - item.geometry.coordinates[0]) < 1e-4;
+
+export const isGeocodingResult = item => item.geometry && item.properties;
+
 const OriginSelector = (
   { favouriteLocations, favouriteStops, oldSearches, destination, origin, tab },
   { config, router },
@@ -25,24 +33,15 @@ const OriginSelector = (
   };
 
   const notInFavouriteLocations = item =>
-    favouriteLocations.filter(
-      favourite =>
-        item.geometry &&
-        item.geometry.coordinates &&
-        Math.abs(favourite.lat - item.geometry.coordinates[1]) < 1e-4 &&
-        Math.abs(favourite.lon - item.geometry.coordinates[0]) < 1e-4,
+    favouriteLocations.filter(favourite =>
+      filterFavouriteHelper(item, favourite)
     ).length === 0;
 
   const notInFavouriteStops = item =>
-    favouriteStops.filter(
-      favourite =>
-        item.geometry &&
-        item.geometry.coordinates &&
-        Math.abs(favourite.lat - item.geometry.coordinates[1]) < 1e-4 &&
-        Math.abs(favourite.lon - item.geometry.coordinates[0]) < 1e-4,
+    favouriteStops.filter(favourite =>
+      filterFavouriteHelper(item, favourite)
     ).length === 0;
 
-  const isGeocodingResult = item => item.geometry && item.properties;
 
   // React doesn't anymore compare all elements rendered on server side to
   // those rendered on client side. Thanks to this fav icons aren't patched

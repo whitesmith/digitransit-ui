@@ -165,7 +165,6 @@ class AddFavouriteContainer extends React.Component {
     const { authUser, firebase } = this.props;
     let favouriteIdToDeleteOnFirebase = null;
 
-    console.log(this.state)
     if (
       (isStop(this.state.favourite) || isTerminal(this.state.favourite)) &&
       this.state.favourite.gtfsId
