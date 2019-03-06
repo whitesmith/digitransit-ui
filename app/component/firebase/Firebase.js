@@ -29,7 +29,9 @@ class Firebase {
   downloadUserData = () => Promise.all([
     this.getUserSearchHistory(),
     this.getUserLocations(),
-    this.getUserFavorites()
+    this.getUserFavorites(),
+    this.getUserLanguage(),
+    this.getUserSettings()
   ]);
 
   // google login methods

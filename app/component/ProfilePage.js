@@ -37,11 +37,24 @@ class ProfilePage extends React.Component {
     this.props.firebase
       .downloadUserData()
       .then(result => {
-        const convertedData = JSON.stringify({
-          search_history: result[0].val(),
-          locations: result[1].val(),
-          favorites: result[2].val()
-        });
+        const convertedData = JSON.stringify(
+          [
+            'search_history',
+            'locations',
+            'favorites',
+            'language',
+            'settings'
+          ].reduce(
+            (acc, cur, idx) => {
+              const value = result[idx].val();
+              if (value != null) {
+                acc[cur] = value;
+              }
+              return acc;
+            },
+            {}
+          )
+        );
 
         const element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(convertedData));
