@@ -26,6 +26,14 @@ class Firebase {
 
   deleteCurrentUser = () => this.auth.currentUser.delete();
 
+  downloadUserData = () => Promise.all([
+    this.getUserSearchHistory(),
+    this.getUserLocations(),
+    this.getUserFavorites(),
+    this.getUserLanguage(),
+    this.getUserSettings()
+  ]);
+
   // google login methods
   signInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
 
