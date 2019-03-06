@@ -14,7 +14,6 @@ import { getDefaultSettings } from '../util/planParamUtil';
 import { clearQueryParams } from '../util/queryUtils';
 import { withAuthentication } from './session';
 import { getReadMessageIds } from '../store/localStorage';
-import BasicDialog from './BasicDialog';
 import MessageBarMessage from './MessageBarMessage';
 import Dialog from 'material-ui/Dialog';
 
