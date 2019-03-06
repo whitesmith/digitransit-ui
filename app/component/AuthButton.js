@@ -15,7 +15,7 @@ import { clearQueryParams } from '../util/queryUtils';
 import { withAuthentication } from './session';
 import { getReadMessageIds } from '../store/localStorage';
 import MessageBarMessage from './MessageBarMessage';
-import Dialog from 'material-ui/Dialog';
+import BasicDialog from './BasicDialog';
 
 const resetStyle = { color: '', background: 'unset', fontSize: '' };
 const initials = name =>
@@ -93,7 +93,7 @@ class AuthButton extends React.Component {
 
   render() {
     const { firebase, authUser } = this.props;
-    const { router, executeAction, config, getStore } = this.context;
+    const { router, executeAction, config } = this.context;
     const path = router.location.pathname;
 
     if (!config.FIREBASE) return null;
@@ -138,34 +138,20 @@ class AuthButton extends React.Component {
       );
     }
 
-
-    const consentMessage = config.staticMessages.find(m => m.id === 'consent');
-    const language = getStore('PreferencesStore').getLanguage();
-    const content =
-      consentMessage != null && language != null
-        ? consentMessage.content[language]
-        : null;
+    const consentMsgNotAccepted = !getReadMessageIds().includes('consent');
 
     return (
       <div>
         {navAuthButton('signin', 'sign-in', 'Sign in', () => {
-          if (!getReadMessageIds().includes('consent') && content != null) {
+          if (consentMsgNotAccepted) {
             this.setState({ consentAlertIsOpen: true });
           } else {
             this.loginWithFirebase();
           }
         })}
-        {consentMessage != null && (
-          <Dialog
-            actions={[
-              <button
-                key={'cancel'}
-                className="button secondary radius"
-                onClick={this.onCancelConsentDialog.bind(this)}
-              >
-                <FormattedMessage id="cancel" defaultMessage="Cancel" />
-              </button>,
-              <span>&nbsp;</span>,
+        {consentMsgNotAccepted && (
+          <BasicDialog
+            buttons={[
               <button
                 key={'accept'}
                 className="button secondary radius"
@@ -174,16 +160,10 @@ class AuthButton extends React.Component {
                 <FormattedMessage id="accept" defaultMessage="Accept" />
               </button>,
             ]}
-            modal={false}
-            open={this.state.consentAlertIsOpen}
-          >
-            <MessageBarMessage
-              key={'consent_dialog'}
-              onMaximize={() => {}}
-              content={content}
-              id={'consent_dialog'}
-            />
-          </Dialog>
+            isOpen={this.state.consentAlertIsOpen}
+            messageId={'consent-confirmation'}
+            defaultMessage={'We use cookies to improve our services. Please confirm you agree to its terms and conditions.'}
+          />
         )}
       </div>
     );
@@ -201,7 +181,6 @@ AuthButton.contextTypes = {
   executeAction: PropTypes.func.isRequired,
   config: PropTypes.object.isRequired,
   router: routerShape.isRequired,
-  getStore: PropTypes.func
 };
 
 export default withAuthentication(AuthButton);
