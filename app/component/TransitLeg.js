@@ -153,7 +153,6 @@ class TransitLeg extends React.Component {
           <span className="intermediate-stops-duration">
             ({durationToString(leg.duration * 1000)})
           </span>
-          <TransitCost transitCost={leg.cost || null} />
         </div>
       );
     };

@@ -8,25 +8,10 @@ const RouteInformation = ({itinerary}, context) => {
   const { config } = context;
   
   if(config.showExtraCalculations) {
-    if(!itinerary.cost && !itinerary.co2) return null;
+    if(!itinerary.co2) return null;
 
     return (
       <div className="itinerary-route-information row">
-        {
-          itinerary.cost > 0 && (
-            <div className="columns">
-              <p className="itinerary-route-value">
-                <TransitCost transitCost={itinerary.cost} />
-              </p>
-              <small>
-                <FormattedMessage
-                  id="trip-cost"
-                  defaultMessage="Cost of the journey"
-                />
-              </small>
-            </div>
-          )
-        }
         {
           itinerary.co2 > 0 && (
             <div className="columns">
