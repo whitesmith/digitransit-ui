@@ -326,7 +326,8 @@ export const addExtraCalcsToLeg = leg => {
   if (isWalkingLeg(leg)) {
     // calories
     if (!leg.duration) return;
-    leg.calories = (3.5 * 70.8) * (leg.duration / 60 / 60);
+     // calories = (3.5 * avg_weight) * time_in_hours
+    leg.calories = 247.8 * (leg.duration / 3600);
   }
 
   if (isCarLeg(leg) || isBusLeg(leg) || isSubwayLeg(leg) || isTramLeg(leg) || isRailLeg(leg)) {
