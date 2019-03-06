@@ -49,15 +49,11 @@ const AvatarFallback = (url, name) => (
     >
       {url ? null : initials(name)}
     </Avatar>
-    <Icon
-      className="icon"
-      img="icon-icon_arrow-dropdown"
-    />
+    <Icon className="icon" img="icon-icon_arrow-dropdown" />
   </IconButton>
 );
 
 class AuthButton extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = { consentAlertIsOpen: false };
@@ -98,10 +94,10 @@ class AuthButton extends React.Component {
 
   render() {
     const { firebase, authUser } = this.props;
-    const { router, executeAction, config } = this.context;
+    const { router, executeAction, config, getStore } = this.context;
     const path = router.location.pathname;
 
-    if(!config.FIREBASE) return null;
+    if (!config.FIREBASE) return null;
 
     if (authUser && !authUser.isAnonymous) {
       return (
@@ -143,16 +139,22 @@ class AuthButton extends React.Component {
       );
     }
 
+
     const consentMessage = config.staticMessages.find(m => m.id === 'consent');
+    const language = getStore('PreferencesStore').getLanguage();
+    const content =
+      consentMessage != null && language != null
+        ? consentMessage.content[language]
+        : null;
 
     return (
       <div>
         {navAuthButton('signin', 'sign-in', 'Sign in', () => {
-          if (!getReadMessageIds().includes('consent') && consentMessage != null) {
-              this.setState({ consentAlertIsOpen: true });
-            } else {
-              this.loginWithFirebase();
-            }
+          if (!getReadMessageIds().includes('consent') && content != null) {
+            this.setState({ consentAlertIsOpen: true });
+          } else {
+            this.loginWithFirebase();
+          }
         })}
         {consentMessage != null && (
           <Dialog
@@ -178,11 +180,8 @@ class AuthButton extends React.Component {
           >
             <MessageBarMessage
               key={'consent_dialog'}
-              onMaximize={ () => {} }
-              content={
-                config.staticMessages.find(m => m.id === 'consent')
-                  .content[context.getStore('PreferencesStore').getLanguage()]
-              }
+              onMaximize={() => {}}
+              content={content}
               id={'consent_dialog'}
             />
           </Dialog>
@@ -203,6 +202,7 @@ AuthButton.contextTypes = {
   executeAction: PropTypes.func.isRequired,
   config: PropTypes.object.isRequired,
   router: routerShape.isRequired,
+  getStore: PropTypes.func
 };
 
 export default withAuthentication(AuthButton);
