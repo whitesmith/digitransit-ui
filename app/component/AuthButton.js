@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { routerShape } from 'react-router';
+import { routerShape, Link } from 'react-router';
 import isEmpty from 'lodash/isEmpty';
 import Avatar from 'material-ui/Avatar';
 import IconButton from 'material-ui/IconButton';
@@ -14,7 +14,6 @@ import { getDefaultSettings } from '../util/planParamUtil';
 import { clearQueryParams } from '../util/queryUtils';
 import { withAuthentication } from './session';
 import { getReadMessageIds } from '../store/localStorage';
-import MessageBarMessage from './MessageBarMessage';
 import BasicDialog from './BasicDialog';
 
 const resetStyle = { color: '', background: 'unset', fontSize: '' };
@@ -153,8 +152,15 @@ class AuthButton extends React.Component {
           <BasicDialog
             buttons={[
               <button
-                key={'accept'}
+                key={'cancel'}
                 className="button secondary radius"
+                onClick={this.onCancelConsentDialog.bind(this)}
+              >
+                <FormattedMessage id="cancel" defaultMessage="Cancel" />
+              </button>,
+              <button
+                key={'accept'}
+                className="button radius" 
                 onClick={this.onAcceptConsentDialog.bind(this)}
               >
                 <FormattedMessage id="accept" defaultMessage="Accept" />
@@ -162,8 +168,21 @@ class AuthButton extends React.Component {
             ]}
             isOpen={this.state.consentAlertIsOpen}
             messageId={'consent-confirmation'}
-            defaultMessage={'We use cookies to improve our services. Please confirm you agree to its terms and conditions.'}
-          />
+            defaultMessage={'We use cookies to improve our services. Please confirm you agree to its terms and conditions. Read more:'}
+          >
+            &nbsp;<Link to="terms-and-conditions" target="_blank">
+              <FormattedMessage
+                id="terms-and-conditions"
+                defaultMessage="Terms and Conditions"
+              />
+            </Link>
+            &nbsp;<Link to="privacy-policy" target="_blank">
+              <FormattedMessage
+                id="privacy-policy"
+                defaultMessage="Privacy Policy"
+              />
+            </Link>
+          </BasicDialog>
         )}
       </div>
     );

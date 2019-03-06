@@ -4,13 +4,14 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Dialog from 'material-ui/Dialog';
 
-const BasicDialog = ({ buttons, isOpen, messageId, defaultMessage }) => (
+const BasicDialog = ({ children, buttons, isOpen, messageId, defaultMessage }) => (
   <Dialog
     actions={buttons.reduce((acc, btn) => [...acc, <span>&nbsp;</span>, btn])}
     modal={false}
     open={isOpen}
   >
     <FormattedMessage id={messageId} defaultMessage={defaultMessage} />
+    {children}
   </Dialog>
 );
 
