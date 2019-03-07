@@ -715,6 +715,8 @@ const translations = {
       'This operation is sensitive and requires recent authentication. Log in again before retrying this request.',
     'delete-account-confirmation':
       'Are you sure you want to delete your account?',
+    'consent-confirmation':
+      'We use cookies to improve our services. Please confirm you agree to its terms and conditions. Read more:',
     'departure-is-canceled': '{modeInfo} {from}–{to} at {time} is cancelled',
     'departure-is-canceled-airplane': 'Flight {shortName}',
     'departure-is-canceled-bus': 'Bus {shortName}',
@@ -2788,6 +2790,8 @@ const translations = {
       'Esta operação é sensível e requer autenticação recente. Faça o login novamente antes de tentar novamente esta operação.',
     'delete-account-confirmation':
       'Tem a certeza que deseja eliminar a sua conta?',
+    'consent-confirmation':
+      'Este website utiliza cookies para melhorar a sua experiência. Por favor, confirme que concorda com os termos e condições do mesmo. Ler mais:',
     'departure-is-canceled': '{modeInfo} {from}–{to} às {time} foi cancelado',
     'departure-is-canceled-airplane': 'Voo {shortName}',
     'departure-is-canceled-bus': 'Autocarro {shortName}',
