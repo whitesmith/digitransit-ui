@@ -5,7 +5,7 @@ import React from 'react';
 import { intlShape } from 'react-intl';
 
 import { displayDistance } from '../util/geo-utils';
-import { getTotalDistance, getTotalWalkingDistance, getTotalWalkingCalories, containsBiking } from '../util/legUtils';
+import { getTotalDistance, getTotalWalkingDistance, containsBiking } from '../util/legUtils';
 
 const ItineraryProfile = ({ itinerary, small }, { config, intl }) => {
   const { elevationGained, elevationLost } = itinerary;
