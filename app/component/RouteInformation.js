@@ -3,23 +3,21 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import CO2Emissions from './CO2Emissions';
 import WalkCalories from './WalkCalories';
-import { getTotalWalkingCalories } from '../util/legUtils';
 
 const RouteInformation = ({itinerary}, context) => {
   const { config } = context;
   
   if(config.showExtraCalculations) {
     
-    if(!itinerary.co2) return null;
-
-    const tripCalories = getTotalWalkingCalories(itinerary);
+    if(!itinerary.calories || !itinerary.co2) return null;
+    
     return (
       <div className="itinerary-route-information row">
         {
-          tripCalories > 0 && (
+          itinerary.calories > 0 && (
             <div className="columns">
               <p className="itinerary-route-value">
-                <WalkCalories walkCalories={tripCalories} />
+                <WalkCalories walkCalories={itinerary.calories} />
               </p>
               <small>
                 <FormattedMessage
