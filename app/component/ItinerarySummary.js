@@ -2,10 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Duration from './Duration';
 import WalkDistance from './WalkDistance';
-import WalkCalories from './WalkCalories';
 import {
   getTotalWalkingDistance,
-  getTotalWalkingCalories,
   getTotalBikingDistance,
   containsBiking,
   onlyBiking,
@@ -28,7 +26,6 @@ const ItinerarySummary = ({ itinerary, children }) => (
     {!onlyBiking(itinerary) && (
       <span className="walking-distance--itinerary-summary">
         <WalkDistance walkDistance={getTotalWalkingDistance(itinerary)} />
-        <WalkCalories walkCalories={getTotalWalkingCalories(itinerary)} />
       </span>
     )}
   </div>

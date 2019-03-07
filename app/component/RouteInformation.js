@@ -1,27 +1,28 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import TransitCost from './TransitCost';
 import CO2Emissions from './CO2Emissions';
+import WalkCalories from './WalkCalories';
 
 const RouteInformation = ({itinerary}, context) => {
   const { config } = context;
   
   if(config.showExtraCalculations) {
-    if(!itinerary.cost && !itinerary.co2) return null;
-
+    
+    if(!itinerary.calories || !itinerary.co2) return null;
+    
     return (
       <div className="itinerary-route-information row">
         {
-          itinerary.cost > 0 && (
+          itinerary.calories > 0 && (
             <div className="columns">
               <p className="itinerary-route-value">
-                <TransitCost transitCost={itinerary.cost} />
+                <WalkCalories walkCalories={itinerary.calories} />
               </p>
               <small>
                 <FormattedMessage
-                  id="trip-cost"
-                  defaultMessage="Cost of the journey"
+                  id="trip-calories"
+                  defaultMessage="Calories burned on the journey"
                 />
               </small>
             </div>

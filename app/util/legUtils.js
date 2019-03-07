@@ -315,8 +315,8 @@ export const getTotalCost = (itinerary) =>
 
 // gCO2/m per transportation type
 const CO2EmissionByMode = {
-  [LegMode.Car]: 0.135,
-  [LegMode.Bus]: 0.07,
+  [LegMode.Car]: 0.127,
+  [LegMode.Bus]: 0.075,
   [LegMode.Subway]: 0.0305,
   [LegMode.Tram]: 0.023,
   [LegMode.Rail]: 0.028,
@@ -325,8 +325,9 @@ const CO2EmissionByMode = {
 export const addExtraCalcsToLeg = leg => {
   if (isWalkingLeg(leg)) {
     // calories
-    if (!leg.distance) return;
-    leg.calories = leg.distance * 0.068;
+    if (!leg.duration) return;
+     // calories = (3.5 * avg_weight) * time_in_hours
+    leg.calories = 247.8 * (leg.duration / 3600);
   }
 
   if (isCarLeg(leg) || isBusLeg(leg) || isSubwayLeg(leg) || isTramLeg(leg) || isRailLeg(leg)) {

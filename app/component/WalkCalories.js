@@ -5,7 +5,8 @@ import cx from 'classnames';
 function WalkCalories(props) {
   if(!props.walkCalories) return null;
 
-  const roundedWalkCalories = parseInt(props.walkCalories, 10);
+
+  const roundedWalkCalories = Math.round(parseFloat(props.walkCalories));
   const roundedWalkCaloriesInK = (roundedWalkCalories / 1000).toFixed(1);
 
   const walkCalories =
