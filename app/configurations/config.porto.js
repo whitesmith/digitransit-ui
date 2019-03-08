@@ -250,7 +250,8 @@ export default configMerger(defaultConfig, {
     keywords: 'mmt',
   },
   // Ticket information feature toggle
-  showTicketInformation: false,
+  showTicketInformation: true,
+  ticketLink: '',
   showRouteInformation: true,
   
   //CO2, Calories, Cost
@@ -791,6 +792,26 @@ export default configMerger(defaultConfig, {
       },
     },
   ],
+
+  geoJson: {
+    layers: [
+      {
+        "name": {
+            "fi": "POI",
+            "sv": "POI",
+            "pt": "POI",
+            "en": "POI"
+        },
+        "url": "/poi.json",
+        "metadata": {
+            "name": "name",
+            "popupContent": "popup",
+            "icon": "icon"
+        }
+    },
+    ],
+  },
+  geoJsonCluster: true,
 
   themeMap: {
     porto: 'porto',

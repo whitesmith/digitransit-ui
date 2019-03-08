@@ -11,6 +11,8 @@ if (isBrowser) {
   Geojson = require('react-leaflet/es/GeoJSON').default;
 }
 /* eslint-enable global-require */
+import GeoJSONCluster from './GeoJSONCluster';
+let MapTag;
 
 const GeoJsonIcon = L.Icon.extend({
   options: {
@@ -45,6 +47,12 @@ class GeoJSON extends React.Component {
       }
     });
     this.icons = icons;
+
+    if(this.context.config.geoJsonCluster) {
+      MapTag = GeoJSONCluster;
+    } else {
+      MapTag = Geojson;
+    }
   }
 
   pointToLayer = (feature, latlng) => {
@@ -118,7 +126,7 @@ class GeoJSON extends React.Component {
 
   render() {
     return (
-      <Geojson
+      <MapTag
         data={this.props.data}
         style={this.styler}
         pointToLayer={this.pointToLayer}
