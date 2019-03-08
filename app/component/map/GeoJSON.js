@@ -1,18 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import L from 'leaflet';
-
+import GeoJSONCluster from './GeoJSONCluster';
 import { isBrowser } from '../../util/browser';
 
-let Geojson;
+let Geojson, MapTag;
 
 /* eslint-disable global-require */
 if (isBrowser) {
   Geojson = require('react-leaflet/es/GeoJSON').default;
 }
 /* eslint-enable global-require */
-import GeoJSONCluster from './GeoJSONCluster';
-let MapTag;
 
 const GeoJsonIcon = L.Icon.extend({
   options: {
