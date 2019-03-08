@@ -31,13 +31,15 @@ class GeoJSON extends React.Component {
 
     this.props.data.features.forEach(feature => {
       const p = feature.properties;
-      if (p && p.icon && p.icon.id && p.icon.data) {
+      let svgSource = p.icon.data || p.icon.svg;
+
+      if (p && p.icon && p.icon.id && svgSource) {
         /*
           For data URI SVG support in Firefox & IE it's necessary to URI encode the string
           & replace the '#' character with '%23'. `encodeURI()` won't do this.
         */
         const url = `data:image/svg+xml;charset=utf-8,${encodeURI(
-          p.icon.data,
+          svgSource,
         ).replace(/#/g, '%23')}`;
         icons[p.icon.id] = new GeoJsonIcon({ iconUrl: url });
       }
