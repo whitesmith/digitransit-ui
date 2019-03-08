@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import OriginSelector from './OriginSelector';
+import OriginSelectorWithFirebase from './OriginSelectorWithFirebase';
 import { dtLocationShape } from '../util/shapes';
+import { withAuthentication } from './session';
 
-const PanelOrSelectLocation = ({ panel, panelctx }) => {
+const PanelOrSelectLocation = ({ panel, panelctx, authUser, firebase }) => {
   if (panelctx.origin.ready) {
     return React.createElement(panel, panelctx);
   }
@@ -18,11 +20,19 @@ const PanelOrSelectLocation = ({ panel, panelctx }) => {
             defaultMessage="Select your origin"
           />
         </p>
-        <OriginSelector
-          origin={panelctx.origin}
-          destination={panelctx.destination}
-          tab={panelctx.tab}
-        />
+        {authUser == null ?
+          <OriginSelector
+            origin={panelctx.origin}
+            destination={panelctx.destination}
+            tab={panelctx.tab}
+          /> :
+          <OriginSelectorWithFirebase
+            origin={panelctx.origin}
+            destination={panelctx.destination}
+            tab={panelctx.tab}
+            firebase={firebase}
+          />
+        }
       </div>
     </div>
   );
@@ -35,6 +45,8 @@ PanelOrSelectLocation.propTypes = {
     origin: dtLocationShape,
     destination: dtLocationShape,
   }).isRequired,
+  authUser: PropTypes.object,
+  firebase: PropTypes.object,
 };
 
-export default PanelOrSelectLocation;
+export default withAuthentication(PanelOrSelectLocation);

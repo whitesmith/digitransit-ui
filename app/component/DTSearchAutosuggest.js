@@ -208,15 +208,35 @@ class DTAutosuggest extends React.Component {
               suggestion => suggestion.type === 'CurrentLocation'
             ));
             // fetch suggestions and append to the list
-            firebase.getUserLocations().then(snap => {
+            Promise.all([
+                firebase.getUserLocations(),
+                firebase.getUserFavorites()
+            ]).then(snap => {
               const results = [];
-              snap.forEach(s => {
+    
+              snap[0].forEach(s => {
                 results.unshift(s.val());
+              });
+
+              snap[1].forEach(s => {
+                const f = s.val();
+                if (f.type === 'location') {
+                  results.unshift({
+                    type: 'FavouritePlace',
+                    properties: {
+                      ...f,
+                      label: f.locationName,
+                      layer: 'favouritePlace',
+                    },
+                    geometry: { type: 'Point', coordinates: [f.lon, f.lat] },
+                  });
+                }
               });
 
               if (currentLocation != null) {
                 results.unshift(currentLocation);
               }
+
               this.handleSuggestionResults(value, results);
             });
           } else {
