@@ -253,7 +253,7 @@ export default configMerger(defaultConfig, {
   showTicketInformation: true,
   ticketLink: '',
   showRouteInformation: true,
-  
+
   //CO2, Calories, Cost
   showExtraCalculations: true,
 
@@ -796,19 +796,23 @@ export default configMerger(defaultConfig, {
   geoJson: {
     layers: [
       {
-        "name": {
-            "fi": "POI",
-            "sv": "POI",
-            "pt": "POI",
-            "en": "POI"
+        name: {
+          fi: 'POI',
+          sv: 'POI',
+          en: 'POI',
+          pt: 'POI',
         },
-        "url": "/poi.json",
-        "metadata": {
-            "name": "name",
-            "popupContent": "popup",
-            "icon": "icon"
-        }
-    },
+        url: '//desolate-falls-11658.herokuapp.com/pois',
+      },
+      {
+        name: {
+          fi: 'STOP',
+          sv: 'STOP',
+          en: 'STOP',
+          pt: 'Paragem',
+        },
+        url: '//desolate-falls-11658.herokuapp.com/stops',
+      },
     ],
   },
   geoJsonCluster: true,
