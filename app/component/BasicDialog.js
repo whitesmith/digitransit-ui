@@ -6,7 +6,7 @@ import Dialog from 'material-ui/Dialog';
 
 const BasicDialog = ({ children, buttons, isOpen, messageId, defaultMessage }) => (
   <Dialog
-    actions={buttons.reduce((acc, btn) => [...acc, <span>&nbsp;</span>, btn])}
+    actions={buttons.reduce((acc, btn) => [...acc, <span>&nbsp;</span>, btn], [])}
     modal={false}
     open={isOpen}
   >
