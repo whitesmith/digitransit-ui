@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import L from 'leaflet';
-
+import GeoJSONCluster from './GeoJSONCluster';
 import { isBrowser } from '../../util/browser';
 
-let Geojson;
+let Geojson, MapTag;
 
 /* eslint-disable global-require */
 if (isBrowser) {
@@ -31,18 +31,29 @@ class GeoJSON extends React.Component {
 
     this.props.data.features.forEach(feature => {
       const p = feature.properties;
-      if (p && p.icon && p.icon.id && p.icon.data) {
-        /*
-          For data URI SVG support in Firefox & IE it's necessary to URI encode the string
-          & replace the '#' character with '%23'. `encodeURI()` won't do this.
-        */
-        const url = `data:image/svg+xml;charset=utf-8,${encodeURI(
-          p.icon.data,
-        ).replace(/#/g, '%23')}`;
-        icons[p.icon.id] = new GeoJsonIcon({ iconUrl: url });
+
+      if(p && p.icon) {
+        let svgSource = p.icon.data || p.icon.svg;
+
+        if (p.icon.id && svgSource) {
+          /*
+            For data URI SVG support in Firefox & IE it's necessary to URI encode the string
+            & replace the '#' character with '%23'. `encodeURI()` won't do this.
+          */
+          const url = `data:image/svg+xml;charset=utf-8,${encodeURI(
+            svgSource,
+          ).replace(/#/g, '%23')}`;
+          icons[p.icon.id] = new GeoJsonIcon({ iconUrl: url });
+        }
       }
     });
     this.icons = icons;
+
+    if(this.context.config.geoJsonCluster) {
+      MapTag = GeoJSONCluster;
+    } else {
+      MapTag = Geojson;
+    }
   }
 
   pointToLayer = (feature, latlng) => {
@@ -116,7 +127,7 @@ class GeoJSON extends React.Component {
 
   render() {
     return (
-      <Geojson
+      <MapTag
         data={this.props.data}
         style={this.styler}
         pointToLayer={this.pointToLayer}

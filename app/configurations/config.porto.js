@@ -250,9 +250,10 @@ export default configMerger(defaultConfig, {
     keywords: 'mmt',
   },
   // Ticket information feature toggle
-  showTicketInformation: false,
+  showTicketInformation: true,
+  ticketLink: '',
   showRouteInformation: true,
-  
+
   //CO2, Calories, Cost
   showExtraCalculations: true,
 
@@ -791,6 +792,30 @@ export default configMerger(defaultConfig, {
       },
     },
   ],
+
+  geoJson: {
+    layers: [
+      {
+        name: {
+          fi: 'POI',
+          sv: 'POI',
+          en: 'POI',
+          pt: 'POI',
+        },
+        url: '//desolate-falls-11658.herokuapp.com/pois',
+      },
+      {
+        name: {
+          fi: 'STOP',
+          sv: 'STOP',
+          en: 'STOP',
+          pt: 'Paragem',
+        },
+        url: '//desolate-falls-11658.herokuapp.com/stops',
+      },
+    ],
+  },
+  geoJsonCluster: true,
 
   themeMap: {
     porto: 'porto',
