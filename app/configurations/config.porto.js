@@ -806,12 +806,21 @@ export default configMerger(defaultConfig, {
       },
       {
         name: {
-          fi: 'STOP',
-          sv: 'STOP',
-          en: 'STOP',
-          pt: 'Paragem',
+          fi: 'BUS STOP',
+          sv: 'BUS STOP',
+          en: 'BUS STOP',
+          pt: 'Paragem de autocarro',
         },
-        url: '//desolate-falls-11658.herokuapp.com/stops',
+        url: '//desolate-falls-11658.herokuapp.com/bus_stops',
+      },
+      {
+        name: {
+          fi: 'Metro',
+          sv: 'Metro',
+          en: 'Metro',
+          pt: 'Metro',
+        },
+        url: '//desolate-falls-11658.herokuapp.com/metro_stops',
       },
     ],
   },
