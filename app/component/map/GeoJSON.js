@@ -74,7 +74,7 @@ class GeoJSON extends React.Component {
     } else if (props.icon) {
       marker = L.marker(latlng, {
         icon: this.icons[props.icon.id],
-        interactive: false,
+        interactive: true,
       });
     } else {
       marker = L.circleMarker(latlng, { interactive: false });
