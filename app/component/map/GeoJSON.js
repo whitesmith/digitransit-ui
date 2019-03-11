@@ -3,6 +3,7 @@ import React from 'react';
 import L from 'leaflet';
 import GeoJSONCluster from './GeoJSONCluster';
 import { isBrowser } from '../../util/browser';
+import GeoJsonPopup from './popups/GeoJsonPopup';
 
 let Geojson, MapTag;
 
@@ -80,7 +81,11 @@ class GeoJSON extends React.Component {
       marker = L.circleMarker(latlng, { interactive: (props.popupContent != null) });
     }
     if (props.popupContent) {
-      marker.bindPopup(props.popupContent, { className: 'geoJsonPopup' });
+      marker.bindPopup(GeoJsonPopup({
+        name: props.name,
+        icon: props.icon.id,
+        content: props.popupContent
+      }), { className: 'geoJsonPopup' });
     }
     return marker;
   };
