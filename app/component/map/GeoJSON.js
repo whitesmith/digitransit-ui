@@ -74,10 +74,10 @@ class GeoJSON extends React.Component {
     } else if (props.icon) {
       marker = L.marker(latlng, {
         icon: this.icons[props.icon.id],
-        interactive: true,
+        interactive: (props.popupContent != null),
       });
     } else {
-      marker = L.circleMarker(latlng, { interactive: false });
+      marker = L.circleMarker(latlng, { interactive: (props.popupContent != null) });
     }
     if (props.popupContent) {
       marker.bindPopup(props.popupContent, { className: 'geoJsonPopup' });
