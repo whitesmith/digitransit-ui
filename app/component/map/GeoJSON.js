@@ -21,7 +21,10 @@ const GeoJsonIcon = L.Icon.extend({
 });
 
 class GeoJSON extends React.Component {
-  static propTypes = { data: PropTypes.object.isRequired };
+  static propTypes = { 
+    data: PropTypes.object.isRequired,
+    cluster: PropTypes.bool.isRequired
+  };
 
   static contextTypes = { config: PropTypes.object.isRequired };
 
@@ -50,7 +53,7 @@ class GeoJSON extends React.Component {
     });
     this.icons = icons;
 
-    if(this.context.config.geoJsonCluster) {
+    if(this.props.cluster) {
       MapTag = GeoJSONCluster;
     } else {
       MapTag = Geojson;
