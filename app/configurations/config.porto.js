@@ -803,6 +803,7 @@ export default configMerger(defaultConfig, {
           pt: 'POI',
         },
         url: '//desolate-falls-11658.herokuapp.com/pois',
+        cluster: true,
       },
       {
         name: {
@@ -812,6 +813,7 @@ export default configMerger(defaultConfig, {
           pt: 'Paragem de autocarro',
         },
         url: '//desolate-falls-11658.herokuapp.com/bus_stops',
+        cluster: true,
       },
       {
         name: {
@@ -821,10 +823,10 @@ export default configMerger(defaultConfig, {
           pt: 'Metro',
         },
         url: '//desolate-falls-11658.herokuapp.com/metro_stops',
+        cluster: true,
       },
     ],
   },
-  geoJsonCluster: true,
 
   themeMap: {
     porto: 'porto',
