@@ -603,6 +603,20 @@ div.map-click-prevent-overlay {
   @include font-medium;
   .leaflet-popup-content-wrapper {
     border-radius: $border-radius;
+    padding: 0;
+    .leaflet-popup-content {
+      margin: 0;
+      .card {
+        border: none;
+        margin: 0;
+
+        .left {
+          font-size: 32px;
+          padding-right: 10px;
+          height: 32px;
+        }
+      }
+    }
   }
 }
 
