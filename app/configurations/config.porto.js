@@ -27,8 +27,9 @@ export default configMerger(defaultConfig, {
     MAP: {
       default: `${MAP_URL}`,
     },
-    STOP_MAP: '',
-    CITYBIKE_MAP: '',
+    STOP_MAP: null,
+    CITYBIKE_MAP: null,
+    PARK_AND_RIDE_MAP: null,
     MQTT: '',
     ALERTS: process.env.ALERTS_URL || '',
     FONT:
@@ -184,20 +185,6 @@ export default configMerger(defaultConfig, {
     locationAware: true,
   },
 
-  // TODO: Switch off in autumn
-  cityBike: {
-    showCityBikes: true,
-    showStationId: true,
-
-    useUrl: {
-      en: 'https://www.hsl.fi/en/citybikes',
-    },
-
-    cityBikeMinZoom: 14,
-    cityBikeSmallIconZoom: 14,
-    // When should bikeshare availability be rendered in orange rather than green
-    fewAvailableCount: 3,
-  },
   // Lowest level for stops and terminals are rendered
   stopsMinZoom: 13,
   // Highest level when stops and terminals are still rendered as small markers
