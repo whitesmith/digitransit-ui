@@ -119,11 +119,15 @@ class GeoJSON extends React.Component {
   };
 
   render() {
+    const cluster = typeof this.props.options.cluster != "undefined" ? this.props.options.cluster : false;
+    const maxClusterZoom = cluster ? false : 1;
+
     return (
       <GeoJSONCluster
         data={this.props.data}
         style={this.styler}
         pointToLayer={this.pointToLayer}
+        maxClusterZoom={maxClusterZoom}
       />
     );
   }

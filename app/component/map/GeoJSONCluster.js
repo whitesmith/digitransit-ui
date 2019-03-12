@@ -10,7 +10,7 @@ class GeoJSONCluster extends Path {
       showCoverageOnHover: false,
       zoomToBoundsOnClick: false,
       spiderfyOnMaxZoom: false,
-      disableClusteringAtZoom: 17
+      disableClusteringAtZoom: props.maxClusterZoom || 17
     });
     const geoJsonLayer = new LeafletGeoJSON(props.data, this.getOptions(props));
     clusterGroup.addLayer(geoJsonLayer);
