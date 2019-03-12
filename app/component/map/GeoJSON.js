@@ -2,16 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import L from 'leaflet';
 import GeoJSONCluster from './GeoJSONCluster';
-import { isBrowser } from '../../util/browser';
 import GeoJsonPopup from './popups/GeoJsonPopup';
-
-let Geojson, MapTag;
-
-/* eslint-disable global-require */
-if (isBrowser) {
-  Geojson = require('react-leaflet/es/GeoJSON').default;
-}
-/* eslint-enable global-require */
 
 const GeoJsonIcon = L.Icon.extend({
   options: {
@@ -23,7 +14,7 @@ const GeoJsonIcon = L.Icon.extend({
 class GeoJSON extends React.Component {
   static propTypes = { 
     data: PropTypes.object.isRequired,
-    cluster: PropTypes.bool.isRequired
+    options: PropTypes.object.isRequired
   };
 
   static contextTypes = { config: PropTypes.object.isRequired };
@@ -52,12 +43,6 @@ class GeoJSON extends React.Component {
       }
     });
     this.icons = icons;
-
-    if(this.props.cluster) {
-      MapTag = GeoJSONCluster;
-    } else {
-      MapTag = Geojson;
-    }
   }
 
   pointToLayer = (feature, latlng) => {
@@ -135,7 +120,7 @@ class GeoJSON extends React.Component {
 
   render() {
     return (
-      <MapTag
+      <GeoJSONCluster
         data={this.props.data}
         style={this.styler}
         pointToLayer={this.pointToLayer}

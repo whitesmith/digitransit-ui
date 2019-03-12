@@ -79,11 +79,11 @@ class MapWithTrackingStateHandler extends React.Component {
     const { config, getGeoJsonData } = this.props;
     if (isBrowser && config.geoJson && Array.isArray(config.geoJson.layers)) {
       config.geoJson.layers.forEach(geoJsonLayer => {
-        const { url, name, metadata, cluster = false } = geoJsonLayer;
+        const { url, name, metadata, options = {} } = geoJsonLayer;
         getGeoJsonData(url, name, metadata).then(data => {
           const { geoJson } = this.state;
           geoJson[url] = data;
-          geoJson[url].cluster = cluster;
+          geoJson[url].options = options;
           if (!this.isCancelled) {
             this.setState({ geoJson });
           }
@@ -194,9 +194,14 @@ class MapWithTrackingStateHandler extends React.Component {
       Object.keys(geoJson)
         .filter(key => mapLayers.geoJson[key] !== false)
         .forEach(key => {
+          const options = geoJson[key].options;
           leafletObjs.push(
             <LazilyLoad modules={jsonModules} key={key}>
-              {({ GeoJSON }) => <GeoJSON data={geoJson[key].data} cluster={geoJson[key].cluster} />}
+              {
+                ({ GeoJSON }) => <GeoJSON
+                  data={geoJson[key].data}
+                  options={geoJson[key].options} />
+              }
             </LazilyLoad>,
           );
         });
