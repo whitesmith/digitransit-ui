@@ -37,6 +37,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         transportModes: {
           bus: {
             availableForSelection: true,
@@ -71,6 +76,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         transportModes: {
           bus: {
             availableForSelection: true,
@@ -105,6 +115,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         transportModes: {
           tram: {
             availableForSelection: true,
@@ -141,6 +156,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         transportModes: {
           rail: {
             availableForSelection: true,
@@ -178,6 +198,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         transportModes: {
           subway: {
             availableForSelection: true,
@@ -213,6 +238,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         transportModes: {
           ferry: {
             availableForSelection: true,
@@ -246,6 +276,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         cityBike: {
           showCityBikes: true,
         },
@@ -282,6 +317,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         parkAndRide: {
           showParkAndRide: true,
         },
@@ -316,6 +356,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         ticketSales: {
           showTicketSales: true,
         },
@@ -356,6 +401,11 @@ describe('<SelectMapLayersDialog />', () => {
     };
     const props = {
       config: {
+        URL: {
+          STOP_MAP: ' ',
+          CITYBIKE_MAP: ' ',
+          PARK_AND_RIDE_MAP: ' ',
+        },
         geoJson: {
           layers: [
             {
