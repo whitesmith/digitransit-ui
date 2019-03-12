@@ -68,6 +68,7 @@ class MapWithTrackingStateHandler extends React.Component {
     this.state = {
       geoJson: {},
       initialZoom: hasOriginorPosition ? FOCUS_ZOOM : DEFAULT_ZOOM,
+      currentZoom: hasOriginorPosition ? FOCUS_ZOOM : DEFAULT_ZOOM,
       mapTracking: props.origin.gps && props.position.hasLocation,
       focusOnOrigin: props.origin.ready,
       origin: props.origin,
@@ -131,6 +132,12 @@ class MapWithTrackingStateHandler extends React.Component {
       focusOnOrigin: false,
     });
   };
+
+  onZoom = (e) => {
+    this.setState({
+      currentZoom: e.target._zoom,
+    });
+  }
 
   usePosition(origin) {
     this.setState(prevState => ({
@@ -217,7 +224,7 @@ class MapWithTrackingStateHandler extends React.Component {
         origin={this.props.origin}
         leafletEvents={{
           onDragstart: this.disableMapTracking,
-          onZoomend: null, // this.disableMapTracking,
+          onZoomend: this.onZoom,
         }}
         disableMapTracking={this.disableMapTracking}
         {...rest}
