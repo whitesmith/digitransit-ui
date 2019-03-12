@@ -73,7 +73,8 @@ class SelectMapLayersDialog extends React.Component {
     return (
       <React.Fragment>
         <div className="checkbox-grouping">
-          {isTransportModeEnabled(transportModes.bus) && (
+          {config.URL.STOP_MAP && 
+            isTransportModeEnabled(transportModes.bus) && (
             <React.Fragment>
               <Checkbox
                 checked={stop.bus}
@@ -93,7 +94,8 @@ class SelectMapLayersDialog extends React.Component {
               />
             </React.Fragment>
           )}
-          {isTransportModeEnabled(transportModes.tram) && (
+          {config.URL.STOP_MAP && 
+            isTransportModeEnabled(transportModes.tram) && (
             <Checkbox
               checked={stop.tram}
               defaultMessage="Tram stop"
@@ -101,7 +103,8 @@ class SelectMapLayersDialog extends React.Component {
               onChange={e => this.updateStopSetting({ tram: e.target.checked })}
             />
           )}
-          {isTransportModeEnabled(transportModes.rail) && (
+          {config.URL.STOP_MAP && 
+            isTransportModeEnabled(transportModes.rail) && (
             <Checkbox
               checked={terminal.rail}
               defaultMessage="Railway station"
@@ -111,7 +114,8 @@ class SelectMapLayersDialog extends React.Component {
               }
             />
           )}
-          {isTransportModeEnabled(transportModes.subway) && (
+          {config.URL.STOP_MAP && 
+            isTransportModeEnabled(transportModes.subway) && (
             <Checkbox
               checked={terminal.subway}
               defaultMessage="Subway station"
@@ -121,7 +125,8 @@ class SelectMapLayersDialog extends React.Component {
               }
             />
           )}
-          {isTransportModeEnabled(transportModes.ferry) && (
+          {config.URL.STOP_MAP && 
+            isTransportModeEnabled(transportModes.ferry) && (
             <Checkbox
               checked={stop.ferry}
               defaultMessage="Ferry"
@@ -131,7 +136,8 @@ class SelectMapLayersDialog extends React.Component {
               }
             />
           )}
-          {config.cityBike &&
+          {config.URL.CITYBIKE_MAP && 
+            config.cityBike &&
             config.cityBike.showCityBikes && (
               <Checkbox
                 checked={citybike}
@@ -142,7 +148,8 @@ class SelectMapLayersDialog extends React.Component {
                 }
               />
             )}
-          {config.parkAndRide &&
+          {config.URL.PARK_AND_RIDE_MAP && 
+            config.parkAndRide &&
             config.parkAndRide.showParkAndRide && (
               <Checkbox
                 checked={parkAndRide}
