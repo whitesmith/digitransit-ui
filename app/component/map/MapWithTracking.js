@@ -68,6 +68,7 @@ class MapWithTrackingStateHandler extends React.Component {
     this.state = {
       geoJson: {},
       initialZoom: hasOriginorPosition ? FOCUS_ZOOM : DEFAULT_ZOOM,
+      currentZoom: hasOriginorPosition ? FOCUS_ZOOM : DEFAULT_ZOOM,
       mapTracking: props.origin.gps && props.position.hasLocation,
       focusOnOrigin: props.origin.ready,
       origin: props.origin,
@@ -79,11 +80,11 @@ class MapWithTrackingStateHandler extends React.Component {
     const { config, getGeoJsonData } = this.props;
     if (isBrowser && config.geoJson && Array.isArray(config.geoJson.layers)) {
       config.geoJson.layers.forEach(geoJsonLayer => {
-        const { url, name, metadata, cluster = false } = geoJsonLayer;
+        const { url, name, metadata, options = {} } = geoJsonLayer;
         getGeoJsonData(url, name, metadata).then(data => {
           const { geoJson } = this.state;
           geoJson[url] = data;
-          geoJson[url].cluster = cluster;
+          geoJson[url].options = options;
           if (!this.isCancelled) {
             this.setState({ geoJson });
           }
@@ -131,6 +132,12 @@ class MapWithTrackingStateHandler extends React.Component {
       focusOnOrigin: false,
     });
   };
+
+  onZoom = (e) => {
+    this.setState({
+      currentZoom: e.target._zoom,
+    });
+  }
 
   usePosition(origin) {
     this.setState(prevState => ({
@@ -194,9 +201,21 @@ class MapWithTrackingStateHandler extends React.Component {
       Object.keys(geoJson)
         .filter(key => mapLayers.geoJson[key] !== false)
         .forEach(key => {
+          const options = geoJson[key].options;
+
+          const minZoom = options.minZoom;
+          if(typeof minZoom != "undefined" && this.state.currentZoom < minZoom) return;
+
+          const maxZoom = options.maxZoom;
+          if(typeof maxZoom != "undefined" && this.state.currentZoom > maxZoom) return;
+
           leafletObjs.push(
             <LazilyLoad modules={jsonModules} key={key}>
-              {({ GeoJSON }) => <GeoJSON data={geoJson[key].data} cluster={geoJson[key].cluster} />}
+              {
+                ({ GeoJSON }) => <GeoJSON
+                  data={geoJson[key].data}
+                  options={geoJson[key].options} />
+              }
             </LazilyLoad>,
           );
         });
@@ -212,7 +231,7 @@ class MapWithTrackingStateHandler extends React.Component {
         origin={this.props.origin}
         leafletEvents={{
           onDragstart: this.disableMapTracking,
-          onZoomend: null, // this.disableMapTracking,
+          onZoomend: this.onZoom,
         }}
         disableMapTracking={this.disableMapTracking}
         {...rest}

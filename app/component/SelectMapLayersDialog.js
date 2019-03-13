@@ -70,10 +70,12 @@ class SelectMapLayersDialog extends React.Component {
     const isTransportModeEnabled = transportMode =>
       transportMode && transportMode.availableForSelection;
     const transportModes = config.transportModes || {};
+    const configUrls = config.URL || {};
     return (
       <React.Fragment>
         <div className="checkbox-grouping">
-          {isTransportModeEnabled(transportModes.bus) && (
+          {configUrls.STOP_MAP && 
+            isTransportModeEnabled(transportModes.bus) && (
             <React.Fragment>
               <Checkbox
                 checked={stop.bus}
@@ -93,7 +95,8 @@ class SelectMapLayersDialog extends React.Component {
               />
             </React.Fragment>
           )}
-          {isTransportModeEnabled(transportModes.tram) && (
+          {configUrls.STOP_MAP && 
+            isTransportModeEnabled(transportModes.tram) && (
             <Checkbox
               checked={stop.tram}
               defaultMessage="Tram stop"
@@ -101,7 +104,8 @@ class SelectMapLayersDialog extends React.Component {
               onChange={e => this.updateStopSetting({ tram: e.target.checked })}
             />
           )}
-          {isTransportModeEnabled(transportModes.rail) && (
+          {configUrls.STOP_MAP && 
+            isTransportModeEnabled(transportModes.rail) && (
             <Checkbox
               checked={terminal.rail}
               defaultMessage="Railway station"
@@ -111,7 +115,8 @@ class SelectMapLayersDialog extends React.Component {
               }
             />
           )}
-          {isTransportModeEnabled(transportModes.subway) && (
+          {configUrls.STOP_MAP && 
+            isTransportModeEnabled(transportModes.subway) && (
             <Checkbox
               checked={terminal.subway}
               defaultMessage="Subway station"
@@ -121,7 +126,8 @@ class SelectMapLayersDialog extends React.Component {
               }
             />
           )}
-          {isTransportModeEnabled(transportModes.ferry) && (
+          {configUrls.STOP_MAP && 
+            isTransportModeEnabled(transportModes.ferry) && (
             <Checkbox
               checked={stop.ferry}
               defaultMessage="Ferry"
@@ -131,7 +137,8 @@ class SelectMapLayersDialog extends React.Component {
               }
             />
           )}
-          {config.cityBike &&
+          {configUrls.CITYBIKE_MAP && 
+            config.cityBike &&
             config.cityBike.showCityBikes && (
               <Checkbox
                 checked={citybike}
@@ -142,7 +149,8 @@ class SelectMapLayersDialog extends React.Component {
                 }
               />
             )}
-          {config.parkAndRide &&
+          {configUrls.PARK_AND_RIDE_MAP && 
+            config.parkAndRide &&
             config.parkAndRide.showParkAndRide && (
               <Checkbox
                 checked={parkAndRide}
@@ -226,6 +234,11 @@ const transportModeConfigShape = PropTypes.shape({
 });
 
 const mapLayersConfigShape = PropTypes.shape({
+  URL: PropTypes.shape({
+    STOP_MAP: PropTypes.string,
+    CITYBIKE_MAP: PropTypes.string,
+    PARK_AND_RIDE_MAP: PropTypes.string,
+  }),
   cityBike: PropTypes.shape({
     showCityBikes: PropTypes.bool,
   }),

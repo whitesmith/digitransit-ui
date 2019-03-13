@@ -50,6 +50,8 @@ class Stops {
   }
 
   getPromise() {
+    if (!this.config.URL.STOP_MAP) return null;
+    
     return fetch(
       `${this.config.URL.STOP_MAP}${this.tile.coords.z +
         (this.tile.props.zoomOffset || 0)}` +
