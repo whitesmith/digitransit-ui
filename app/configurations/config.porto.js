@@ -72,6 +72,9 @@ export default configMerger(defaultConfig, {
   searchParams: {},
   feedIds: [],
 
+  // Google Tag Manager id
+  GTMid: 'GTM-',
+
   /*
  * by default search endpoints from all but gtfs sources, correct gtfs source
  * figured based on feedIds config variable
