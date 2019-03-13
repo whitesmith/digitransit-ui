@@ -8,7 +8,7 @@ export const PAGE_MODE_NEXT = 'page_mode_next';
 export const PAGE_MODE_PREVIOUS = 'page_mode_previous';
 export const PAGE_MODE_ALL = 'page_mode_all';
 
-const QUERY_LIMIT = 3;
+const QUERY_LIMIT = 10;
 
 class Firebase {
   constructor(config) {
