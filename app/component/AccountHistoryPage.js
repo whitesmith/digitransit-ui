@@ -10,7 +10,7 @@ import RecentSearchRow from './RecentSearchRow';
 import CaloriesIcon from 'material-ui/svg-icons/social/whatshot';
 import Loading from './Loading';
 import { withAuthentication } from './session';
-import { PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/Firebase'
+import { PAGE_MODE_FIRST, PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/Firebase'
 
 const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
 
@@ -67,7 +67,7 @@ class AccountHistoryPage extends React.Component {
     const { authUser } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
       this.setState({ loading: true });
-      this.getSearchHistory();
+      this.getSearchHistory(PAGE_MODE_FIRST);
     }
   }
 

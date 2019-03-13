@@ -3,9 +3,12 @@ import 'firebase/auth';
 import 'firebase/database';
 import moment from 'moment';
 
+export const PAGE_MODE_FIRST = 'page_mode_first';
 export const PAGE_MODE_NEXT = 'page_mode_next';
 export const PAGE_MODE_PREVIOUS = 'page_mode_previous';
 export const PAGE_MODE_ALL = 'page_mode_all';
+
+const QUERY_LIMIT = 3;
 
 class Firebase {
   constructor(config) {
@@ -33,13 +36,14 @@ class Firebase {
 
   deleteCurrentUser = () => this.auth.currentUser.delete();
 
-  downloadUserData = () => Promise.all([
-    this.getUserSearchHistory(PAGE_MODE_ALL),
-    this.getUserLocations(),
-    this.getUserFavorites(),
-    this.getUserLanguage(),
-    this.getUserSettings()
-  ]);
+  downloadUserData = () =>
+    Promise.all([
+      this.getUserSearchHistory(PAGE_MODE_ALL),
+      this.getUserLocations(),
+      this.getUserFavorites(),
+      this.getUserLanguage(),
+      this.getUserSettings(),
+    ]);
 
   // google login methods
   signInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider);
@@ -60,12 +64,17 @@ class Firebase {
 
   addUserSearch = newSearch =>
     this.database
-      .ref('search-history/' + this.auth.currentUser.uid + '/' + newSearch.searchId)
+      .ref(
+        'search-history/' +
+          this.auth.currentUser.uid +
+          '/' +
+          newSearch.searchId,
+      )
       .set({ ...newSearch, timestamp: moment().unix() });
 
   getUserSearchHistory = mode => {
-    const pageLength = 3;
-    const queryLimit = pageLength + 1;
+    // getting one more element to be our cursor for the next page
+    const queryLimit = QUERY_LIMIT + 1;
 
     const baseQuery = this.database
       .ref('search-history/' + this.auth.currentUser.uid)
@@ -73,12 +82,15 @@ class Firebase {
 
     let query = null;
 
+    //using the correct cursor depending on the page wanted
     switch (mode) {
       case PAGE_MODE_NEXT:
         query = baseQuery.endAt(this.nextQueryCursor).limitToLast(queryLimit);
         break;
       case PAGE_MODE_PREVIOUS:
-        query = baseQuery.startAt(this.prevQueryCursor).limitToFirst(queryLimit);
+        query = baseQuery
+          .startAt(this.prevQueryCursor)
+          .limitToFirst(queryLimit);
         break;
       case PAGE_MODE_ALL:
         query = baseQuery;
@@ -89,83 +101,80 @@ class Firebase {
     }
 
     return query.once('value').then(snap => {
-        const filteredSnap = [];
-        const nSearches = snap.numChildren();
-        if (nSearches > 0) {
-          let idx = 0;
+      //filterd snapshots will contain the results except the NEXT cursor
+      const filteredSnap = [];
+      const nSearches = snap.numChildren();
+      if (nSearches > 0) {
+        let idx = 0;
+        let firstSearchResult = null;
+        let lastSearchResult = null;
+        let reachedFirstResult = false;
 
-          const onFirstPage = 
-            (nSearches <= pageLength && mode === PAGE_MODE_PREVIOUS)
-            || mode == null;
-          
-          const onLastPage = 
-            nSearches <= pageLength && mode === PAGE_MODE_NEXT;
-
-          let firstSearchResult = null;
-          let lastSearchResult = null;
-          let reachedFirstResult = false
-
-          snap.forEach(s => {
-            const snapValue = s.val();
-            if (idx === 0) {
-              firstSearchResult = snapValue;
-            } else if (idx === nSearches - 1) {
-              lastSearchResult = snapValue ;
+        //foreach will ensure the correct order of the query results
+        snap.forEach(s => {
+          const snapValue = s.val();
+          if (idx === 0) {
+            //save the first element to set the cursor later
+            firstSearchResult = snapValue;
+          } else {
+            //skipping the cursor
+            if (mode == PAGE_MODE_FIRST) {
+              //if this is the first page we need to store the first element
+              this.firstSearchCursor = snapValue.timestamp;
             }
-            if(idx !== 0) {
-              if (mode == null) {
-                this.firstSearchCursor = snapValue.timestamp;
-              }
-      
-              if (this.firstSearchCursor === snapValue.timestamp) {
-                reachedFirstResult = true;
-              }              
-              filteredSnap.push(s);
-            }
-            idx += 1;
-          });
 
-          this.nextQueryCursor = onLastPage ? null : firstSearchResult.timestamp;
-          this.prevQueryCursor = ( onFirstPage || reachedFirstResult) ? null : lastSearchResult.timestamp;
-          
-           //if the first result comes on the query just reset the pagination
-            // if (this.firstSearchCursor === timestamp && !lastItem ) {
-            //   this.prevQueryCursor = null;
-            //   this.nextQueryCursor = null;
-            //   this.firstSearchCursor = null;
-            //   return this.getUserSearchHistory();
-            // }
-        }
-        return Promise.resolve(filteredSnap);
-      });
-  }
-    
+            //first page reached when going back on pages
+            reachedFirstResult = this.firstSearchCursor === snapValue.timestamp;
+
+            if (idx === nSearches - 1) {
+              //save the last element to set the cursor later
+              lastSearchResult = snapValue;
+            }
+
+            filteredSnap.push(s);
+          }
+
+          idx += 1;
+        });
+
+        // first element used as NEXT cursor if there are more pages to see
+        this.nextQueryCursor =
+          nSearches <= QUERY_LIMIT ? null : firstSearchResult.timestamp;
+        // last element used as PREVIOUS cursor if there are more pages to go back to
+        this.prevQueryCursor = reachedFirstResult
+          ? null
+          : lastSearchResult.timestamp;
+      }
+      return Promise.resolve(filteredSnap);
+    });
+  };
+
   setUserLanguage = language =>
-    this.database
-      .ref('language/' + this.auth.currentUser.uid)
-      .set(language);
+    this.database.ref('language/' + this.auth.currentUser.uid).set(language);
 
   getUserLanguage = () =>
-    this.database
-      .ref('language/' + this.auth.currentUser.uid)
-      .once('value');
+    this.database.ref('language/' + this.auth.currentUser.uid).once('value');
 
   addUserLocation = location =>
     this.database
-      .ref('locations/' + this.auth.currentUser.uid + '/' + location.properties.id)
+      .ref(
+        'locations/' + this.auth.currentUser.uid + '/' + location.properties.id,
+      )
       .set({ ...location, timestamp: moment().unix() });
 
   getUserLocations = () =>
     this.database
       .ref('locations/' + this.auth.currentUser.uid)
       .orderByChild('timestamp')
-      .limitToLast(10)
+      .limitToLast(QUERY_LIMIT)
       .once('value');
 
   setUserFavorite = favorite => {
     const timestamp = moment().unix();
     if (favorite.id == null) {
-      favorite.id = `${timestamp}${favorite.lat}${favorite.lon}`.split('.').join('');
+      favorite.id = `${timestamp}${favorite.lat}${favorite.lon}`
+        .split('.')
+        .join('');
     }
     return this.database
       .ref('favorites/' + this.auth.currentUser.uid + '/' + favorite.id)
