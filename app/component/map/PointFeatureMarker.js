@@ -127,7 +127,7 @@ const PointFeatureMarker = ({ feature, icons, language }) => {
       </Card>
       <MarkerPopupBottom
         location={{
-          address,
+          address: address || header,
           lat,
           lon,
         }}
