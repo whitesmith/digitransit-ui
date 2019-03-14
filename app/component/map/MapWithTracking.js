@@ -254,17 +254,17 @@ class MapWithTrackingStateHandler extends React.Component {
     }
 
     if (geoJson) {
-      const { bounds } = this.state;
+      const { bounds, zoom } = this.state;
       Object.keys(geoJson)
         .filter(key => mapLayers.geoJson[key] !== false)
         .forEach(key => {
           const options = geoJson[key].options;
 
           const minZoom = options.minZoom;
-          if(typeof minZoom != "undefined" && this.state.zoom < minZoom) return;
+          if(typeof minZoom != "undefined" && zoom < minZoom) return;
 
           const maxZoom = options.maxZoom;
-          if(typeof maxZoom != "undefined" && this.state.zoom > maxZoom) return;
+          if(typeof maxZoom != "undefined" && zoom > maxZoom) return;
 
           leafletObjs.push(
             <LazilyLoad modules={jsonModules} key={key}>
