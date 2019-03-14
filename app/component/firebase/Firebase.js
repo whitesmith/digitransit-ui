@@ -72,6 +72,11 @@ class Firebase {
       )
       .set({ ...newSearch, timestamp: moment().unix() });
 
+  deleteUserSearch = searchId =>
+    this.database
+      .ref('search-history/' + this.auth.currentUser.uid + '/' + searchId)
+      .remove();
+
   getUserSearchHistory = mode => {
     // getting one more element to be our cursor for the next page
     const queryLimit = QUERY_LIMIT + 1;

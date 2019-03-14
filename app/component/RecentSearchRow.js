@@ -4,8 +4,9 @@ import { routerShape } from 'react-router';
 import RouteNumberContainer from './RouteNumberContainer';
 import WalkDistance from './WalkDistance';
 import Duration from './Duration';
+import Icon from './Icon';
 
-const RecentSearchRow = ({ search }, { router }) => {
+const RecentSearchRow = ({ search, deleteCallback }, { router }) => {
   return (
     <tr
       className="next-departure-row-tr recent-search-row"
@@ -41,6 +42,17 @@ const RecentSearchRow = ({ search }, { router }) => {
         ) : (
           '-'
         )}
+      </td>
+      <td className="td-actions">
+        <button
+          className="row-button row-button--action noborder"
+          onClick={(e) => { 
+            e.stopPropagation();
+            deleteCallback();
+          }}
+        >
+          <Icon img="icon-icon_close" className="cursor-pointer" />
+        </button>
       </td>
     </tr>
   );

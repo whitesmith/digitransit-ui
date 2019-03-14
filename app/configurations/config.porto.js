@@ -244,6 +244,18 @@ export default configMerger(defaultConfig, {
   ticketLink: '',
   showRouteInformation: true,
 
+  fares: [ 'Z2', 'Z3', 'Z4', 'Z5', 'Z6', 'Z7', 'Z8', 'Z9', 'Z10', 'Z11', 'Z12'],
+
+  fareMapping: function renameFareId(fareId, _lang) {
+    if (fareId && fareId.substring) {
+      const zone = fareId.substring(
+        fareId.indexOf(':') + 1
+      );
+      return zone;
+    }
+    return '';
+  },
+
   //CO2, Calories, Cost
   showExtraCalculations: true,
 
