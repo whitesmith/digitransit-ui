@@ -194,22 +194,28 @@ class AccountHistoryPage extends React.Component {
                         <RecentSearchRow search={s} key={s.searchId} />
                       ))}
                     />
+
+                    <div className="recent-searches__pagination">
                     
-                    {firebase.prevQueryCursor &&
+                    {firebase && firebase.prevQueryCursor &&
                       <button
+                        className="pagination-button noborder"
                         onClick={() => this.getSearchHistory(PAGE_MODE_PREVIOUS)}
                       >
-                        previous
-                    </button>
+                        <Icon img="icon-icon_arrow-left" className="back cursor-pointer" />
+                      </button>
                     }
 
-                    {firebase.nextQueryCursor &&
+                    {firebase && firebase.nextQueryCursor &&
                       <button
+                        className="pagination-button noborder"
                         onClick={() => this.getSearchHistory(PAGE_MODE_NEXT)}
                       >
-                        next
-                    </button>
+                        <Icon img="icon-icon_arrow-right" className="back cursor-pointer"/>
+                      </button>
                     }
+
+                    </div>
 
                   </div>
 
