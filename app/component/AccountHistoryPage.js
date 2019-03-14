@@ -33,6 +33,7 @@ class AccountHistoryPage extends React.Component {
   }
 
   getSearchHistory = mode => {
+    this.setState({ loading: true });
     this.props.firebase.getUserSearchHistory(mode).then(snap => {
       const results = [];
 
@@ -66,7 +67,6 @@ class AccountHistoryPage extends React.Component {
   componentDidUpdate(prevProps) {
     const { authUser } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
-      this.setState({ loading: true });
       this.getSearchHistory(PAGE_MODE_FIRST);
     }
   }

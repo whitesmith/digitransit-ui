@@ -109,41 +109,44 @@ class Firebase {
         let firstSearchResult = null;
         let lastSearchResult = null;
         let reachedFirstResult = false;
-
         //foreach will ensure the correct order of the query results
         snap.forEach(s => {
           const snapValue = s.val();
-          if (idx === 0) {
-            //save the first element to set the cursor later
-            firstSearchResult = snapValue;
+          //if there is just one result, only option is to go back
+          if (nSearches === 1) {
+            firstSearchResult = lastSearchResult = snapValue;
           } else {
-            //skipping the cursor
-            if (mode == PAGE_MODE_FIRST) {
-              //if this is the first page we need to store the first element
-              this.firstSearchCursor = snapValue.timestamp;
+            if (idx === 0) {
+              //save the first element to set the cursor later
+              firstSearchResult = snapValue;
+            } else {
+              //skipping the cursor
+              if (mode == PAGE_MODE_FIRST) {
+                //if this is the first page we need to store the first element
+                this.firstSearchCursor = snapValue.timestamp;
+              }
+              //first page reached when going back on pages
+              reachedFirstResult =
+                this.firstSearchCursor === snapValue.timestamp;
+              if (idx === nSearches - 1) {
+                //save the last element to set the cursor later
+                lastSearchResult = snapValue;
+              }
+              filteredSnap.push(s);
             }
-
-            //first page reached when going back on pages
-            reachedFirstResult = this.firstSearchCursor === snapValue.timestamp;
-
-            if (idx === nSearches - 1) {
-              //save the last element to set the cursor later
-              lastSearchResult = snapValue;
-            }
-
-            filteredSnap.push(s);
           }
-
           idx += 1;
         });
-
         // first element used as NEXT cursor if there are more pages to see
         this.nextQueryCursor =
-          nSearches <= QUERY_LIMIT ? null : firstSearchResult.timestamp;
+          nSearches <= QUERY_LIMIT || firstSearchResult == null
+            ? null
+            : firstSearchResult.timestamp;
         // last element used as PREVIOUS cursor if there are more pages to go back to
-        this.prevQueryCursor = reachedFirstResult
-          ? null
-          : lastSearchResult.timestamp;
+        this.prevQueryCursor =
+          reachedFirstResult || lastSearchResult == null
+            ? null
+            : lastSearchResult.timestamp;
       }
       return Promise.resolve(filteredSnap);
     });
