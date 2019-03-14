@@ -10,6 +10,7 @@ import RecentSearchRow from './RecentSearchRow';
 import CaloriesIcon from 'material-ui/svg-icons/social/whatshot';
 import Loading from './Loading';
 import { withAuthentication } from './session';
+import { PAGE_MODE_FIRST, PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/Firebase'
 
 const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
 
@@ -31,43 +32,47 @@ class AccountHistoryPage extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { firebase, authUser } = this.props;
-    if (authUser !== prevProps.authUser && authUser) {
-      this.setState({ loading: true });
-      firebase.getUserSearchHistory().then(snap => {
-        const results = [];
+  getSearchHistory = mode => {
+    this.setState({ loading: true });
+    this.props.firebase.getUserSearchHistory(mode).then(snap => {
+      const results = [];
 
-        snap.forEach(s => {
-          const search = s.val();
-          const { legs } = search.itinerary;
-          if (legs && legs.length > 0) {
-            const distanceComparator = (a, b) => b.distance - a.distance;
-            // get transit legs ordered by distance
-            const orderedTransitLegs = legs
-              .filter(leg => leg.transitLeg)
-              .sort(distanceComparator);
+      snap.forEach(s => {
+        const search = s.val();
+        const { legs } = search.itinerary;
+        if (legs && legs.length > 0) {
+          const distanceComparator = (a, b) => b.distance - a.distance;
+          // get transit legs ordered by distance
+          const orderedTransitLegs = legs
+            .filter(leg => leg.transitLeg)
+            .sort(distanceComparator);
 
-            results.unshift({
-              ...search,
-              duration: legs.reduce((acc, leg) => acc + leg.duration, 0),
-              from: search.from.address,
-              to: search.to.address,
-              // use biggest transit leg route or a custom walk/bike route otherwise
-              via:
-                orderedTransitLegs.length === 0
-                  ? legs.sort(distanceComparator)
-                  : orderedTransitLegs.map(l => l.route),
-            });
-          }
-        });
-        this.setState({ recentSearches: results, loading: false });
+          results.unshift({
+            ...search,
+            duration: legs.reduce((acc, leg) => acc + leg.duration, 0),
+            from: search.from.address,
+            to: search.to.address,
+            // use biggest transit leg route or a custom walk/bike route otherwise
+            via:
+              orderedTransitLegs.length === 0
+                ? legs.sort(distanceComparator)
+                : orderedTransitLegs.map(l => l.route),
+          });
+        }
       });
+      this.setState({ recentSearches: results, loading: false });
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { authUser } = this.props;
+    if (authUser !== prevProps.authUser && authUser) {
+      this.getSearchHistory(PAGE_MODE_FIRST);
     }
   }
 
   render() {
-    const { breakpoint } = this.props;
+    const { breakpoint, firebase } = this.props;
     const { recentSearches, loading } = this.state;
     const desktop = breakpoint === 'large';
 
@@ -175,19 +180,46 @@ class AccountHistoryPage extends React.Component {
               {loading ? (
                 <Loading />
               ) : (
-                <DeparturesTable
-                  headers={[
-                    { id: 'origin', defaultMessage: 'Origin' },
-                    { id: 'destination', defaultMessage: 'Destination' },
-                    { id: 'via', defaultMessage: 'Via' },
-                    { id: 'duration', defaultMessage: 'Duration' },
-                    { id: 'walk', defaultMessage: 'Walking' },
-                  ]}
-                  content={recentSearches.map(s => (
-                    <RecentSearchRow search={s} key={s.searchId} />
-                  ))}
-                />
-              )}
+                  <div>
+
+                    <DeparturesTable
+                      headers={[
+                        { id: 'origin', defaultMessage: 'Origin' },
+                        { id: 'destination', defaultMessage: 'Destination' },
+                        { id: 'via', defaultMessage: 'Via' },
+                        { id: 'duration', defaultMessage: 'Duration' },
+                        { id: 'walk', defaultMessage: 'Walking' },
+                      ]}
+                      content={recentSearches.map(s => (
+                        <RecentSearchRow search={s} key={s.searchId} />
+                      ))}
+                    />
+
+                    <div className="recent-searches__pagination">
+                    
+                    {firebase && firebase.prevQueryCursor &&
+                      <button
+                        className="pagination-button noborder"
+                        onClick={() => this.getSearchHistory(PAGE_MODE_PREVIOUS)}
+                      >
+                        <Icon img="icon-icon_arrow-left" className="back cursor-pointer" />
+                      </button>
+                    }
+
+                    {firebase && firebase.nextQueryCursor &&
+                      <button
+                        className="pagination-button noborder"
+                        onClick={() => this.getSearchHistory(PAGE_MODE_NEXT)}
+                      >
+                        <Icon img="icon-icon_arrow-right" className="back cursor-pointer"/>
+                      </button>
+                    }
+
+                    </div>
+
+                  </div>
+
+                )}
 
               {/* end recent searches section */}
             </div>

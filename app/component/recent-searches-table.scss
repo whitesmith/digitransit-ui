@@ -50,3 +50,35 @@
     }
   }
 }
+
+.recent-searches__pagination {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  width: 100%;
+  @media #{$large-up} {
+    padding: 2rem;
+  }
+}
+
+.pagination-button,
+button.pagination-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: $background-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $primary-color;
+
+  &:hover {
+    background: $background-color-darker;
+  }
+
+  .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
