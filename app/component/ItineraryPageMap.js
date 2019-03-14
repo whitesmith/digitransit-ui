@@ -164,7 +164,7 @@ ItineraryPageMap.propTypes = {
       fullscreenMap: PropTypes.bool,
     }).isRequired,
   ).isRequired,
-  breakpoint: PropTypes.string.isRequired,
+  breakpoint: PropTypes.string,
 };
 
 ItineraryPageMap.contextTypes = {
