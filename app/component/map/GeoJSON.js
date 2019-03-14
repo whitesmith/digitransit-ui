@@ -9,6 +9,7 @@ import {
 } from '../../util/geo-utils';
 
 import GeoJSONCluster from './GeoJSONCluster';
+import MarkerClusterGroup from './MarkerClusterGroup';
 
 /**
  * Extracts svg-formatted icon data from the given features' properties.
@@ -166,7 +167,7 @@ class GeoJSON extends React.Component {
 
   render() {
     const cluster = typeof this.props.options.cluster != "undefined" ? this.props.options.cluster : false;
-    const maxClusterZoom = cluster ? false : 1;
+    const maxClusterZoom = cluster ? false : 1;    
     const { bounds, data } = this.props;
     if (!data || !Array.isArray(data.features)) {
       return null;
@@ -187,6 +188,12 @@ class GeoJSON extends React.Component {
     }
 
     return (
+      <MarkerClusterGroup
+        showCoverageOnHover={false}
+        zoomToBoundsOnClick={false}
+        spiderfyOnMaxZoom={false}
+        disableClusteringAtZoom={maxClusterZoom || 17}
+      >
         {data.features
           .filter(feature => {
             const [lon, lat] = feature.geometry.coordinates;
@@ -207,6 +214,7 @@ class GeoJSON extends React.Component {
             />
             )
           })}
+      </MarkerClusterGroup>
     );
   }
 }
