@@ -189,6 +189,7 @@ class AccountHistoryPage extends React.Component {
                         { id: 'via', defaultMessage: 'Via' },
                         { id: 'duration', defaultMessage: 'Duration' },
                         { id: 'walk', defaultMessage: 'Walking' },
+                        { id: 'empty-actions', defaultMessage: ' ' },
                       ]}
                       content={recentSearches.map(s => (
                         <RecentSearchRow search={s} key={s.searchId} deleteCallback={() =>

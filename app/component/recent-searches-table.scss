@@ -23,6 +23,10 @@
     flex-basis: 4em !important;
   }
 
+  .th-empty-actions {
+    flex-basis: 1em !important;
+  }
+
 }
 
 .recent-search-row {
@@ -49,6 +53,20 @@
       margin-left: 5px;
     }
   }
+  .td-actions {
+    flex-basis: 1em !important;
+  }
+
+  .row-button--action {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 2px;
+
+    .icon {
+      width: .5em;
+      height: .5em;
+    }
+  }
 }
 
 .recent-searches__pagination {
@@ -61,6 +79,8 @@
   }
 }
 
+.row-button,
+button.row-button,
 .pagination-button,
 button.pagination-button {
   width: 2.5rem;
