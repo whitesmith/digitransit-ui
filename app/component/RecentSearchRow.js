@@ -5,7 +5,7 @@ import RouteNumberContainer from './RouteNumberContainer';
 import WalkDistance from './WalkDistance';
 import Duration from './Duration';
 
-const RecentSearchRow = ({ search }, { router }) => {
+const RecentSearchRow = ({ search, deleteCallback }, { router }) => {
   return (
     <tr
       className="next-departure-row-tr recent-search-row"

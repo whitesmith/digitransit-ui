@@ -191,7 +191,10 @@ class AccountHistoryPage extends React.Component {
                         { id: 'walk', defaultMessage: 'Walking' },
                       ]}
                       content={recentSearches.map(s => (
-                        <RecentSearchRow search={s} key={s.searchId} />
+                        <RecentSearchRow search={s} key={s.searchId} deleteCallback={() =>
+                          firebase.deleteUserSearch(s.searchId)
+                            .then(() => this.getSearchHistory(PAGE_MODE_FIRST))
+                        } />
                       ))}
                     />
 
