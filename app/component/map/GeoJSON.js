@@ -168,6 +168,7 @@ class GeoJSON extends React.Component {
   render() {
     const cluster = typeof this.props.options.cluster != "undefined" ? this.props.options.cluster : false;
     const maxClusterZoom = cluster ? false : 1;    
+    const maxMarkers = typeof this.props.options.maxMarkers != "undefined" ? this.props.options.maxMarkers : 150;
     const { bounds, data } = this.props;
     if (!data || !Array.isArray(data.features)) {
       return null;
@@ -206,6 +207,8 @@ class GeoJSON extends React.Component {
             return true;
           })
           .map((feature, index) => {
+            if(index > maxMarkers) return;
+
             return (
             <PointFeatureMarker
               feature={feature}
