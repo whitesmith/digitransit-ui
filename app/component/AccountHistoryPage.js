@@ -29,6 +29,9 @@ class AccountHistoryPage extends React.Component {
     this.state = {
       recentSearches: [],
       loading: false,
+      statsLoading: false,
+      userAverages: null,
+      globalAverages: null
     };
   }
 
@@ -65,16 +68,80 @@ class AccountHistoryPage extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { authUser } = this.props;
+    const { authUser, firebase } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
       this.getSearchHistory(PAGE_MODE_FIRST);
+      this.setState({ statsLoading: true })
+      firebase.getAverages().then(res => {
+        this.setState({ 
+          userAverages: res[0] ? res[0].val() : null,
+          globalAverages: res[1] ? res[1].val() : null,
+          statsLoading: false,
+        })
+      })
     }
   }
 
+  calcPercentageDiff = (userAvg, refAvg) => Math.round((userAvg * 100) / refAvg) - 100;
+  
   render() {
     const { breakpoint, firebase } = this.props;
-    const { recentSearches, loading } = this.state;
+    const { recentSearches, loading, statsLoading, userAverages, globalAverages} = this.state;
     const desktop = breakpoint === 'large';
+
+    const statsInfo = userAverages && globalAverages && (
+      <div className="stats-container">
+        <div className="stat">
+          <Stat
+            icon="car-withoutBox"
+            textId={'car-emissions'}
+            defaultMessage={'Car emissions'}
+            amount={Math.round(userAverages.co2)}
+            unit={
+              <>
+                kgCO<sub>2</sub>
+              </>
+            }
+            percentage={this.calcPercentageDiff(userAverages.co2, globalAverages.co2)}
+            inverted={true}
+          />
+        </div>
+        <div className="stat">
+          <Stat
+            icon="public_transport"
+            textId={'public-transport'}
+            defaultMessage={'Public transport'}
+            amount={Math.round(userAverages.publicTransportation)}
+            unit="km"
+            percentage={this.calcPercentageDiff(userAverages.publicTransportation, globalAverages.publicTransportation)}
+          />
+        </div>
+        <div className="stat">
+          <Stat
+            icon="walk"
+            textId={'walking-distance'}
+            defaultMessage={'Walking distance'}
+            amount={Math.round(userAverages.walkDistance)}
+            unit="km"
+            percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
+          />
+        </div>
+        <div className="stat">
+          <Stat
+            icon={(
+              <span aria-hidden="true" className="icon-container">
+                <CaloriesIcon className="icon prefix-icon stat__icon" style={resetIconStyle} />
+              </span>
+            )}
+            textId={"calories-walked"}
+            defaultMessage={"Calories walked"}
+            amount={Math.round(userAverages.calories)}
+            unit="kcal"
+            percentage={this.calcPercentageDiff(userAverages.calories, globalAverages.calories)}
+          />
+        </div>
+      </div>
+    );
 
     return (
       <div className={`flex-vertical fullscreen bp-${breakpoint}`}>
@@ -91,58 +158,7 @@ class AccountHistoryPage extends React.Component {
                 defaultMessage="Usage metrics"
               />
             </h2>
-
-            <div className="stats-container">
-              <div className="stat">
-                <Stat
-                  icon="car-withoutBox"
-                  textId={'car-emissions'}
-                  defaultMessage={'Car emissions'}
-                  amount={383.2}
-                  unit={
-                    <>
-                      kgCO<sub>2</sub>
-                    </>
-                  }
-                  percentage={20}
-                  inverted={true}
-                />
-              </div>
-              <div className="stat">
-                <Stat
-                  icon="public_transport"
-                  textId={'public-transport'}
-                  defaultMessage={'Public transport'}
-                  amount={285}
-                  unit="km"
-                  percentage={15}
-                />
-              </div>
-              <div className="stat">
-                <Stat
-                  icon="walk"
-                  textId={'walking-distance'}
-                  defaultMessage={'Walking distance'}
-                  amount={112.5}
-                  unit="km"
-                  percentage={31}
-                />
-              </div>
-              <div className="stat">
-                <Stat
-                  icon={(
-                    <span aria-hidden="true" className="icon-container">
-                      <CaloriesIcon className="icon prefix-icon stat__icon" style={resetIconStyle} />
-                    </span>
-                  )}
-                  textId={"calories-walked"}
-                  defaultMessage={"Calories walked"}
-                  amount={11.7}
-                  unit="kcal"
-                  percentage={-18}
-                />
-              </div>
-            </div>
+            {statsLoading ? ( <Loading /> ) : statsInfo}
           </div>
           {/* end usage metrics section */}
         </div>
