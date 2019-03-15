@@ -35,8 +35,8 @@ class AccountHistoryPage extends React.Component {
     super(props);
     this.state = {
       recentSearches: [],
-      loading: false,
-      statsLoading: false,
+      loading: true,
+      statsLoading: true,
       userAverages: baseStats,
       globalAverages: baseStats
     };
@@ -71,21 +71,24 @@ class AccountHistoryPage extends React.Component {
         }
       });
       this.setState({ recentSearches: results, loading: false });
-    });
+    }).catch( 
+      () => this.setState({ loading: false }) 
+    );
   }
 
   componentDidUpdate(prevProps) {
     const { authUser, firebase } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
       this.getSearchHistory(PAGE_MODE_FIRST);
-      this.setState({ statsLoading: true })
       firebase.getAverages().then(res => {
         this.setState({ 
           userAverages: res[0].val() ? res[0].val() : baseStats,
           globalAverages: res[1].val() ? res[1].val() : baseStats,
           statsLoading: false,
         })
-      })
+      }).catch( 
+        () => this.setState({ statsLoading: false }) 
+      )
     }
   }
 
