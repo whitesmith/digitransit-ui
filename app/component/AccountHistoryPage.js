@@ -79,16 +79,20 @@ class AccountHistoryPage extends React.Component {
   componentDidUpdate(prevProps) {
     const { authUser, firebase } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
-      this.getSearchHistory(PAGE_MODE_FIRST);
-      firebase.getAverages().then(res => {
-        this.setState({ 
-          userAverages: res[0].val() ? res[0].val() : baseStats,
-          globalAverages: res[1].val() ? res[1].val() : baseStats,
-          statsLoading: false,
-        })
-      }).catch( 
-        () => this.setState({ statsLoading: false }) 
-      )
+      if (authUser.isAnonymous) {
+        this.context.router.replace('/');
+      } else {
+        this.getSearchHistory(PAGE_MODE_FIRST);
+        firebase.getAverages().then(res => {
+          this.setState({
+            userAverages: res[0].val() ? res[0].val() : baseStats,
+            globalAverages: res[1].val() ? res[1].val() : baseStats,
+            statsLoading: false,
+          })
+        }).catch(
+          () => this.setState({ statsLoading: false })
+        )
+      }
     }
   }
 
