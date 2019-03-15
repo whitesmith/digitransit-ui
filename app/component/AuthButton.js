@@ -105,7 +105,7 @@ class AuthButton extends React.Component {
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}
           iconButtonElement={AvatarFallback(
             authUser.photoURL,
-            authUser.displayName,
+            authUser.displayName || '',
           )}
         >
           {navMenuButton(
