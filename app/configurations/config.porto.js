@@ -761,11 +761,11 @@ export default configMerger(defaultConfig, {
           {
             type: 'text',
             content:
-              'We use cookies to improve our services. Please confirm you agree to its terms and conditions. Read more:',
+              'We use cookies and other methods to process your personal data in order to customise content and your site experience. Please confirm you accept this use of your data. For more information visit our ',
           },
           {
             type: 'a',
-            content: 'Terms of use',
+            content: 'Terms of Use',
             href: '/terms-and-conditions',
           },
           {
@@ -778,7 +778,7 @@ export default configMerger(defaultConfig, {
           {
             type: 'text',
             content:
-              'Este website utiliza cookies para melhorar a sua experiência. Por favor, confirme que concorda com os termos e condições do mesmo. Ler mais:',
+              'Este website utiliza cookies e outros métodos para processar a sua informação pessoal de forma a customizar o conteúdo e melhorar a sua experiência. Por favor, confirme que aceita esta utilização da sua informação. Ler mais:',
           },
           {
             type: 'a',
