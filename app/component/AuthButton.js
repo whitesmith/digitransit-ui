@@ -17,8 +17,8 @@ import { getReadMessageIds } from '../store/localStorage';
 import BasicDialog from './BasicDialog';
 
 const resetStyle = { color: '', background: 'unset', fontSize: '' };
-const initials = name =>
-  name.split(' ').reduce((r, w) => (r += w.slice(0, 1)), '');
+const initials = name => name ? 
+  name.split(' ').reduce((r, w) => (r += w.slice(0, 1)), '') : '';
 
 const navAuthButton = (id, textId, defaultMessage, executeAction) => (
   <button id={id} className={`navi-button shy-left`} onClick={executeAction}>
