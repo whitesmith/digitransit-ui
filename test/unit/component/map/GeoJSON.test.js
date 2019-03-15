@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import L from 'leaflet';
 import React from 'react';
-import LeafletGeoJson from 'react-leaflet/es/GeoJSON';
+import GeoJSONCluster from '../../../../app/component/map/GeoJSONCluster';
 
 import GeoJSON, {
   getIcons,
@@ -14,6 +14,7 @@ describe('<GeoJSON />', () => {
   it('should render empty if there are no features', () => {
     const props = {
       data: {},
+      options: {}
     };
     const wrapper = shallowWithIntl(<GeoJSON {...props} />, {
       context: { config: {} },
@@ -33,11 +34,12 @@ describe('<GeoJSON />', () => {
           },
         ],
       },
+      options: {}
     };
     const wrapper = shallowWithIntl(<GeoJSON {...props} />, {
       context: { config: {} },
     });
-    expect(wrapper.find(LeafletGeoJson)).to.have.lengthOf(1);
+    expect(wrapper.find(GeoJSONCluster)).to.have.lengthOf(1);
   });
 
   it('should use native react-leaflet components when geometry type === Point', () => {
@@ -53,6 +55,7 @@ describe('<GeoJSON />', () => {
           },
         ],
       },
+      options: {}
     };
     const wrapper = shallowWithIntl(<GeoJSON {...props} />, {
       context: { config: {} },

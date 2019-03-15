@@ -43,6 +43,8 @@ copyProps(window, global);
 // For Google Tag Manager
 window.dataLayer = [];
 
+global.L = require('leaflet');
+
 // set up unit test globals
 global.expect = expect;
 
