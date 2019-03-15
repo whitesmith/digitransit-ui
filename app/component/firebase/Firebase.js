@@ -204,6 +204,15 @@ class Firebase {
     this.database
       .ref('favorites/' + this.auth.currentUser.uid + '/' + favoriteId)
       .remove();
+
+  getAverages = () => Promise.all([
+    this.database
+      .ref('averages/' + this.auth.currentUser.uid)
+      .once('value'),
+    this.database
+      .ref('averages/global')
+      .once('value')
+  ])
 }
 
 export default Firebase;
