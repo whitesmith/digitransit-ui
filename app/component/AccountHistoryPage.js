@@ -111,58 +111,58 @@ class AccountHistoryPage extends React.Component {
                 defaultMessage="Usage metrics"
               />
             </h2>
-            {statsLoading ? ( <Loading /> ) : (
+            {statsLoading ? ( <div className="padding-vertical-normal"><Loading /></div> ) : (
               <div className="stats-container">
-        <div className="stat">
-          <Stat
-            icon="car-withoutBox"
-            textId={'car-emissions'}
-            defaultMessage={'Car emissions'}
-            amount={userAverages.co2}
-            unit={
-              <>
-                kgCO<sub>2</sub>
-              </>
-            }
-            percentage={this.calcPercentageDiff(userAverages.co2, globalAverages.co2)}
-            inverted={true}
-          />
-        </div>
-        <div className="stat">
-          <Stat
-            icon="public_transport"
-            textId={'public-transport'}
-            defaultMessage={'Public transport'}
-            amount={userAverages.publicTransportation}
-            unit="km"
-            percentage={this.calcPercentageDiff(userAverages.publicTransportation, globalAverages.publicTransportation)}
-          />
-        </div>
-        <div className="stat">
-          <Stat
-            icon="walk"
-            textId={'walking-distance'}
-            defaultMessage={'Walking distance'}
-            amount={userAverages.walkDistance}
-            unit="km"
-            percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
-          />
-        </div>
-        <div className="stat">
-          <Stat
-            icon={(
-              <span aria-hidden="true" className="icon-container">
-                <CaloriesIcon className="icon prefix-icon stat__icon" style={resetIconStyle} />
-              </span>
-            )}
-            textId={"calories-walked"}
-            defaultMessage={"Calories walked"}
-            amount={userAverages.calories}
-            unit="kcal"
-            percentage={this.calcPercentageDiff(userAverages.calories, globalAverages.calories)}
-          />
-        </div>
-      </div>
+                <div className="stat">
+                  <Stat
+                    icon="car-withoutBox"
+                    textId={'car-emissions'}
+                    defaultMessage={'Car emissions'}
+                    amount={userAverages.co2}
+                    unit={
+                      <>
+                        kgCO<sub>2</sub>
+                      </>
+                    }
+                    percentage={this.calcPercentageDiff(userAverages.co2, globalAverages.co2)}
+                    inverted={true}
+                  />
+                </div>
+                <div className="stat">
+                  <Stat
+                    icon="public_transport"
+                    textId={'public-transport'}
+                    defaultMessage={'Public transport'}
+                    amount={userAverages.publicTransportation}
+                    unit="km"
+                    percentage={this.calcPercentageDiff(userAverages.publicTransportation, globalAverages.publicTransportation)}
+                  />
+                </div>
+                <div className="stat">
+                  <Stat
+                    icon="walk"
+                    textId={'walking-distance'}
+                    defaultMessage={'Walking distance'}
+                    amount={userAverages.walkDistance}
+                    unit="km"
+                    percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
+                  />
+                </div>
+                <div className="stat">
+                  <Stat
+                    icon={(
+                      <span aria-hidden="true" className="icon-container">
+                        <CaloriesIcon className="icon prefix-icon stat__icon" style={resetIconStyle} />
+                      </span>
+                    )}
+                    textId={"calories-walked"}
+                    defaultMessage={"Calories walked"}
+                    amount={userAverages.calories}
+                    unit="kcal"
+                    percentage={this.calcPercentageDiff(userAverages.calories, globalAverages.calories)}
+                  />
+                </div>
+              </div>
             )}
           </div>
           {/* end usage metrics section */}
