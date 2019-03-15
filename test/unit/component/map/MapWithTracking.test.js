@@ -66,6 +66,7 @@ describe('<MapWithTracking />', () => {
       [layerUrl]: {
         type: 'FeatureCollection',
         features: [],
+        options: {}
       },
     });
   });
@@ -106,6 +107,7 @@ describe('<MapWithTracking />', () => {
       [layerUrl]: {
         type: 'FeatureCollection',
         features: [],
+        options: {}
       },
     });
   });
@@ -118,6 +120,7 @@ describe('<MapWithTracking />', () => {
     instance.mapElement = {
       leafletElement: {
         getBounds: () => bounds,
+        getZoom: () => false
       },
     };
     instance.updateCurrentBounds();
@@ -141,6 +144,7 @@ describe('<MapWithTracking />', () => {
     instance.mapElement = {
       leafletElement: {
         getBounds: () => newBounds,
+        getZoom: () => false
       },
     };
     instance.updateCurrentBounds();
