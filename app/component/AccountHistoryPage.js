@@ -14,6 +14,13 @@ import { PAGE_MODE_FIRST, PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/
 
 const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
 
+const baseStats = {
+  co2: null,
+  publicTransportation: null,
+  walkDistance: null,
+  calories: null,
+};
+
 class AccountHistoryPage extends React.Component {
   static contextTypes = {
     router: routerShape.isRequired,
@@ -23,15 +30,15 @@ class AccountHistoryPage extends React.Component {
   static propTypes = {
     breakpoint: PropTypes.string.isRequired,
   };
-
+  
   constructor(props) {
     super(props);
     this.state = {
       recentSearches: [],
       loading: false,
       statsLoading: false,
-      userAverages: null,
-      globalAverages: null
+      userAverages: baseStats,
+      globalAverages: baseStats
     };
   }
 
@@ -74,8 +81,8 @@ class AccountHistoryPage extends React.Component {
       this.setState({ statsLoading: true })
       firebase.getAverages().then(res => {
         this.setState({ 
-          userAverages: res[0] ? res[0].val() : null,
-          globalAverages: res[1] ? res[1].val() : null,
+          userAverages: res[0].val() ? res[0].val() : baseStats,
+          globalAverages: res[1].val() ? res[1].val() : baseStats,
           statsLoading: false,
         })
       })
@@ -88,60 +95,6 @@ class AccountHistoryPage extends React.Component {
     const { breakpoint, firebase } = this.props;
     const { recentSearches, loading, statsLoading, userAverages, globalAverages} = this.state;
     const desktop = breakpoint === 'large';
-
-    const statsInfo = userAverages && globalAverages && (
-      <div className="stats-container">
-        <div className="stat">
-          <Stat
-            icon="car-withoutBox"
-            textId={'car-emissions'}
-            defaultMessage={'Car emissions'}
-            amount={Math.round(userAverages.co2)}
-            unit={
-              <>
-                kgCO<sub>2</sub>
-              </>
-            }
-            percentage={this.calcPercentageDiff(userAverages.co2, globalAverages.co2)}
-            inverted={true}
-          />
-        </div>
-        <div className="stat">
-          <Stat
-            icon="public_transport"
-            textId={'public-transport'}
-            defaultMessage={'Public transport'}
-            amount={Math.round(userAverages.publicTransportation)}
-            unit="km"
-            percentage={this.calcPercentageDiff(userAverages.publicTransportation, globalAverages.publicTransportation)}
-          />
-        </div>
-        <div className="stat">
-          <Stat
-            icon="walk"
-            textId={'walking-distance'}
-            defaultMessage={'Walking distance'}
-            amount={Math.round(userAverages.walkDistance)}
-            unit="km"
-            percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
-          />
-        </div>
-        <div className="stat">
-          <Stat
-            icon={(
-              <span aria-hidden="true" className="icon-container">
-                <CaloriesIcon className="icon prefix-icon stat__icon" style={resetIconStyle} />
-              </span>
-            )}
-            textId={"calories-walked"}
-            defaultMessage={"Calories walked"}
-            amount={Math.round(userAverages.calories)}
-            unit="kcal"
-            percentage={this.calcPercentageDiff(userAverages.calories, globalAverages.calories)}
-          />
-        </div>
-      </div>
-    );
 
     return (
       <div className={`flex-vertical fullscreen bp-${breakpoint}`}>
@@ -158,7 +111,59 @@ class AccountHistoryPage extends React.Component {
                 defaultMessage="Usage metrics"
               />
             </h2>
-            {statsLoading ? ( <Loading /> ) : statsInfo}
+            {statsLoading ? ( <Loading /> ) : (
+              <div className="stats-container">
+        <div className="stat">
+          <Stat
+            icon="car-withoutBox"
+            textId={'car-emissions'}
+            defaultMessage={'Car emissions'}
+            amount={userAverages.co2}
+            unit={
+              <>
+                kgCO<sub>2</sub>
+              </>
+            }
+            percentage={this.calcPercentageDiff(userAverages.co2, globalAverages.co2)}
+            inverted={true}
+          />
+        </div>
+        <div className="stat">
+          <Stat
+            icon="public_transport"
+            textId={'public-transport'}
+            defaultMessage={'Public transport'}
+            amount={userAverages.publicTransportation}
+            unit="km"
+            percentage={this.calcPercentageDiff(userAverages.publicTransportation, globalAverages.publicTransportation)}
+          />
+        </div>
+        <div className="stat">
+          <Stat
+            icon="walk"
+            textId={'walking-distance'}
+            defaultMessage={'Walking distance'}
+            amount={userAverages.walkDistance}
+            unit="km"
+            percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
+          />
+        </div>
+        <div className="stat">
+          <Stat
+            icon={(
+              <span aria-hidden="true" className="icon-container">
+                <CaloriesIcon className="icon prefix-icon stat__icon" style={resetIconStyle} />
+              </span>
+            )}
+            textId={"calories-walked"}
+            defaultMessage={"Calories walked"}
+            amount={userAverages.calories}
+            unit="kcal"
+            percentage={this.calcPercentageDiff(userAverages.calories, globalAverages.calories)}
+          />
+        </div>
+      </div>
+            )}
           </div>
           {/* end usage metrics section */}
         </div>
@@ -197,7 +202,6 @@ class AccountHistoryPage extends React.Component {
                 <Loading />
               ) : (
                   <div>
-
                     <DeparturesTable
                       headers={[
                         { id: 'origin', defaultMessage: 'Origin' },

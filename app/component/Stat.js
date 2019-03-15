@@ -37,7 +37,7 @@ const Stat = (props, { config, intl }) => {
           defaultMessage={props.defaultMessage}
         />
       </p>
-      {isNaN(props.amount) ? (
+      {!props.amount || isNaN(props.amount) ? (
         <div>
           <p className="stat__data">
             <span className="stat__value">NA</span>
@@ -46,7 +46,7 @@ const Stat = (props, { config, intl }) => {
       ) : (
         <div>
           <p className="stat__data">
-            <span className="stat__value">{props.amount}</span>
+            <span className="stat__value">{Math.round(props.amount)}</span>
             &nbsp;
             <span className="stat__unit">{props.unit}</span>
           </p>
