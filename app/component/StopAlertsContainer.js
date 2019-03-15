@@ -1,164 +1,161 @@
-import connectToStores from 'fluxible-addons-react/connectToStores';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { intlShape } from 'react-intl';
 import Relay from 'react-relay/classic';
 
+import AlertList from './AlertList';
 import DepartureCancelationInfo from './DepartureCancelationInfo';
-import RouteAlertsContainer from './RouteAlertsContainer';
-import RouteAlertsRow from './RouteAlertsRow';
+import { DATE_FORMAT, AlertSeverityLevelType } from '../constants';
 import {
-  patternHasServiceAlert,
-  stoptimeHasCancelation,
+  getCancelationsForStop,
+  getServiceAlertsForStop,
+  otpServiceAlertShape,
+  getServiceAlertsForStopRoutes,
 } from '../util/alertUtils';
-import { routeNameCompare } from '../util/searchUtils';
 
-const getScheduledDepartureTime = stoptime =>
-  stoptime.scheduledDeparture + stoptime.serviceDay;
-
-const StopAlertsContainer = ({ currentTime, stop }) => {
-  const patternsWithCancellations = stop.stoptimesForServiceDate
-    .filter(st => Array.isArray(st.stoptimes))
-    .map(st => ({
-      pattern: st.pattern,
-      stoptimes: st.stoptimes.filter(stoptimeHasCancelation),
-    }))
-    .filter(st => st.stoptimes.length > 0);
-  const patternsWithServiceAlerts = stop.stoptimesForServiceDate
-    .map(st => st.pattern)
-    .filter(patternHasServiceAlert);
-
-  if (
-    patternsWithCancellations.length === 0 &&
-    patternsWithServiceAlerts.length === 0
-  ) {
-    return (
-      <div className="stop-no-alerts-container">
-        <FormattedMessage
-          id="disruption-info-no-alerts"
-          defaultMessage="No known disruptions or diversions."
+const StopAlertsContainer = ({ stop }, { intl }) => {
+  const cancelations = getCancelationsForStop(stop).map(stoptime => {
+    const { color, mode, shortName } = stoptime.trip.route;
+    const departureTime = stoptime.serviceDay + stoptime.scheduledDeparture;
+    return {
+      header: (
+        <DepartureCancelationInfo
+          firstStopName={stoptime.trip.stops[0].name}
+          headsign={stoptime.headsign}
+          routeMode={mode}
+          scheduledDepartureTime={departureTime}
+          shortName={shortName}
         />
-      </div>
-    );
-  }
+      ),
+      route: {
+        color,
+        mode,
+        shortName,
+      },
+      severityLevel: AlertSeverityLevelType.Warning,
+      validityPeriod: {
+        startTime: departureTime,
+      },
+    };
+  });
+  const serviceAlerts = [
+    ...getServiceAlertsForStop(stop, intl.locale),
+    ...getServiceAlertsForStopRoutes(stop, intl.locale),
+  ];
+
   return (
-    <div className="momentum-scroll">
-      {patternsWithCancellations
-        .sort((a, b) => routeNameCompare(a.pattern.route, b.pattern.route))
-        .map(({ pattern, stoptimes }) => (
-          <div className="route-alerts-list" key={pattern.code}>
-            {stoptimes
-              .map(stoptime => getScheduledDepartureTime(stoptime))
-              .sort((a, b) => b - a)
-              .map(scheduledDepartureTime => (
-                <RouteAlertsRow
-                  color={pattern.route.color}
-                  expired={currentTime > scheduledDepartureTime}
-                  header={
-                    <DepartureCancelationInfo
-                      firstStopName={pattern.stops[0].name}
-                      headsign={pattern.headsign}
-                      routeMode={pattern.route.mode}
-                      scheduledDepartureTime={scheduledDepartureTime}
-                      shortName={pattern.route.shortName}
-                    />
-                  }
-                  key={scheduledDepartureTime}
-                  routeLine={pattern.route.shortName}
-                  routeMode={pattern.route.mode.toLowerCase()}
-                />
-              ))}
-          </div>
-        ))}
-      {patternsWithServiceAlerts
-        .sort((a, b) => routeNameCompare(a.route, b.route))
-        .map(pattern => (
-          <RouteAlertsContainer
-            key={pattern.code}
-            isScrollable={false}
-            patternId={pattern.code}
-            route={pattern.route}
-          />
-        ))}
-    </div>
+    <AlertList cancelations={cancelations} serviceAlerts={serviceAlerts} />
   );
 };
 
 StopAlertsContainer.propTypes = {
-  currentTime: PropTypes.number.isRequired,
   stop: PropTypes.shape({
-    stoptimesForServiceDate: PropTypes.arrayOf(
+    alerts: PropTypes.arrayOf(otpServiceAlertShape).isRequired,
+    stoptimes: PropTypes.arrayOf(
       PropTypes.shape({
-        pattern: PropTypes.shape({
-          code: PropTypes.string.isRequired,
+        headsign: PropTypes.string.isRequired,
+        realtimeState: PropTypes.string,
+        scheduledDeparture: PropTypes.number,
+        serviceDay: PropTypes.number,
+        trip: PropTypes.shape({
+          pattern: PropTypes.shape({
+            code: PropTypes.string,
+          }),
           route: PropTypes.shape({
-            alerts: PropTypes.array.isRequired,
+            alerts: PropTypes.arrayOf(otpServiceAlertShape).isRequired,
+            color: PropTypes.string,
             mode: PropTypes.string.isRequired,
             shortName: PropTypes.string.isRequired,
           }).isRequired,
           stops: PropTypes.arrayOf(
             PropTypes.shape({
-              name: PropTypes.string.isRequired,
+              name: PropTypes.string,
             }),
-          ),
-        }),
+          ).isRequired,
+        }).isRequired,
       }),
     ).isRequired,
   }).isRequired,
 };
 
-const containerComponent = Relay.createContainer(
-  connectToStores(StopAlertsContainer, ['TimeStore'], context => ({
-    currentTime: context
-      .getStore('TimeStore')
-      .getCurrentTime()
-      .unix(),
-  })),
-  {
-    fragments: {
-      stop: () => Relay.QL`
-        fragment Timetable on Stop {
-          stoptimesForServiceDate(date:$date, omitCanceled:false) {
+StopAlertsContainer.contextTypes = {
+  intl: intlShape.isRequired,
+};
+
+const containerComponent = Relay.createContainer(StopAlertsContainer, {
+  fragments: {
+    stop: () => Relay.QL`
+      fragment Timetable on Stop {
+        alerts {
+          alertDescriptionText
+          alertHash,
+          alertHeaderText
+          alertSeverityLevel
+          effectiveEndDate
+          effectiveStartDate
+          alertDescriptionTextTranslations {
+            language
+            text
+          }
+          alertHeaderTextTranslations {
+            language
+            text
+          }
+        }
+        stoptimes: stoptimesWithoutPatterns(
+          startTime:$startTime,
+          timeRange:$timeRange,
+          numberOfDepartures:100,
+          omitCanceled:false
+        ) {
+          headsign
+          realtimeState
+          scheduledDeparture
+          serviceDay
+          trip {
             pattern {
-              headsign
               code
-              route {
-                ${RouteAlertsContainer.getFragment('route')}
-                id
-                gtfsId
-                shortName
-                longName
-                mode
-                color
-                alerts {
-                  effectiveEndDate
-                  effectiveStartDate
-                  id
-                  trip {
-                    pattern {
-                      code
-                    }
+            }
+            route {
+              color
+              mode
+              shortName
+              alerts {
+                alertDescriptionText
+                alertHash
+                alertHeaderText
+                alertSeverityLevel
+                effectiveEndDate
+                effectiveStartDate
+                alertDescriptionTextTranslations {
+                  language
+                  text
+                }
+                alertHeaderTextTranslations {
+                  language
+                  text
+                }
+                trip {
+                  pattern {
+                    code
                   }
                 }
               }
-              stops {
-                name
-              }
             }
-            stoptimes {
-              realtimeState
-              scheduledDeparture
-              serviceDay
+            stops {
+              name
             }
           }
         }
-      `,
-    },
-    initialVariables: {
-      date: moment().format('YYYYMMDD'),
-    },
+      }
+    `,
   },
-);
+  initialVariables: {
+    startTime: moment().unix() - 60 * 5, // 5 mins in the past
+    timeRange: 60 * 15, // -5 + 15 = 10 mins in the future
+    date: moment().format(DATE_FORMAT),
+  },
+});
 
 export { containerComponent as default, StopAlertsContainer as Component };

@@ -92,15 +92,6 @@ export function getNamedConfiguration(configName) {
       config.modeBoundingBoxes[mode] = boundingBoxes;
     });
 
-    Object.keys(config.realTime).forEach(realTimeKey => {
-      if (config.realTimePatch[realTimeKey]) {
-        config.realTime[realTimeKey] = {
-          ...config.realTime[realTimeKey],
-          ...config.realTimePatch[realTimeKey],
-        };
-      }
-    });
-
     addMetaData(config); // add dynamic metadata content
 
     configs[configName] = config;

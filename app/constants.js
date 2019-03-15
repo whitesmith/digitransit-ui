@@ -84,3 +84,40 @@ export const RealtimeStateType = {
   /** The trip information has been updated, but the trip pattern stayed the same as the trip pattern of the scheduled trip. */
   Updated: 'UPDATED',
 };
+
+/**
+ * This is the date format string to use for querying dates from OTP.
+ */
+export const DATE_FORMAT = 'YYYYMMDD';
+
+/**
+ * AlertSeverityLevelType is an experimental part of the gtfs-rt specification.
+ * It is used here to depict the severity of a service alert.
+ *
+ * see: https://github.com/google/transit/pull/136/files
+ */
+export const AlertSeverityLevelType = {
+  Info: 'INFO',
+  Severe: 'SEVERE',
+  Unknown: 'UNKNOWN_SEVERITY',
+  Warning: 'WARNING',
+};
+
+/**
+ * AlertEffectType is used to describe the kind of effect that the alert has on
+ * the related entity.
+ *
+ * see: https://developers.google.com/transit/gtfs-realtime/guides/service-alerts
+ */
+export const AlertEffectType = {
+  AdditionalService: 'ADDITIONAL_SERVICE',
+  Detour: 'DETOUR',
+  ModifiedService: 'MODIFIED_SERVICE',
+  NoEffect: 'NO_EFFECT',
+  NoService: 'NO_SERVICE',
+  OtherEffect: 'OTHER_EFFECT',
+  ReducedService: 'REDUCED_SERVICE',
+  SignificantDelays: 'SIGNIFICANT_DELAYS',
+  StopMoved: 'STOP_MOVED',
+  Unknown: 'UNKNOWN_EFFECT',
+};

@@ -75,9 +75,6 @@ export default {
   // Google Tag Manager id
   GTMid: 'GTM-PZV2S2V',
 
-  // Google Tag Manager id
-  GTMid: 'GTM-PZV2S2V',
-
   /*
  * by default search endpoints from all but gtfs sources, correct gtfs source
  * figured based on feedIds config variable
