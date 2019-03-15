@@ -40,7 +40,7 @@ const Stat = (props, { config, intl }) => {
       {!props.amount || isNaN(props.amount) ? (
         <div>
           <p className="stat__data">
-            <span className="stat__value">NA</span>
+            <span className="stat__value">—</span>
           </p>
         </div>
       ) : (
