@@ -11,12 +11,29 @@ exports.update_records = functions.database
 
     new_record = calculateBusKm(snapshot, context);
 
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
+    path = 'monthly_records/' + year + '/' + month + '/';
+    path += context.params.userID + '/' + context.params.nodeID;
+    database
+      .ref(path)
+      .set(new_record)
+      .then(calculateMonthAverages)
+      .catch(() => {});
+
     return database
       .ref('30_records/' + context.params.userID + '/' + context.params.nodeID)
       .set(new_record)
       .then(clearOldRecords)
       .then(calculateAverages);
   });
+
+exports.updateStatistics = functions.https.onRequest((req, res) => {
+  clearOldRecords()
+    .then(calculateAverages)
+    .catch(() => {});
+  res.send('Updating statistics');
+});
 
 calculateBusKm = (snapshot, context) => {
   let database = admin.database();
@@ -50,6 +67,21 @@ clearOldRecords = () => {
     });
     return database.ref('30_records/').set(new_records);
   });
+};
+
+calculateMonthAverages = () => {
+  let year = new Date().getFullYear();
+  let month = new Date().getMonth();
+
+  let database = admin.database();
+  return database
+    .ref('monthly_records/' + year + '/' + month)
+    .once('value', snapshot => {
+      console.log(snapshot.val());
+      averages = calculateUserAverages(snapshot.val());
+      averages['global'] = calculateGlobalAverages(averages);
+      database.ref('monthaverages/' + year + '/' + month).set(averages);
+    });
 };
 
 calculateAverages = () => {
