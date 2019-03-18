@@ -46,7 +46,7 @@ const Stat = (props, { config, intl }) => {
       ) : (
         <div>
           <p className="stat__data">
-            <span className="stat__value">{Math.round(props.amount)}</span>
+            <span className="stat__value">{props.decimal ? Math.round(props.amount * 100) / 100 : Math.round(props.amount)}</span>
             &nbsp;
             <span className="stat__unit">{props.unit}</span>
           </p>

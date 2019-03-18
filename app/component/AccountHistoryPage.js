@@ -114,6 +114,8 @@ class AccountHistoryPage extends React.Component {
     const { recentSearches, loading, statsLoading, monthlyStatsLoading,  monthlyAverages, userAverages, globalAverages} = this.state;
     const desktop = breakpoint === 'large';
 
+    const walkDistanceInKms = userAverages.walkDistance > 999;
+
     return (
       <div className={`flex-vertical fullscreen bp-${breakpoint}`}>
         <div className="account-history-container">
@@ -161,8 +163,9 @@ class AccountHistoryPage extends React.Component {
                     icon="walk"
                     textId={'walking-distance'}
                     defaultMessage={'Walking distance'}
-                    amount={userAverages.walkDistance > 2000 ? userAverages.walkDistance / 1000 : userAverages.walkDistance }
-                    unit={userAverages.walkDistance > 2000 ? 'km' : 'm'}
+                    decimal={walkDistanceInKms}
+                    amount={walkDistanceInKms ? userAverages.walkDistance / 1000 : userAverages.walkDistance }
+                    unit={walkDistanceInKms ? 'km' : 'm'}
                     percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
                   />
                 </div>
