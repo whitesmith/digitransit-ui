@@ -806,7 +806,8 @@ export default configMerger(defaultConfig, {
         },
         url: '//desolate-falls-11658.herokuapp.com/pois',
         options: {
-          cluster: true
+          cluster: true,
+          maxMarkers: 150,
         }
       },
       {
@@ -819,6 +820,7 @@ export default configMerger(defaultConfig, {
         url: '//desolate-falls-11658.herokuapp.com/bus_stops',
         options: {
           minZoom: 16,
+          maxMarkers: 200,
         }
       },
       {
@@ -831,6 +833,7 @@ export default configMerger(defaultConfig, {
         url: '//desolate-falls-11658.herokuapp.com/metro_stops',
         options: {
           minZoom: 16,
+          maxMarkers: 200,
         }
       },
     ],

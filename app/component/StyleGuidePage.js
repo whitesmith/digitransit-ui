@@ -52,8 +52,6 @@ import { BicycleRentalStationRow } from './BicycleRentalStationRowContainer';
 import StopPageHeader from './StopPageHeader';
 import StopCardHeader from './StopCardHeader';
 import SplitBars from './SplitBars';
-import Labeled from './Labeled';
-import Centered from './Centered';
 import InfoIcon from './InfoIcon';
 import Favourite from './Favourite';
 import NoFavouriteLocations from './NoFavouriteLocations';
@@ -74,6 +72,8 @@ import BicycleLeg from './BicycleLeg';
 import EndLeg from './EndLeg';
 import AirportCheckInLeg from './AirportCheckInLeg';
 import AirportCollectLuggageLeg from './AirportCollectLuggageLeg';
+import { Component as ItineraryLegs } from './ItineraryLegs';
+import { component as CanceledLegsBar } from './CanceledLegsBar';
 import BusLeg from './BusLeg';
 import AirplaneLeg from './AirplaneLeg';
 import SubwayLeg from './SubwayLeg';
@@ -92,6 +92,7 @@ import SelectMapLayersDialog from './SelectMapLayersDialog';
 import MainMenuContainer from './MainMenuContainer';
 import OriginDestinationBar from './OriginDestinationBar';
 import { Component as IndexPage } from './IndexPage';
+import { Component as AlertList } from './AlertList';
 
 const components = {
   Icon,
@@ -140,13 +141,12 @@ const components = {
   BicycleRentalStationRow,
   AppBarSmall,
   AppBarLarge,
+  CanceledLegsBar,
   FrontPagePanelLarge,
   FrontPagePanelSmall,
   StopPageHeader,
   StopCardHeader,
   SplitBars,
-  Labeled,
-  Centered,
   InfoIcon,
   Favourite,
   DepartureListHeader,
@@ -160,6 +160,7 @@ const components = {
   PageFooter,
   FooterItem,
   DateWarning,
+  ItineraryLegs,
   WalkLeg,
   WaitLeg,
   BicycleLeg,
@@ -180,6 +181,7 @@ const components = {
   Error404,
   StopMarkerPopup,
   SelectStreetModeDialog,
+  AlertList,
 };
 
 const fullscreenComponents = {

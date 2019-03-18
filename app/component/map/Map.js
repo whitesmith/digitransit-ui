@@ -72,7 +72,10 @@ export default class Map extends React.Component {
     this.erd.removeListener(this.map.leafletElement._container, this.resizeMap);
   }
 
-  onPopupopen = () => events.emit('popupOpened');
+  /* This causes te following error:
+  * Uncaught Invariant Violation: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate.
+  */
+  //onPopupopen = () => events.emit('popupOpened');
 
   setLoaded = () => {
     this.props.loaded();

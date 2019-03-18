@@ -70,8 +70,8 @@ class ItineraryTab extends React.Component {
   };
 
   render() {
+    const { itinerary, searchTime } = this.props;
     const { config } = this.context;
-    let itinerary = this.props.itinerary;
     if(config.showExtraCalculations) {
       addExtraCalcsToItinerary(itinerary);
     }
@@ -88,16 +88,13 @@ class ItineraryTab extends React.Component {
                 <TimeFrame
                   startTime={itinerary.startTime}
                   endTime={itinerary.endTime}
-                  refTime={this.props.searchTime}
+                  refTime={searchTime}
                   className="timeframe--itinerary-summary"
                 />
               </ItinerarySummary>
             ) : (
               <div className="itinerary-timeframe" key="timeframe">
-                <DateWarning
-                  date={itinerary.startTime}
-                  refTime={this.props.searchTime}
-                />
+                <DateWarning date={itinerary.startTime} refTime={searchTime} />
               </div>
             ),
             <div className="momentum-scroll itinerary-tabs__scroll" key="legs">
@@ -146,7 +143,7 @@ class ItineraryTab extends React.Component {
   }
 }
 
-export default Relay.createContainer(ItineraryTab, {
+const withRelay = Relay.createContainer(ItineraryTab, {
   fragments: {
     searchTime: () => Relay.QL`
       fragment on Plan {
@@ -220,6 +217,7 @@ export default Relay.createContainer(ItineraryTab, {
             }
           }
           realTime
+          realtimeState
           transitLeg
           rentedBike
           startTime
@@ -246,6 +244,7 @@ export default Relay.createContainer(ItineraryTab, {
             }
             stoptimes {
               pickupType
+              realtimeState
               stop {
                 gtfsId
               }
@@ -256,3 +255,5 @@ export default Relay.createContainer(ItineraryTab, {
     `,
   },
 });
+
+export { ItineraryTab as component, withRelay as default };
