@@ -115,7 +115,6 @@ class AccountHistoryPage extends React.Component {
 =======
       this.getSearchHistory(PAGE_MODE_FIRST);
       firebase.getStats().then(res => {
-        console.log(res[0].val(), res[1].val())
         this.setState({ 
           sumStats: res[0].val() ? res[0].val() : baseSumStats,
           avgStats: res[1].val() ? res[1].val() : baseAvgStats,
@@ -137,7 +136,7 @@ class AccountHistoryPage extends React.Component {
     }
   }
 
-  calcPercentageDiff = (userAvg, refAvg) => Math.round((userAvg * 100) / refAvg) - 100;
+  calcPercentageDiff = (userSum, average) => Math.round((userSum * 100) / average) - 100;
   
   render() {
     const { breakpoint, firebase } = this.props;
@@ -157,8 +156,6 @@ class AccountHistoryPage extends React.Component {
       walkDistanceAvg,
       caloriesAvg,
     } = avgStats;
-
-    const walkDistanceInKms = walkDistanceSum > 999;
 
     return (
       <div className={`flex-vertical fullscreen bp-${breakpoint}`}>
@@ -183,7 +180,12 @@ class AccountHistoryPage extends React.Component {
                     textId={'car-emissions'}
                     defaultMessage={'Car emissions'}
                     amount={co2Sum}
-                    unit={
+                    smallUnit={
+                      <>
+                        gCO<sub>2</sub>
+                      </>
+                    }
+                    bigUnit={
                       <>
                         kgCO<sub>2</sub>
                       </>
@@ -198,7 +200,8 @@ class AccountHistoryPage extends React.Component {
                     textId={'public-transport'}
                     defaultMessage={'Public transport'}
                     amount={publicTransportationSum}
-                    unit="km"
+                    smallUnit="m"
+                    bigUnit="km"
                     percentage={this.calcPercentageDiff(publicTransportationSum, publicTransportationAvg)}
                   />
                 </div>
@@ -207,9 +210,9 @@ class AccountHistoryPage extends React.Component {
                     icon="walk"
                     textId={'walking-distance'}
                     defaultMessage={'Walking distance'}
-                    decimal={walkDistanceInKms}
-                    amount={walkDistanceInKms ? walkDistanceSum / 1000 : walkDistanceSum }
-                    unit={walkDistanceInKms ? 'km' : 'm'}
+                    amount={walkDistanceSum}
+                    smallUnit="m"
+                    bigUnit="km"
                     percentage={this.calcPercentageDiff(walkDistanceSum, walkDistanceAvg)}
                   />
                 </div>
@@ -223,7 +226,8 @@ class AccountHistoryPage extends React.Component {
                     textId={"calories-walked"}
                     defaultMessage={"Calories walked"}
                     amount={caloriesSum}
-                    unit="kcal"
+                    smallUnit="cal"
+                    bigUnit="kcal"
                     percentage={this.calcPercentageDiff(caloriesSum, caloriesAvg)}
                   />
                 </div>
