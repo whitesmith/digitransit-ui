@@ -21,7 +21,7 @@ exports.update_records = functions.database
       .then(calculateMonthAverages)
       .catch(() => {});
 
-    path = 'last-30-days-average/' + context.params.userID + '/';
+    path = 'last-30-days-records/' + context.params.userID + '/';
     path += context.params.nodeID;
     return database
       .ref(path)
@@ -38,13 +38,15 @@ exports.updateStatistics = functions.https.onRequest((req, res) => {
 });
 
 calculateBusKm = (snapshot, context) => {
+  let publicTransports = ['TRAM', 'TRAIN', 'SUBWAY', 'BUS'];
   let database = admin.database();
   const new_record = snapshot.val();
 
   busKm = 0;
   if (new_record['itinerary']) {
     Object.keys(new_record['itinerary']['legs']).forEach(leg => {
-      if (new_record['itinerary']['legs'][leg]['mode'] === 'BUS') {
+      mode = new_record['itinerary']['legs'][leg]['mode'];
+      if (publicTransports.indexOf(mode) !== -1) {
         busKm += new_record['itinerary']['legs'][leg]['distance'];
       }
     });
@@ -55,7 +57,7 @@ calculateBusKm = (snapshot, context) => {
 
 clearOldRecords = () => {
   let database = admin.database();
-  return database.ref('last-30-days-average/').once('value', snapshot => {
+  return database.ref('last-30-days-records/').once('value', snapshot => {
     let records = snapshot.val();
     let new_records = {};
     let oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
@@ -68,7 +70,7 @@ clearOldRecords = () => {
         }
       });
     });
-    return database.ref('last-30-days-average/').set(new_records);
+    return database.ref('last-30-days-records/').set(new_records);
   });
 };
 
@@ -81,7 +83,7 @@ calculateMonthAverages = () => {
     .ref('monthly-records/' + year + '/' + month)
     .once('value', snapshot => {
       averages = calculateUserAverages(snapshot.val());
-      averages['global'] = calculateGlobalAverages(averages);
+      averages['averages'] = calculateGlobalAverages(averages);
       organizeAveragesPerCurrentMonth(averages);
     });
 };
@@ -93,21 +95,21 @@ let organizeAveragesPerCurrentMonth = averages => {
 
   Object.keys(averages).forEach(user => {
     database
-      .ref('monthly-averages/' + user + '/' + year + '/' + month)
+      .ref('monthly-stats/' + user + '/' + year + '/' + month)
       .set(averages[user]);
   });
 
   database
-    .ref('monthly-averages/' + 'global' + '/' + year + '/' + month)
-    .set(averages['global']);
+    .ref('monthly-stats/' + 'averages' + '/' + year + '/' + month)
+    .set(averages['averages']);
 };
 
 calculateAverages = () => {
   let database = admin.database();
-  return database.ref('last-30-days-average/').once('value', snapshot => {
+  return database.ref('last-30-days-records/').once('value', snapshot => {
     averages = calculateUserAverages(snapshot.val());
-    averages['global'] = calculateGlobalAverages(averages);
-    database.ref('averages/').set(averages);
+    averages['averages'] = calculateGlobalAverages(averages);
+    database.ref('last-30-days-stats/').set(averages);
   });
 };
 
@@ -122,18 +124,18 @@ let calculateGlobalAverages = averages => {
     distanceCounter++;
     busKmCounter++;
 
-    co2Sum += averages[average]['co2'];
-    costSum += averages[average]['cost'];
-    calSum += averages[average]['calories'];
-    distanceSum += averages[average]['walkDistance'];
-    busKmSum += averages[average]['publicTransportation'];
+    co2Sum += averages[average]['co2Sum'];
+    costSum += averages[average]['costSum'];
+    calSum += averages[average]['caloriesSum'];
+    distanceSum += averages[average]['walkDistanceSum'];
+    busKmSum += averages[average]['publicTransportationSum'];
   });
   return {
-    co2: co2Counter !== 0 ? co2Sum / co2Counter : 0,
-    calories: calCounter !== 0 ? calSum / calCounter : 0,
-    cost: costCounter !== 0 ? costSum / costCounter : 0,
-    walkDistance: distanceCounter !== 0 ? distanceSum / distanceCounter : 0,
-    publicTransportation: busKmCounter !== 0 ? busKmSum / busKmCounter : 0,
+    co2Avg: co2Counter !== 0 ? co2Sum / co2Counter : 0,
+    caloriesAvg: calCounter !== 0 ? calSum / calCounter : 0,
+    costAvg: costCounter !== 0 ? costSum / costCounter : 0,
+    walkDistanceAvg: distanceCounter !== 0 ? distanceSum / distanceCounter : 0,
+    publicTransportationAvg: busKmCounter !== 0 ? busKmSum / busKmCounter : 0,
   };
 };
 
@@ -174,10 +176,15 @@ let averagesForUser = (history, user) => {
   });
 
   return {
-    co2: co2Counter !== 0 ? co2Sum / co2Counter : 0,
-    calories: calCounter !== 0 ? calSum / calCounter : 0,
-    cost: costCounter !== 0 ? costSum / costCounter : 0,
-    walkDistance: distanceCounter !== 0 ? distanceSum / distanceCounter : 0,
-    publicTransportation: busKmCounter !== 0 ? busKmSum / busKmCounter : 0,
+    co2Avg: co2Counter !== 0 ? co2Sum / co2Counter : 0,
+    caloriesAvg: calCounter !== 0 ? calSum / calCounter : 0,
+    costAvg: costCounter !== 0 ? costSum / costCounter : 0,
+    walkDistanceAvg: distanceCounter !== 0 ? distanceSum / distanceCounter : 0,
+    publicTransportationAvg: busKmCounter !== 0 ? busKmSum / busKmCounter : 0,
+    co2Sum: co2Sum,
+    caloriesSum: calSum,
+    costSum: costSum,
+    walkDistanceSum: distanceSum,
+    publicTransportationSum: busKmSum,
   };
 };
