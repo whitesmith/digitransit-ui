@@ -37,8 +37,10 @@ class AccountHistoryPage extends React.Component {
       recentSearches: [],
       loading: true,
       statsLoading: true,
+      monthlyStatsLoading: true,
       userAverages: baseStats,
-      globalAverages: baseStats
+      globalAverages: baseStats,
+      monthlyAverages: {}
     };
   }
 
@@ -92,7 +94,16 @@ class AccountHistoryPage extends React.Component {
         }).catch(
           () => this.setState({ statsLoading: false })
         )
-      }
+        firebase.getMonthlyAverages().then(res => {
+          console.log(res.val());
+          this.setState({
+            monthlyAverages: res.val(),
+            monthlyStatsLoading: false,
+          })
+        }).catch(
+          () => this.setState({ monthlyStatsLoading: false })
+        )
+      }      
     }
   }
 
@@ -100,7 +111,7 @@ class AccountHistoryPage extends React.Component {
   
   render() {
     const { breakpoint, firebase } = this.props;
-    const { recentSearches, loading, statsLoading, userAverages, globalAverages} = this.state;
+    const { recentSearches, loading, statsLoading, monthlyStatsLoading,  monthlyAverages, userAverages, globalAverages} = this.state;
     const desktop = breakpoint === 'large';
 
     return (

@@ -213,6 +213,11 @@ class Firebase {
       .ref('averages/global')
       .once('value')
   ])
+
+  getMonthlyAverages = () => 
+    this.database
+      .ref('monthly-averages/' + this.auth.currentUser.uid)
+      .once('value')
 }
 
 export default Firebase;
