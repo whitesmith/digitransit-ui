@@ -13,7 +13,7 @@ exports.update_records = functions.database
 
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
-    path = 'monthly_records/' + year + '/' + month + '/';
+    path = 'monthly-records/' + year + '/' + month + '/';
     path += context.params.userID + '/' + context.params.nodeID;
     database
       .ref(path)
@@ -21,8 +21,10 @@ exports.update_records = functions.database
       .then(calculateMonthAverages)
       .catch(() => {});
 
+    path = 'last-30-days-average/' + context.params.userID + '/';
+    path += context.params.nodeID;
     return database
-      .ref('30_records/' + context.params.userID + '/' + context.params.nodeID)
+      .ref(path)
       .set(new_record)
       .then(clearOldRecords)
       .then(calculateAverages);
@@ -53,19 +55,20 @@ calculateBusKm = (snapshot, context) => {
 
 clearOldRecords = () => {
   let database = admin.database();
-  return database.ref('30_records/').once('value', snapshot => {
+  return database.ref('last-30-days-average/').once('value', snapshot => {
     let records = snapshot.val();
     let new_records = {};
     let oneMonthAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
     Object.keys(records).forEach(user => {
+      new_records[user] = {};
       Object.keys(records[user]).forEach(entry => {
-        if (records[user][entry]['timestamp'] * 1000 > oneMonthAgo) {
-          new_records[user] = {};
+        let recordTimestamp = records[user][entry]['timestamp'] * 1000;
+        if (recordTimestamp > oneMonthAgo) {
           new_records[user][entry] = records[user][entry];
         }
       });
     });
-    return database.ref('30_records/').set(new_records);
+    return database.ref('last-30-days-average/').set(new_records);
   });
 };
 
@@ -75,18 +78,17 @@ calculateMonthAverages = () => {
 
   let database = admin.database();
   return database
-    .ref('monthly_records/' + year + '/' + month)
+    .ref('monthly-records/' + year + '/' + month)
     .once('value', snapshot => {
-      console.log(snapshot.val());
       averages = calculateUserAverages(snapshot.val());
       averages['global'] = calculateGlobalAverages(averages);
-      database.ref('monthaverages/' + year + '/' + month).set(averages);
+      database.ref('monthly-averages/' + year + '/' + month).set(averages);
     });
 };
 
 calculateAverages = () => {
   let database = admin.database();
-  return database.ref('30_records/').once('value', snapshot => {
+  return database.ref('last-30-days-average/').once('value', snapshot => {
     averages = calculateUserAverages(snapshot.val());
     averages['global'] = calculateGlobalAverages(averages);
     database.ref('averages/').set(averages);
