@@ -14,11 +14,18 @@ import { PAGE_MODE_FIRST, PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/
 
 const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
 
-const baseStats = {
-  co2: null,
-  publicTransportation: null,
-  walkDistance: null,
-  calories: null,
+const baseSumStats = {
+  co2Sum: null,
+  publicTransportationSum: null,
+  walkDistanceSum: null,
+  caloriesSum: null,
+};
+
+const baseAvgStats = {
+  co2Avg: null,
+  publicTransportationAvg: null,
+  walkDistanceAvg: null,
+  caloriesAvg: null,
 };
 
 class AccountHistoryPage extends React.Component {
@@ -38,9 +45,9 @@ class AccountHistoryPage extends React.Component {
       loading: true,
       statsLoading: true,
       monthlyStatsLoading: true,
-      userAverages: baseStats,
-      globalAverages: baseStats,
-      monthlyAverages: {}
+      sumStats: baseSumStats,
+      avgStats: baseAvgStats,
+      monthlyStats: null
     };
   }
 
@@ -81,6 +88,7 @@ class AccountHistoryPage extends React.Component {
   componentDidUpdate(prevProps) {
     const { authUser, firebase } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
+<<<<<<< HEAD
       if (authUser.isAnonymous) {
         this.context.router.replace('/');
       } else {
@@ -104,6 +112,28 @@ class AccountHistoryPage extends React.Component {
           () => this.setState({ monthlyStatsLoading: false })
         )
       }      
+=======
+      this.getSearchHistory(PAGE_MODE_FIRST);
+      firebase.getStats().then(res => {
+        console.log(res[0].val(), res[1].val())
+        this.setState({ 
+          sumStats: res[0].val() ? res[0].val() : baseSumStats,
+          avgStats: res[1].val() ? res[1].val() : baseAvgStats,
+          statsLoading: false,
+        })
+      }).catch( 
+        () => this.setState({ statsLoading: false }) 
+      )
+      
+      firebase.getMonthlyStats().then(res => {
+        this.setState({ 
+          monthlyStats: res.val(),
+          monthlyStatsLoading: false,
+        })
+      }).catch( 
+        () => this.setState({ monthlyStatsLoading: false }) 
+      )
+>>>>>>> averages replaced by sums
     }
   }
 
@@ -111,10 +141,24 @@ class AccountHistoryPage extends React.Component {
   
   render() {
     const { breakpoint, firebase } = this.props;
-    const { recentSearches, loading, statsLoading, monthlyStatsLoading,  monthlyAverages, userAverages, globalAverages} = this.state;
+    const { recentSearches, loading, statsLoading, monthlyStatsLoading,  monthlyStats, sumStats, avgStats} = this.state;
     const desktop = breakpoint === 'large';
 
-    const walkDistanceInKms = userAverages.walkDistance > 999;
+    const {
+      co2Sum,
+      publicTransportationSum,
+      walkDistanceSum,
+      caloriesSum,
+    } = sumStats;
+    
+    const {
+      co2Avg,
+      publicTransportationAvg,
+      walkDistanceAvg,
+      caloriesAvg,
+    } = avgStats;
+
+    const walkDistanceInKms = walkDistanceSum > 999;
 
     return (
       <div className={`flex-vertical fullscreen bp-${breakpoint}`}>
@@ -138,13 +182,13 @@ class AccountHistoryPage extends React.Component {
                     icon="car-withoutBox"
                     textId={'car-emissions'}
                     defaultMessage={'Car emissions'}
-                    amount={userAverages.co2}
+                    amount={co2Sum}
                     unit={
                       <>
                         kgCO<sub>2</sub>
                       </>
                     }
-                    percentage={this.calcPercentageDiff(userAverages.co2, globalAverages.co2)}
+                    percentage={this.calcPercentageDiff(co2Sum, co2Avg)}
                     inverted={true}
                   />
                 </div>
@@ -153,9 +197,9 @@ class AccountHistoryPage extends React.Component {
                     icon="public_transport"
                     textId={'public-transport'}
                     defaultMessage={'Public transport'}
-                    amount={userAverages.publicTransportation}
+                    amount={publicTransportationSum}
                     unit="km"
-                    percentage={this.calcPercentageDiff(userAverages.publicTransportation, globalAverages.publicTransportation)}
+                    percentage={this.calcPercentageDiff(publicTransportationSum, publicTransportationAvg)}
                   />
                 </div>
                 <div className="stat">
@@ -164,9 +208,9 @@ class AccountHistoryPage extends React.Component {
                     textId={'walking-distance'}
                     defaultMessage={'Walking distance'}
                     decimal={walkDistanceInKms}
-                    amount={walkDistanceInKms ? userAverages.walkDistance / 1000 : userAverages.walkDistance }
+                    amount={walkDistanceInKms ? walkDistanceSum / 1000 : walkDistanceSum }
                     unit={walkDistanceInKms ? 'km' : 'm'}
-                    percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
+                    percentage={this.calcPercentageDiff(walkDistanceSum, walkDistanceAvg)}
                   />
                 </div>
                 <div className="stat">
@@ -178,9 +222,9 @@ class AccountHistoryPage extends React.Component {
                     )}
                     textId={"calories-walked"}
                     defaultMessage={"Calories walked"}
-                    amount={userAverages.calories}
+                    amount={caloriesSum}
                     unit="kcal"
-                    percentage={this.calcPercentageDiff(userAverages.calories, globalAverages.calories)}
+                    percentage={this.calcPercentageDiff(caloriesSum, caloriesAvg)}
                   />
                 </div>
               </div>
