@@ -82,8 +82,24 @@ calculateMonthAverages = () => {
     .once('value', snapshot => {
       averages = calculateUserAverages(snapshot.val());
       averages['global'] = calculateGlobalAverages(averages);
-      database.ref('monthly-averages/' + year + '/' + month).set(averages);
+      organizeAveragesPerCurrentMonth(averages);
     });
+};
+
+let organizeAveragesPerCurrentMonth = averages => {
+  let database = admin.database();
+  let year = new Date().getFullYear();
+  let month = new Date().getMonth();
+
+  Object.keys(averages).forEach(user => {
+    database
+      .ref('monthly-averages/' + user + '/' + year + '/' + month)
+      .set(averages[user]);
+  });
+
+  database
+    .ref('monthly-averages/' + 'global' + '/' + year + '/' + month)
+    .set(averages['global']);
 };
 
 calculateAverages = () => {
