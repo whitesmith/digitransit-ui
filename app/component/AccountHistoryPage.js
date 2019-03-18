@@ -150,8 +150,8 @@ class AccountHistoryPage extends React.Component {
                     icon="walk"
                     textId={'walking-distance'}
                     defaultMessage={'Walking distance'}
-                    amount={userAverages.walkDistance}
-                    unit="km"
+                    amount={userAverages.walkDistance > 2000 ? userAverages.walkDistance / 1000 : userAverages.walkDistance }
+                    unit={userAverages.walkDistance > 2000 ? 'km' : 'm'}
                     percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
                   />
                 </div>
