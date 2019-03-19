@@ -15,7 +15,7 @@ exports.delete_and_update = functions.database
     database
       .ref(path)
       .remove()
-      .then(calculateMonthAverages)
+      .then(calculateMonthStats)
       .catch(() => {});
 
     path = 'last-30-days-records/' + context.params.userID + '/';
@@ -24,7 +24,7 @@ exports.delete_and_update = functions.database
       .ref(path)
       .remove()
       .then(clearOldRecords)
-      .then(calculateAverages);
+      .then(calculateStats);
   });
 
 exports.update_records = functions.database
@@ -33,7 +33,7 @@ exports.update_records = functions.database
     let database = admin.database();
     let new_record = snapshot.val();
 
-    new_record = calculateBusKm(snapshot, context);
+    new_record = addPublicTransportationValues(snapshot, context);
 
     let year = new Date().getFullYear();
     let month = new Date().getMonth();
@@ -42,7 +42,7 @@ exports.update_records = functions.database
     database
       .ref(path)
       .set(new_record)
-      .then(calculateMonthAverages)
+      .then(calculateMonthStats)
       .catch(() => {});
 
     path = 'last-30-days-records/' + context.params.userID + '/';
@@ -51,17 +51,17 @@ exports.update_records = functions.database
       .ref(path)
       .set(new_record)
       .then(clearOldRecords)
-      .then(calculateAverages);
+      .then(calculateStats);
   });
 
 exports.updateStatistics = functions.https.onRequest((req, res) => {
   clearOldRecords()
-    .then(calculateAverages)
+    .then(calculateStats)
     .catch(() => {});
   res.send('Updating statistics');
 });
 
-calculateBusKm = (snapshot, context) => {
+addPublicTransportationValues = (snapshot, context) => {
   let publicTransports = ['TRAM', 'TRAIN', 'SUBWAY', 'BUS'];
   let database = admin.database();
   const new_record = snapshot.val();
@@ -98,7 +98,7 @@ clearOldRecords = () => {
   });
 };
 
-calculateMonthAverages = () => {
+calculateMonthStats = () => {
   let year = new Date().getFullYear();
   let month = new Date().getMonth();
 
@@ -106,8 +106,8 @@ calculateMonthAverages = () => {
   return database
     .ref('monthly-records/' + year + '/' + month)
     .once('value', snapshot => {
-      averages = calculateUserAverages(snapshot.val());
-      averages['averages'] = calculateGlobalAverages(averages);
+      averages = calculateUserStats(snapshot.val());
+      averages['averages'] = calculateGlobalStats(averages);
       organizeAveragesPerCurrentMonth(averages);
     });
 };
@@ -128,16 +128,16 @@ let organizeAveragesPerCurrentMonth = averages => {
     .set(averages['averages']);
 };
 
-calculateAverages = () => {
+calculateStats = () => {
   let database = admin.database();
   return database.ref('last-30-days-records/').once('value', snapshot => {
-    averages = calculateUserAverages(snapshot.val());
-    averages['averages'] = calculateGlobalAverages(averages);
+    averages = calculateUserStats(snapshot.val());
+    averages['averages'] = calculateGlobalStats(averages);
     database.ref('last-30-days-stats/').set(averages);
   });
 };
 
-let calculateGlobalAverages = averages => {
+let calculateGlobalStats = averages => {
   busKmCounter = 0;
   (co2Counter = 0), (costCounter = 0), (calCounter = 0), (distanceCounter = 0);
   (co2Sum = 0), (costSum = 0), (calSum = 0), (distanceSum = 0), (busKmSum = 0);
@@ -163,15 +163,15 @@ let calculateGlobalAverages = averages => {
   };
 };
 
-let calculateUserAverages = history => {
+let calculateUserStats = history => {
   averages = {};
   Object.keys(history).forEach(user => {
-    averages[user] = averagesForUser(history, user);
+    averages[user] = statsForUser(history, user);
   });
   return averages;
 };
 
-let averagesForUser = (history, user) => {
+let statsForUser = (history, user) => {
   var monthMilliseconds = 1000 * 60 * 60 * 24 * 30;
 
   busKmCounter = 0;
