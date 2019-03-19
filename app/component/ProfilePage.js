@@ -25,6 +25,15 @@ class ProfilePage extends React.Component {
     this.state = { deleteConfirmationIsOpen: false };
   }
 
+  componentDidUpdate(prevProps) {
+    const { authUser } = this.props;
+    if (authUser !== prevProps.authUser && authUser) {
+      if (authUser.isAnonymous) {
+        this.context.router.replace('/');
+      }
+    }
+  }
+
   openDeleteConfirmation = () => {
     this.setState({ deleteConfirmationIsOpen: true });
   };
