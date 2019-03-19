@@ -88,56 +88,32 @@ class AccountHistoryPage extends React.Component {
   componentDidUpdate(prevProps) {
     const { authUser, firebase } = this.props;
     if (authUser !== prevProps.authUser && authUser) {
-<<<<<<< HEAD
       if (authUser.isAnonymous) {
         this.context.router.replace('/');
       } else {
         this.getSearchHistory(PAGE_MODE_FIRST);
-        firebase.getAverages().then(res => {
+        firebase.getStats().then(res => {
           this.setState({
-            userAverages: res[0].val() ? res[0].val() : baseStats,
-            globalAverages: res[1].val() ? res[1].val() : baseStats,
+            sumStats: res[0].val() ? res[0].val() : baseSumStats,
+            avgStats: res[1].val() ? res[1].val() : baseAvgStats,
             statsLoading: false,
           })
         }).catch(
           () => this.setState({ statsLoading: false })
         )
-        firebase.getMonthlyAverages().then(res => {
-          console.log(res.val());
+
+        firebase.getMonthlyStats().then(res => {
           this.setState({
-            monthlyAverages: res.val(),
+            monthlyStats: res.val(),
             monthlyStatsLoading: false,
           })
         }).catch(
           () => this.setState({ monthlyStatsLoading: false })
         )
-      }      
-=======
-      this.getSearchHistory(PAGE_MODE_FIRST);
-      firebase.getStats().then(res => {
-        this.setState({ 
-          sumStats: res[0].val() ? res[0].val() : baseSumStats,
-          avgStats: res[1].val() ? res[1].val() : baseAvgStats,
-          statsLoading: false,
-        })
-      }).catch( 
-        () => this.setState({ statsLoading: false }) 
-      )
-      
-      firebase.getMonthlyStats().then(res => {
-        this.setState({ 
-          monthlyStats: res.val(),
-          monthlyStatsLoading: false,
-        })
-      }).catch( 
-        () => this.setState({ monthlyStatsLoading: false }) 
-      )
-<<<<<<< HEAD
->>>>>>> averages replaced by sums
-=======
 
-      firebase.getUserStatsRef().on('value', snap => this.setState({ sumStats: snap.val() }));
-      firebase.getAverageStatsRef().on('value', snap => this.setState({ avgStats: snap.val() }));
+        firebase.getUserStatsRef().on('value', snap => this.setState({ sumStats: snap.val() }));
+        firebase.getAverageStatsRef().on('value', snap => this.setState({ avgStats: snap.val() }));
+      }      
     }
   }
 
@@ -146,7 +122,6 @@ class AccountHistoryPage extends React.Component {
     if (authUser) {
       firebase.getUserStatsRef().off();
       firebase.getAverageStatsRef().off();
->>>>>>> listeners added to stats
     }
   }
 
