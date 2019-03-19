@@ -3,6 +3,30 @@ const admin = require('firebase-admin');
 
 admin.initializeApp(functions.config().firebase);
 
+exports.delete_and_update = functions.database
+  .ref('/search-history/{userID}/{nodeID}')
+  .onDelete((snapshot, context) => {
+    let database = admin.database();
+
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth();
+    path = 'monthly-records/' + year + '/' + month + '/';
+    path += context.params.userID + '/' + context.params.nodeID;
+    database
+      .ref(path)
+      .remove()
+      .then(calculateMonthAverages)
+      .catch(() => {});
+
+    path = 'last-30-days-records/' + context.params.userID + '/';
+    path += context.params.nodeID;
+    return database
+      .ref(path)
+      .remove()
+      .then(clearOldRecords)
+      .then(calculateAverages);
+  });
+
 exports.update_records = functions.database
   .ref('/search-history/{userID}/{nodeID}')
   .onCreate((snapshot, context) => {
