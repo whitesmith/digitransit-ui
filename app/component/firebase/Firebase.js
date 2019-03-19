@@ -116,17 +116,21 @@ class Firebase {
         let reachedFirstResult = false;
         //foreach will ensure the correct order of the query results
         snap.forEach(s => {
+          console.log(s.val())
           const snapValue = s.val();
           //if there is just one result, only option is to go back
           if (nSearches === 1) {
-            firstSearchResult = lastSearchResult = snapValue;
+            if(mode === PAGE_MODE_NEXT) {
+              firstSearchResult = lastSearchResult = snapValue;
+            }
+            filteredSnap.push(s);
           } else {
             if (idx === 0) {
               //save the first element to set the cursor later
               firstSearchResult = snapValue;
             } else {
               //skipping the cursor
-              if (mode == PAGE_MODE_FIRST) {
+              if (mode === PAGE_MODE_FIRST) {
                 //if this is the first page we need to store the first element
                 this.firstSearchCursor = snapValue.timestamp;
               }
