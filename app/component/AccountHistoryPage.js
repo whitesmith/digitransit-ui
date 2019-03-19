@@ -14,11 +14,18 @@ import { PAGE_MODE_FIRST, PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/
 
 const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
 
-const baseStats = {
-  co2: null,
-  publicTransportation: null,
-  walkDistance: null,
-  calories: null,
+const baseSumStats = {
+  co2Sum: null,
+  publicTransportationSum: null,
+  walkDistanceSum: null,
+  caloriesSum: null,
+};
+
+const baseAvgStats = {
+  co2Avg: null,
+  publicTransportationAvg: null,
+  walkDistanceAvg: null,
+  caloriesAvg: null,
 };
 
 class AccountHistoryPage extends React.Component {
@@ -37,8 +44,10 @@ class AccountHistoryPage extends React.Component {
       recentSearches: [],
       loading: true,
       statsLoading: true,
-      userAverages: baseStats,
-      globalAverages: baseStats
+      monthlyStatsLoading: true,
+      sumStats: baseSumStats,
+      avgStats: baseAvgStats,
+      monthlyStats: null
     };
   }
 
@@ -83,25 +92,59 @@ class AccountHistoryPage extends React.Component {
         this.context.router.replace('/');
       } else {
         this.getSearchHistory(PAGE_MODE_FIRST);
-        firebase.getAverages().then(res => {
+        firebase.getStats().then(res => {
           this.setState({
-            userAverages: res[0].val() ? res[0].val() : baseStats,
-            globalAverages: res[1].val() ? res[1].val() : baseStats,
+            sumStats: res[0].val() ? res[0].val() : baseSumStats,
+            avgStats: res[1].val() ? res[1].val() : baseAvgStats,
             statsLoading: false,
           })
         }).catch(
           () => this.setState({ statsLoading: false })
         )
-      }
+
+        firebase.getMonthlyStats().then(res => {
+          this.setState({
+            monthlyStats: res.val(),
+            monthlyStatsLoading: false,
+          })
+        }).catch(
+          () => this.setState({ monthlyStatsLoading: false })
+        )
+
+        firebase.getUserStatsRef().on('value', snap => this.setState({ sumStats: snap.val() }));
+        firebase.getAverageStatsRef().on('value', snap => this.setState({ avgStats: snap.val() }));
+      }      
     }
   }
 
-  calcPercentageDiff = (userAvg, refAvg) => Math.round((userAvg * 100) / refAvg) - 100;
+  componentWillUnmount() {
+    const { firebase, authUser} = this.props;
+    if (authUser) {
+      firebase.getUserStatsRef().off();
+      firebase.getAverageStatsRef().off();
+    }
+  }
+
+  calcPercentageDiff = (userSum, average) => Math.round((userSum * 100) / average) - 100;
   
   render() {
     const { breakpoint, firebase } = this.props;
-    const { recentSearches, loading, statsLoading, userAverages, globalAverages} = this.state;
+    const { recentSearches, loading, statsLoading, monthlyStatsLoading,  monthlyStats, sumStats, avgStats} = this.state;
     const desktop = breakpoint === 'large';
+
+    const {
+      co2Sum,
+      publicTransportationSum,
+      walkDistanceSum,
+      caloriesSum,
+    } = sumStats;
+    
+    const {
+      co2Avg,
+      publicTransportationAvg,
+      walkDistanceAvg,
+      caloriesAvg,
+    } = avgStats;
 
     return (
       <div className={`flex-vertical fullscreen bp-${breakpoint}`}>
@@ -125,13 +168,18 @@ class AccountHistoryPage extends React.Component {
                     icon="car-withoutBox"
                     textId={'car-emissions'}
                     defaultMessage={'Car emissions'}
-                    amount={userAverages.co2}
-                    unit={
+                    amount={co2Sum}
+                    smallUnit={
+                      <>
+                        gCO<sub>2</sub>
+                      </>
+                    }
+                    bigUnit={
                       <>
                         kgCO<sub>2</sub>
                       </>
                     }
-                    percentage={this.calcPercentageDiff(userAverages.co2, globalAverages.co2)}
+                    percentage={this.calcPercentageDiff(co2Sum, co2Avg)}
                     inverted={true}
                   />
                 </div>
@@ -140,9 +188,10 @@ class AccountHistoryPage extends React.Component {
                     icon="public_transport"
                     textId={'public-transport'}
                     defaultMessage={'Public transport'}
-                    amount={userAverages.publicTransportation}
-                    unit="km"
-                    percentage={this.calcPercentageDiff(userAverages.publicTransportation, globalAverages.publicTransportation)}
+                    amount={publicTransportationSum}
+                    smallUnit="m"
+                    bigUnit="km"
+                    percentage={this.calcPercentageDiff(publicTransportationSum, publicTransportationAvg)}
                   />
                 </div>
                 <div className="stat">
@@ -150,9 +199,10 @@ class AccountHistoryPage extends React.Component {
                     icon="walk"
                     textId={'walking-distance'}
                     defaultMessage={'Walking distance'}
-                    amount={userAverages.walkDistance}
-                    unit="km"
-                    percentage={this.calcPercentageDiff(userAverages.walkDistance, globalAverages.walkDistance)}
+                    amount={walkDistanceSum}
+                    smallUnit="m"
+                    bigUnit="km"
+                    percentage={this.calcPercentageDiff(walkDistanceSum, walkDistanceAvg)}
                   />
                 </div>
                 <div className="stat">
@@ -164,9 +214,10 @@ class AccountHistoryPage extends React.Component {
                     )}
                     textId={"calories-walked"}
                     defaultMessage={"Calories walked"}
-                    amount={userAverages.calories}
-                    unit="kcal"
-                    percentage={this.calcPercentageDiff(userAverages.calories, globalAverages.calories)}
+                    amount={caloriesSum}
+                    smallUnit="cal"
+                    bigUnit="kcal"
+                    percentage={this.calcPercentageDiff(caloriesSum, caloriesAvg)}
                   />
                 </div>
               </div>
