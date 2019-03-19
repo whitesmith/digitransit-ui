@@ -206,13 +206,13 @@ class Firebase {
       .remove();
 
   getStats = () => Promise.all([
-    this.database
-      .ref('last-30-days-stats/' + this.auth.currentUser.uid)
-      .once('value'),
-    this.database
-      .ref('last-30-days-stats/averages')
-      .once('value')
+    this.getUserStatsRef().once('value'),
+    this.getAverageStatsRef().once('value')
   ])
+
+  getUserStatsRef = () => this.database.ref('last-30-days-stats/' + this.auth.currentUser.uid)
+
+  getAverageStatsRef = () => this.database.ref('last-30-days-stats/averages')
 
   getMonthlyStats = () => 
     this.database

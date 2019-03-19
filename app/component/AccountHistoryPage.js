@@ -132,7 +132,21 @@ class AccountHistoryPage extends React.Component {
       }).catch( 
         () => this.setState({ monthlyStatsLoading: false }) 
       )
+<<<<<<< HEAD
 >>>>>>> averages replaced by sums
+=======
+
+      firebase.getUserStatsRef().on('value', snap => this.setState({ sumStats: snap.val() }));
+      firebase.getAverageStatsRef().on('value', snap => this.setState({ avgStats: snap.val() }));
+    }
+  }
+
+  componentWillUnmount() {
+    const { firebase, authUser} = this.props;
+    if (authUser) {
+      firebase.getUserStatsRef().off();
+      firebase.getAverageStatsRef().off();
+>>>>>>> listeners added to stats
     }
   }
 
