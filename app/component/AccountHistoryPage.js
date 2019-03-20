@@ -11,6 +11,7 @@ import CaloriesIcon from 'material-ui/svg-icons/social/whatshot';
 import Loading from './Loading';
 import { withAuthentication } from './session';
 import { PAGE_MODE_FIRST, PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/Firebase'
+import { calcPercentageDiff } from '../util/statUtils.js';
 
 const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
 
@@ -124,8 +125,6 @@ class AccountHistoryPage extends React.Component {
       firebase.getAverageStatsRef().off();
     }
   }
-
-  calcPercentageDiff = (userSum, average) => Math.round((userSum * 100) / average) - 100;
   
   render() {
     const { breakpoint, firebase } = this.props;
