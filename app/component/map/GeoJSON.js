@@ -209,10 +209,6 @@ class GeoJSON extends React.Component {
           .map((feature, index) => {
             if(maxMarkers && index > maxMarkers) return;            
             
-            if (feature.properties) {
-              feature.properties.description_en = feature.properties.description;
-            }
-            
             return (
             <PointFeatureMarker
               feature={feature}
