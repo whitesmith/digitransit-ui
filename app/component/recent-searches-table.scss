@@ -1,4 +1,5 @@
-.recent-searches-table-container {
+.recent-searches-table-container,
+.monthly-history-table-container {
   table th {
     text-transform: capitalize;
   }
@@ -29,7 +30,8 @@
 
 }
 
-.recent-search-row {
+.recent-search-row,
+.monthly-history-row {
   td:first-child {
     padding-left: 1em;
   }
@@ -100,5 +102,42 @@ button.pagination-button {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+}
+
+
+.monthly-history-table-container {
+  .header-tr {
+    padding: 0 !important;
+
+    th {
+      flex: 1 0 4em;
+      white-space: normal !important;
+      word-break: break-word;
+    }
+  }
+}
+
+.monthly-history-row {
+  font-family: $font-family-narrow;
+  
+  td {
+    line-height: 1.6em;
+    p {
+      position: relative;
+      margin: 0;
+      sub {
+        position: absolute;
+        top: 0.4em;
+      }
+      small {
+        font-size: 80%;
+        line-height: 1.2em;
+        display: inline-block;
+      }
+    }
+  }
+  &:last-child td {
+    border-bottom: none;
   }
 }

@@ -27,6 +27,9 @@
   height: 20px;
 }
 
+.loading-container  {
+  min-height: 10em;
+}
 .stats-container {
   @include grid-row();
   display: flex;
@@ -98,5 +101,25 @@
   }
   &--negative {
     color: $slider-warning-color;
+  }
+}
+
+.fpccontainer--history {
+  position: relative;
+  right: unset;
+  top: unset;
+  height: auto;
+  max-height: none;
+  width: 100%;
+  margin: 2em auto;
+  max-width: none;
+  &:after {
+    content: none;
+  }
+
+  .fpcfloat,
+  .tabs-row,
+  .nearby-table-container {
+    flex-shrink: 0;
   }
 }
