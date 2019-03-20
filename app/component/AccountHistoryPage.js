@@ -119,7 +119,7 @@ class AccountHistoryPage extends React.Component {
               const monthAvgStats = yearAvgStats[month] || null;
 
               monthlyStatsArray.push({
-                month: `${moment(month, 'MM').format('MMM')} ${year}`,
+                month: `${moment(month+1, 'MM').format('MMM')} ${year}`,
                 co2Sum: monthUserStats.co2Sum,
                 publicTransportationSum: monthUserStats.publicTransportationSum,
                 walkDistanceSum: monthUserStats.walkDistanceSum,
