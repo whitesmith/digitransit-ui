@@ -110,11 +110,11 @@ class AccountHistoryPage extends React.Component {
           const averageMonthlyStats = res[1].val();
           let monthlyStatsArray = [];
 
-          for (const year in userMonthlyStats) {
+          Object.keys(userMonthlyStats).sort().reverse().forEach(year => {
             const yearUserStats = userMonthlyStats[year] || null;
             const yearAvgStats = averageMonthlyStats[year] || null;
 
-            for (const month in yearUserStats) {
+            Object.keys(yearUserStats).sort().reverse().forEach(month => {
               const monthUserStats = yearUserStats[month] || null;
               const monthAvgStats = yearAvgStats[month] || null;
 
@@ -129,8 +129,8 @@ class AccountHistoryPage extends React.Component {
                 walkDistanceAvg: monthAvgStats.walkDistanceAvg || null,
                 caloriesAvg: monthAvgStats.caloriesAvg || null,
               });
-            }
-          }
+            });
+          });
 
           this.setState({
             monthlyStats: monthlyStatsArray,
