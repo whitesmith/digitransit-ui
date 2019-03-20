@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { routerShape } from 'react-router';
 import RouteNumberContainer from './RouteNumberContainer';
 import WalkDistance from './WalkDistance';
-import Duration from './Duration';
 import Icon from './Icon';
+import moment from 'moment';
 
 const RecentSearchRow = ({ search, deleteCallback }, { router }) => {
   return (
@@ -13,6 +13,9 @@ const RecentSearchRow = ({ search, deleteCallback }, { router }) => {
       onClick={() => router.push(search.routerLocation)}
       style={{ cursor: 'pointer' }}
     >
+      <td className="td-duration" title={ moment.unix(search.timestamp).format('D MMM YYYY, HH:mm') }>
+        { moment.unix(search.timestamp).format('D MMM') }
+      </td>
       <td className="td-origin td-destination">
         <span className="route-destination">
           <span className="destination">{search.from}</span>
@@ -32,9 +35,6 @@ const RecentSearchRow = ({ search, deleteCallback }, { router }) => {
           :
             <RouteNumberContainer route={search.via} />
         }
-      </td>
-      <td className="td-duration">
-        <Duration duration={search.duration} />
       </td>
       <td className="td-distance">
         {search.itinerary.walkDistance ? (
