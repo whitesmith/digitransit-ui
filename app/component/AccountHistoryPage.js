@@ -11,6 +11,8 @@ import CaloriesIcon from 'material-ui/svg-icons/social/whatshot';
 import Loading from './Loading';
 import { withAuthentication } from './session';
 import { PAGE_MODE_FIRST, PAGE_MODE_NEXT, PAGE_MODE_PREVIOUS } from './firebase/Firebase'
+import MonthlyStatRow from './MonthlyStatRow';
+import moment from 'moment';
 import { calcPercentageDiff } from '../util/statUtils.js';
 
 const resetIconStyle = { display: '', color: '', fill: '', height: '', width: '', userSelect: '', transition: '' };
@@ -48,7 +50,7 @@ class AccountHistoryPage extends React.Component {
       monthlyStatsLoading: true,
       sumStats: baseSumStats,
       avgStats: baseAvgStats,
-      monthlyStats: null
+      monthlyStats: []
     };
   }
 
@@ -104,8 +106,20 @@ class AccountHistoryPage extends React.Component {
         )
 
         firebase.getMonthlyStats().then(res => {
+          let allStats = res.val();
+          let monthlyStatsArray = [];
+
+          for (const year in allStats) {
+            let yearStats = allStats[year];
+            for (const month in yearStats) {
+              let monthStats = yearStats[month];
+              monthStats.month = `${moment(month, 'MM').format('MMM')} ${year}`;
+              monthlyStatsArray.push(monthStats);
+            }
+          }
+
           this.setState({
-            monthlyStats: res.val(),
+            monthlyStats: monthlyStatsArray,
             monthlyStatsLoading: false,
           })
         }).catch(
@@ -160,7 +174,7 @@ class AccountHistoryPage extends React.Component {
                 defaultMessage="Usage metrics"
               />
             </h2>
-            {statsLoading ? ( <div className="padding-vertical-normal"><Loading /></div> ) : (
+            {statsLoading ? ( <div className="loading-container padding-vertical-normal"><Loading /></div> ) : (
               <div className="stats-container">
                 <div className="stat">
                   <Stat
@@ -178,7 +192,7 @@ class AccountHistoryPage extends React.Component {
                         kgCO<sub>2</sub>
                       </>
                     }
-                    percentage={this.calcPercentageDiff(co2Sum, co2Avg)}
+                    percentage={calcPercentageDiff(co2Sum, co2Avg)}
                     inverted={true}
                   />
                 </div>
@@ -190,7 +204,7 @@ class AccountHistoryPage extends React.Component {
                     amount={publicTransportationSum}
                     smallUnit="m"
                     bigUnit="km"
-                    percentage={this.calcPercentageDiff(publicTransportationSum, publicTransportationAvg)}
+                    percentage={calcPercentageDiff(publicTransportationSum, publicTransportationAvg)}
                   />
                 </div>
                 <div className="stat">
@@ -201,7 +215,7 @@ class AccountHistoryPage extends React.Component {
                     amount={walkDistanceSum}
                     smallUnit="m"
                     bigUnit="km"
-                    percentage={this.calcPercentageDiff(walkDistanceSum, walkDistanceAvg)}
+                    percentage={calcPercentageDiff(walkDistanceSum, walkDistanceAvg)}
                   />
                 </div>
                 <div className="stat">
@@ -216,11 +230,62 @@ class AccountHistoryPage extends React.Component {
                     amount={caloriesSum}
                     smallUnit="cal"
                     bigUnit="kcal"
-                    percentage={this.calcPercentageDiff(caloriesSum, caloriesAvg)}
+                    percentage={calcPercentageDiff(caloriesSum, caloriesAvg)}
                   />
                 </div>
               </div>
             )}
+
+            {/* start monthly stats section */}
+            <div className="fpccontainer fpccontainer--history">
+              <div
+                className="no-select fpcfloat"
+              >
+                <ul
+                  className="tabs-row cursor-pointer bp-large"
+                >
+                  <li
+                    className="h4 selected bp-large"
+                    role="button"
+                  >
+                    <div className="row text-left padding-horizontal">
+                      <Icon
+                        className="prefix-icon recent-icon"
+                        img="icon-icon_time"
+                      />
+                      <FormattedMessage
+                        id="metrics-history"
+                        defaultMessage="Metrics history"
+                      />
+                    </div>
+                  </li>
+                </ul>
+                <div
+                  className="fullscreen monthly-history-table-container frontpage-panel"
+                >
+                  {monthlyStatsLoading ? (
+                    <Loading />
+                  ) : (
+                      <div>
+                        <DeparturesTable
+                          headers={[
+                            { id: 'month', defaultMessage: 'Month' },
+                            { id: 'car-emissions', defaultMessage: 'Car emissions' },
+                            { id: 'public-transport', defaultMessage: 'Public transport' },
+                            { id: 'walking-distance', defaultMessage: 'Walking distance' },
+                            { id: 'calories-walked', defaultMessage: 'Calories walked' }
+                          ]}
+                          content={monthlyStats.map((s,i) => (
+                            <MonthlyStatRow stat={s} key={`ms${i}`} />
+                          ))}
+                        />
+                      </div>
+                    )}
+                </div>
+              </div>
+            </div>
+            {/* end monthly stats section */}
+
           </div>
           {/* end usage metrics section */}
         </div>
