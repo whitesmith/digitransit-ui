@@ -106,15 +106,29 @@ class AccountHistoryPage extends React.Component {
         )
 
         firebase.getMonthlyStats().then(res => {
-          let allStats = res.val();
+          const userMonthlyStats = res[0].val();
+          const averageMonthlyStats = res[1].val();
           let monthlyStatsArray = [];
 
-          for (const year in allStats) {
-            let yearStats = allStats[year];
-            for (const month in yearStats) {
-              let monthStats = yearStats[month];
-              monthStats.month = `${moment(month, 'MM').format('MMM')} ${year}`;
-              monthlyStatsArray.push(monthStats);
+          for (const year in userMonthlyStats) {
+            const yearUserStats = userMonthlyStats[year] || null;
+            const yearAvgStats = averageMonthlyStats[year] || null;
+
+            for (const month in yearUserStats) {
+              const monthUserStats = yearUserStats[month] || null;
+              const monthAvgStats = yearAvgStats[month] || null;
+
+              monthlyStatsArray.push({
+                month: `${moment(month, 'MM').format('MMM')} ${year}`,
+                co2Sum: monthUserStats.co2Sum || null,
+                publicTransportationSum: monthUserStats.publicTransportationSum || null,
+                walkDistanceSum: monthUserStats.walkDistanceSum || null,
+                caloriesSum: monthUserStats.caloriesSum || null,
+                co2Avg: monthAvgStats.co2Avg || null,
+                publicTransportationAvg: monthAvgStats.publicTransportationAvg || null,
+                walkDistanceAvg: monthAvgStats.walkDistanceAvg || null,
+                caloriesAvg: monthAvgStats.caloriesAvg || null,
+              });
             }
           }
 

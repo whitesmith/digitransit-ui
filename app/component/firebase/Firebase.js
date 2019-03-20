@@ -214,10 +214,14 @@ class Firebase {
 
   getAverageStatsRef = () => this.database.ref('last-30-days-stats/averages')
 
-  getMonthlyStats = () => 
-    this.database
-      .ref('monthly-stats/' + this.auth.currentUser.uid)
-      .once('value')
+  getMonthlyUserStats = () => this.database.ref('monthly-stats/' + this.auth.currentUser.uid)
+  
+  getMonthlyAverageStats = () => this.database.ref('monthly-stats/averages')
+  
+  getMonthlyStats = () => Promise.all([
+    this.getMonthlyUserStats().once('value'),
+    this.getMonthlyAverageStats().once('value')
+  ])
 }
 
 export default Firebase;
