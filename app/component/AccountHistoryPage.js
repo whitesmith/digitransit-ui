@@ -120,14 +120,14 @@ class AccountHistoryPage extends React.Component {
 
               monthlyStatsArray.push({
                 month: `${moment(month, 'MM').format('MMM')} ${year}`,
-                co2Sum: monthUserStats.co2Sum || null,
-                publicTransportationSum: monthUserStats.publicTransportationSum || null,
-                walkDistanceSum: monthUserStats.walkDistanceSum || null,
-                caloriesSum: monthUserStats.caloriesSum || null,
-                co2Avg: monthAvgStats.co2Avg || null,
-                publicTransportationAvg: monthAvgStats.publicTransportationAvg || null,
-                walkDistanceAvg: monthAvgStats.walkDistanceAvg || null,
-                caloriesAvg: monthAvgStats.caloriesAvg || null,
+                co2Sum: monthUserStats.co2Sum,
+                publicTransportationSum: monthUserStats.publicTransportationSum,
+                walkDistanceSum: monthUserStats.walkDistanceSum,
+                caloriesSum: monthUserStats.caloriesSum,
+                co2Avg: monthAvgStats.co2Avg,
+                publicTransportationAvg: monthAvgStats.publicTransportationAvg,
+                walkDistanceAvg: monthAvgStats.walkDistanceAvg,
+                caloriesAvg: monthAvgStats.caloriesAvg,
               });
             });
           });
