@@ -111,8 +111,8 @@ class AccountHistoryPage extends React.Component {
           () => this.setState({ monthlyStatsLoading: false })
         )
 
-        firebase.getUserStatsRef().on('value', snap => this.setState({ sumStats: snap.val() }));
-        firebase.getAverageStatsRef().on('value', snap => this.setState({ avgStats: snap.val() }));
+        firebase.getUserStatsRef().on('value', snap => this.setState({ sumStats: snap.val() ? snap.val() : baseSumStats }));
+        firebase.getAverageStatsRef().on('value', snap => this.setState({ avgStats: snap.val() ? snap.val() : baseAvgStats }));
       }      
     }
   }

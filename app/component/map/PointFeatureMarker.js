@@ -97,7 +97,8 @@ const PointFeatureMarker = ({ feature, icons, language }) => {
   const address = getPropertyValueOrDefault(properties, 'address', language);
   const city = getPropertyValueOrDefault(properties, 'city', language);
   let description = city ? `${address}, ${city}` : address;
-  if(properties.popupContent) description = properties.popupContent.substring(0, 100) + "...";
+  if(properties.description) description = getPropertyValueOrDefault(properties, 'description', language).substring(0, 100) + "...";
+  
   const useDescriptionAsHeader = !header;
 
   const hasCustomIcon = icon && icon.id && icons[icon.id];
