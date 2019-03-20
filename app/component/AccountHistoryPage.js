@@ -340,10 +340,10 @@ class AccountHistoryPage extends React.Component {
                   <div>
                     <DeparturesTable
                       headers={[
+                        { id: 'date', defaultMessage: 'Date' },
                         { id: 'origin', defaultMessage: 'Origin' },
                         { id: 'destination', defaultMessage: 'Destination' },
                         { id: 'via', defaultMessage: 'Via' },
-                        { id: 'duration', defaultMessage: 'Duration' },
                         { id: 'walk', defaultMessage: 'Walking' },
                         { id: 'empty-actions', defaultMessage: ' ' },
                       ]}
