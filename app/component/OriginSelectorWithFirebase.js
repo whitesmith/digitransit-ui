@@ -37,7 +37,11 @@ class OriginSelectorWithFirebase extends React.Component {
       });
 
       result[0].forEach(s => {
-        oldSearches.push[s.val()];
+        let val = s.val();
+        if(Object.keys(val).length === 1) {
+          val = val[Object.keys(val)[0]];
+        }
+        oldSearches.push[val];
       });
 
       const favouriteLocationRows = favouriteLocations.map(f => (

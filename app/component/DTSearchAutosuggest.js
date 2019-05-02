@@ -215,7 +215,11 @@ class DTAutosuggest extends React.Component {
               const results = [];
     
               snap[0].forEach(s => {
-                results.unshift(s.val());
+                let val = s.val();
+                if(Object.keys(val).length === 1) {
+                  val = val[Object.keys(val)[0]];
+                }
+                results.unshift(val);
               });
 
               snap[1].forEach(s => {
