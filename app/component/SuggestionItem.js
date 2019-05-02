@@ -18,6 +18,7 @@ import ComponentUsageExample from './ComponentUsageExample';
 
 const SuggestionItem = pure(
   ({ item, useTransportIcons, doNotShowLinkToStop, loading }) => {
+    if(typeof item.properties === "undefined") return null;
     let icon;
     if (item.properties.mode && useTransportIcons) {
       icon = (

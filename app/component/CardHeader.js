@@ -82,7 +82,7 @@ CardHeader.propTypes = {
   headerIcon: PropTypes.node,
   headingStyle: PropTypes.string,
   name: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
   code: PropTypes.string,
   icon: PropTypes.string,
   icons: PropTypes.arrayOf(PropTypes.node),
