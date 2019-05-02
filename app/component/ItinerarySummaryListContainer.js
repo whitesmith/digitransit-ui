@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import Relay from 'react-relay/classic';
 import { FormattedMessage } from 'react-intl';
 import inside from 'point-in-polygon';
@@ -12,15 +12,18 @@ import SummaryRow from './SummaryRow';
 import { isBrowser } from '../util/browser';
 import { distance } from '../util/geo-utils';
 import { getZones } from '../util/legUtils';
+import CanceledItineraryToggler from './CanceledItineraryToggler';
+import { RouteAlertsQuery, StopAlertsQuery } from '../util/alertQueries';
+import { itineraryHasCancelation } from '../util/alertUtils';
 
 function ItinerarySummaryListContainer(
   {
     activeIndex,
     children,
     currentTime,
-    locationState,
     error,
     from,
+    locationState,
     intermediatePlaces,
     itineraries,
     onSelect,
@@ -31,6 +34,8 @@ function ItinerarySummaryListContainer(
   },
   { config },
 ) {
+  const [showCancelled, setShowCancelled] = useState(false);
+
   if (!error && itineraries && itineraries.length > 0) {
 
     const openedIndex = open && Number(open);
@@ -45,14 +50,28 @@ function ItinerarySummaryListContainer(
         onSelect={onSelect}
         onSelectImmediately={onSelectImmediately}
         intermediatePlaces={intermediatePlaces}
+        isCancelled={itineraryHasCancelation(itinerary)}
+        showCancelled={showCancelled}
         zones={config.stopCard.header.showZone ? getZones(itinerary.legs) : []}
       >
         {i === openedIndex && children}
       </SummaryRow>
     ));
 
+    const canceledItinerariesCount = itineraries.filter(itineraryHasCancelation)
+      .length;
     return (
-      <div className="summary-list-container">{isBrowser && summaries}</div>
+      <div className="summary-list-container">
+        {isBrowser && summaries}
+        {isBrowser &&
+          canceledItinerariesCount > 0 && (
+            <CanceledItineraryToggler
+              showItineraries={showCancelled}
+              toggleShowCanceled={() => setShowCancelled(!showCancelled)}
+              canceledItinerariesAmount={canceledItinerariesCount}
+            />
+          )}
+      </div>
     );
   }
   if (!error && (!from.lat || !from.lon || !to.lat || !to.lon)) {
@@ -167,15 +186,18 @@ ItinerarySummaryListContainer.contextTypes = {
   config: PropTypes.object.isRequired,
 };
 
-export default Relay.createContainer(ItinerarySummaryListContainer, {
-  fragments: {
-    itineraries: () => Relay.QL`
+const containerComponent = Relay.createContainer(
+  ItinerarySummaryListContainer,
+  {
+    fragments: {
+      itineraries: () => Relay.QL`
       fragment on Itinerary @relay(plural:true){
         walkDistance
         startTime
         endTime
         legs {
           realTime
+          realtimeState
           transitLeg
           startTime
           endTime
@@ -187,6 +209,7 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
           intermediatePlaces {
             stop {
               zoneId
+              ${StopAlertsQuery}
             }
           }
           route {
@@ -196,13 +219,14 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
             agency {
               name
             }
+            ${RouteAlertsQuery}
           }
           trip {
-            alerts {
-              effectiveStartDate
-              effectiveEndDate
+            pattern {
+              code
             }
             stoptimes {
+              realtimeState
               stop {
                 gtfsId
               }
@@ -216,6 +240,7 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
             stop {
               gtfsId
               zoneId
+              ${StopAlertsQuery}
             }
             bikeRentalStation {
               bikesAvailable
@@ -225,10 +250,17 @@ export default Relay.createContainer(ItinerarySummaryListContainer, {
             stop {
               gtfsId
               zoneId
+              ${StopAlertsQuery}
             }
           }
         }
       }
     `,
+    },
   },
-});
+);
+
+export {
+  containerComponent as default,
+  ItinerarySummaryListContainer as Component,
+};

@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import filter from 'lodash/filter';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -10,6 +9,7 @@ import LocalTime from './LocalTime';
 import RelativeDuration from './RelativeDuration';
 import RouteNumber from './RouteNumber';
 import RouteNumberContainer from './RouteNumberContainer';
+import { legHasActiveAlert } from '../util/alertUtils';
 import { displayDistance } from '../util/geo-utils';
 import {
   containsBiking,
@@ -30,20 +30,8 @@ import {
   exampleDataCallAgency,
   examplePropsCityBike,
   exampleDataVia,
+  exampleDataCanceled,
 } from './data/SummaryRow.ExampleData';
-
-/*
-const dummyalerts = [{
-  effectiveStartDate: new Date().getTime() - 9000000,
-  effectiveEndDate: new Date().getTime() + 9000000,
-}];
-*/
-
-const hasActiveDisruption = (t1, t2, alerts) =>
-  filter(
-    alerts,
-    alert => !(alert.effectiveStartDate > t2 || alert.effectiveEndDate < t1),
-  ).length > 0;
 
 const Leg = ({ routeNumber, leg, large }) => (
   <div className="leg">
@@ -63,9 +51,7 @@ Leg.propTypes = {
 };
 
 export const RouteLeg = ({ leg, large, intl }) => {
-  const getTripAlerts = trip => (trip && trip.alerts) || [];
   const isCallAgency = isCallAgencyPickupType(leg);
-
   let routeNumber;
   if (isCallAgency) {
     const message = intl.formatMessage({
@@ -88,12 +74,7 @@ export const RouteLeg = ({ leg, large, intl }) => {
         className={cx('line', leg.mode.toLowerCase())}
         vertical
         withBar
-        hasDisruption={hasActiveDisruption(
-          leg.startTime / 1000,
-          leg.endTime / 1000,
-          getTripAlerts(leg.trip),
-          // dummyalerts,
-        )}
+        hasDisruption={legHasActiveAlert(leg)}
       />
     );
   }
@@ -366,13 +347,9 @@ const SummaryRow = (
       passive: props.passive,
       'bp-large': breakpoint === 'large',
       open: props.open || props.children,
+      'cancelled-itinerary': props.isCancelled,
     },
   ]);
-
-  const itineraryLabel = formatMessage({
-    id: 'itinerary-page.title',
-    defaultMessage: 'Itinerary',
-  });
 
   const isDefaultPosition = breakpoint !== 'large' && !onlyBiking(data);
   const renderBikingDistance = itinerary =>
@@ -385,7 +362,17 @@ const SummaryRow = (
 
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
   return (
-    <div className={classes} onClick={() => props.onSelect(props.hash)}>
+    <div
+      className={classes}
+      onClick={() => props.onSelect(props.hash)}
+      style={{
+        display: props.isCancelled && !props.showCancelled ? 'none' : 'flex',
+      }}
+      aria-label={formatMessage(
+        { id: 'summary-page.row-label' },
+        { number: props.hash + 1 },
+      )}
+    >
       {props.open || props.children
         ? [
             <div className="flex-grow itinerary-heading" key="title">
@@ -398,7 +385,9 @@ const SummaryRow = (
             <div
               tabIndex="0"
               role="button"
-              title={itineraryLabel}
+              title={formatMessage({
+                id: 'itinerary-page.hide-details',
+              })}
               key="arrow"
               className="action-arrow-click-area noborder flex-vertical"
               onClick={e => {
@@ -461,7 +450,9 @@ const SummaryRow = (
             <div
               tabIndex="0"
               role="button"
-              title={itineraryLabel}
+              title={formatMessage({
+                id: 'itinerary-page.show-details',
+              })}
               key="arrow"
               className="action-arrow-click-area flex-vertical noborder"
               onClick={e => {
@@ -493,6 +484,8 @@ SummaryRow.propTypes = {
   open: PropTypes.bool,
   breakpoint: PropTypes.string.isRequired,
   intermediatePlaces: PropTypes.array,
+  isCancelled: PropTypes.bool,
+  showCancelled: PropTypes.bool,
   zones: PropTypes.arrayOf(PropTypes.string),
 };
 
@@ -604,6 +597,18 @@ SummaryRow.description = () => {
         />
         {/* citybike-large-passive */}
         <SummaryRow {...examplePropsCityBike('large')} />
+        {/* canceled-large-itinerary */}
+        <SummaryRow
+          refTime={today}
+          breakpoint="large"
+          data={exampleDataCanceled}
+          passive
+          onSelect={nop}
+          onSelectImmediately={nop}
+          hash={1}
+          isCancelled
+          showCancelled
+        />
       </ComponentUsageExample>
       <ComponentUsageExample description="small">
         {/* passive-small-today */}
@@ -676,6 +681,18 @@ SummaryRow.description = () => {
         />
         {/* citybike-small-passive */}
         <SummaryRow {...examplePropsCityBike('small')} />
+        {/* canceled-large-itinerary */}
+        <SummaryRow
+          refTime={today}
+          breakpoint="small"
+          data={exampleDataCanceled}
+          passive
+          onSelect={nop}
+          onSelectImmediately={nop}
+          hash={1}
+          isCancelled
+          showCancelled
+        />
       </ComponentUsageExample>
     </div>
   );
